@@ -1,0 +1,15 @@
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /ntd
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+
+## PROTECT FILES ###
+<FilesMatch "\.(json)$">
+  Order Allow,Deny
+  Allow from localhost
+  Deny from all
+</FilesMatch>
