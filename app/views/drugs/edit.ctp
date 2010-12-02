@@ -11,7 +11,7 @@ echo '<br /><br />' ;
 		echo $this->Form->input('id');
 		echo $this->Form->input('name');
 		echo $this->Form->input('code');
-		echo $this->Form->input('presentation');
+		echo $this->Form->input('presentation', array ('options' => array('Oral solution' => 'Oral solution', 'Tablets' => 'Tablets')), array('value' => $this->Form->value('presentation')));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

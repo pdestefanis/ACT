@@ -41,6 +41,12 @@ class PhonesController extends AppController {
 
 	function add() {
 		if (!empty($this->data)) {
+			$phoneDeleted = $this->Phone->findByPhonenumber($this->data['Phone']['phonenumber']);
+			if (!empty($phoneDeleted)) {
+				//phone has been delted reactive
+				$this->Session->setFlash('This phone has been deleted prevously. Please confirm to re-activate.', 'flash_success');
+				$this->redirect(array('action' => 'edit', $phoneDeleted['Phone']['id'], 1));
+			}
 			$this->Phone->create();
 			if ($this->Phone->save($this->data)) {
 				$this->Session->setFlash('The phone has been saved', 'flash_success');
@@ -54,11 +60,13 @@ class PhonesController extends AppController {
 	}
 
 	function edit($id = null) {
+		
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(__('Invalid phone', true));
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
+			
 			if ($this->Phone->save($this->data)) {
 				$this->Session->setFlash('The phone has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index'));
@@ -68,7 +76,10 @@ class PhonesController extends AppController {
 		}
 		if (empty($this->data)) {
 			$this->data = $this->Phone->read(null, $id);
+			if (isset($this->passedArgs[1]) && $this->passedArgs[1] == 1)
+				$this->data['Phone']['deleted'] = 0;
 		}
+		
 		$locations = $this->Phone->Location->find('list', array ('conditions' => 'Location.deleted = 0'));
 		$this->set(compact('locations'));
 	}

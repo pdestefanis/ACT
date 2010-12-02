@@ -11,7 +11,8 @@ echo '<br /><br />' ;
 		echo $this->Form->input('name');
 		echo $this->Form->input('phonenumber');
 		//echo $this->Form->input('active');
-		
+		if (isset($this->passedArgs[1]) && $this->passedArgs[1] == 1)
+			echo $this->Form->hidden('deleted');
 		echo $this->Form->radio('active', array('1' => 'Active', '0' => 'Inactive'), null, array('value' => $this->Form->value('active')));
 		echo $this->Form->input('location_id');
 	?>

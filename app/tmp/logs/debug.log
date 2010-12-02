@@ -2271,3 +2271,6 @@
 2010-11-20 03:42:43 Notice: Notice (8): Undefined offset:  0 in [/var/www/html/ntd/app/controllers/drugs_treatments_controller.php, line 85]
 2010-11-20 05:56:40 Notice: Notice (8): Array to string conversion in [/var/www/html/ntd/cake/libs/router.php, line 1566]
 2010-11-22 04:23:09 Notice: Notice (8): Undefined offset:  0 in [/var/www/html/ntd/app/controllers/drugs_controller.php, line 76]
+2010-11-24 11:25:59 Notice: Notice (8): Undefined offset:  1 in [/var/www/html/ntd/app/controllers/phones_controller.php, line 79]
+2010-11-24 11:25:59 Notice: Notice (8): Undefined offset:  1 in [/var/www/html/ntd/app/views/phones/edit.ctp, line 14]
+2010-11-24 11:26:32 Notice: Notice (8): Undefined offset:  1 in [/var/www/html/ntd/app/controllers/phones_controller.php, line 79]

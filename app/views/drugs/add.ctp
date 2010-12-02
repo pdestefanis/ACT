@@ -10,7 +10,7 @@ echo '<br /><br />' ;
 	<?php
 		echo $this->Form->input('name');
 		echo $this->Form->input('code');
-		echo $this->Form->input('presentation');
+		echo $this->Form->input('presentation', array ('options' => array('Oral solution' => 'Oral solution', 'Tablets' => 'Tablets')));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
