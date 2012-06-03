@@ -2,34 +2,89 @@
 class UsersController extends AppController {
 
 	var $name = 'Users';
-	var $helpers = array('Html', 'Crumb', 'Javascript');
-	//var $components = array('Auth');
+	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax');
+	var $components = array('AuthExt', 'RequestHandler', 'Access');
 
-   function login() {
-         function login() {
-	     	if ($this->Session->read('Auth.User')) {
-	     		$this->Session->setFlash('You are logged in!', 'flash_success');
-	     		$this->redirect('/', null, false);
-	     	}
-	     }
+	
+	function beforeRender() {
 
-   }
+			if ($this->action == 'view'){
+					if (!in_array($this->viewVars['user']['User']['location_id'], $this->Session->read("userLocations")) && $this->viewVars['user']['User']['location_id'] != "") { //view
+						
+						$this->Session->setFlash('You are not allowed to access this record.'  , 'flash_failure'); 
+						$this->redirect( '/users/index', null, false);
+					} 
+			}
+			if ($this->action == 'edit'){
+					if (!in_array($this->data['User']['location_id'], $this->Session->read("userLocations") ) && $this->data['User']['location_id'] != "") { //edit
+						$this->Session->setFlash('You are not allowed to access this record.' , 'flash_failure'); 
+						$this->redirect( '/users/index', null, false);
+					} 
+			}
+	}	
+  
+	function login() {
+		if ($this->AuthExt->user()) {
+			
+			//$this->Session->write("currentUser", $this->Session->read('Auth.User'));// $this->Auth->user());
+	
+			$u = $this->AuthExt->user();
+			$g[] = $u['User']['role_id'];
+			if (isset($u['User']['Role']))
+			foreach ($u['User']['Role'] as $role) 
+				$g[] = $role;
+			$parents = NULL;
+			
+			$this->findLocationParent($u['User']['location_id'], $parents, $u['User']['reach'] );
+			
+			$children = $parents; //make sure all parents are included
+			foreach ($parents as $p) 
+				$this->findLocationChildren($p, $children);
+			$children = array_unique($children);
+			$locs[] = $u['User']['location_id']; //add current location
+			
+			if ($u['User']['role_id'] == 1)// (in_array(1,$g)) only primay admins have all locations
+				$locs = array_keys($this->User->Location->find('list', array('callbacks' => 'false')));
+			else
+				$locs = array_values($children);
+			
+			//$locs = array_keys($locs);
+			
+			$this->Session->write("userLocations", $locs);
+		
+			$this->Session->setFlash( ucwords($u['User']['name']) . ', you are logged in!' , 'flash_success');
+			$this->redirect($this->AuthExt->redirect());
+			//$this->redirect('/', null, true);
+		} 
+	 }
+
+	 
 
    function logout() {
-         $this->Session->setFlash('Good-Bye', 'flash_success');
-	     $this->redirect($this->Auth->logout());
+		
+		$this->Session->destroy();
+		$this->Session->delete('currUser'); 
+		$this->Session->delete('userLocations'); 
+		$this->Session->setFlash('Good-Bye', 'flash_success');
+		$this->AuthExt->logout();
+		$this->redirect($this->AuthExt->redirect());
 
    }
 
-   function beforeFilter() {
-   		$this->Auth->userModel = 'User';
-   		parent::beforeFilter();
-    	//$this->Auth->allow(array('*'));
-    	$this->Auth->allowedActions = array('');
-   }
+   
 
 	function index() {
-		$this->User->recursive = 0;
+		$this->User->recursive = 1;
+		$search = (empty($this->data['Search']['search'])?(isset($this->passedArgs[0])?$this->passedArgs[0]:$this->data['Search']['search']):$this->data['Search']['search']);
+		if (!empty($search) ) {
+				$this->paginate['User'] = array('order' => 'User.name Asc',
+										'conditions'=>array( 
+											"OR" => array("User.username LIKE "=>"%".$search."%", 
+													"FirstRole.name LIKE" => "%".$search."%", 
+													"Location.name LIKE" => "%".$search."%", 
+													)
+									));
+		} 
 		$this->set('users', $this->paginate());
 	}
 
@@ -38,7 +93,20 @@ class UsersController extends AppController {
 			$this->Session->setFlash(__('Invalid user', true));
 			$this->redirect(array('action' => 'index'));
 		}
+		if (empty($this->data['Config']['limit'])) {
+			$this->User->hasMany['Stat']['limit'] = 20;
+			$this->User->hasMany['Stat']['order'] = 'created desc';
+		}else {
+			$this->layout = 'ajax';
+			$this->User->hasMany['Stat']['limit'] = $this->data['Config']['limit'];
+			$this->User->hasMany['Stat']['order'] = 'created desc';
+		}
 		$this->set('user', $this->User->read(null, $id));
+		
+		$this->set('locations', $this->User->Location->find('list', array ('conditions' => array('Location.deleted = 0'))));
+		//$this->set('messagesents', $this->User->Messagesent->find('list', array ('fields' => array('messagereceived_id', 'rawmessage'), 'callbacks' => false)));
+		$this->set('phones', $this->User->Phone->find('list', array ('conditions' => array('Phone.deleted = 0'), 'callbacks' => false)));
+		$this->set('userLocations', $this->Session->read("userLocations"));
 	}
 
 	function add() {
@@ -55,7 +123,7 @@ class UsersController extends AppController {
 		}
 	*/
 		if (!empty($this->data)) {
-			$this->User->create();
+			$this->User->create();	
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash('The user has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index'));
@@ -67,8 +135,19 @@ class UsersController extends AppController {
 			}
 
 		}
-		$groups = $this->User->Group->find('list');
-		$this->set(compact('groups'));
+		//only allow admins to select admin roles
+		$u = $this->AuthExt->user();
+		$g[] = $u['User']['role_id'];
+		if (isset($u['User']['Role']))
+			foreach ($u['User']['Role'] as $role) 
+				$g[] = $role;
+		if (in_array( 1, $g))
+			$roles = $this->User->Role->find('list');
+		else
+			$roles = $this->User->Role->find('list', array('conditions' => array('id !='. 1) ));
+		$phones = $this->User->Phone->find('list', array( 'conditions' => array('deleted' => 0)));
+		$locations = $this->User->Location->find('list', array('conditions' => array('deleted' => 0)));
+		$this->set(compact('roles', 'locations', 'phones'));
 
 	}
 
@@ -78,6 +157,7 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
+			$this->data['action'] = 'edit'; //set this dummy field for models empty passwords on edit user
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash('The user has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index'));
@@ -86,13 +166,22 @@ class UsersController extends AppController {
 				$this->data['User']['confirm_passwd'] = null;
 				$this->Session->setFlash('The user could not be saved. Please, try again.', 'flash_failure');
 			}
-		}
-		if (empty($this->data)) {
+		} else {
 			$this->data = $this->User->read(null, $id);
 			$this->data['User']['password'] = null;
 		}
-		$groups = $this->User->Group->find('list');
-		$this->set(compact('groups'));
+		$u = $this->AuthExt->user();
+		$g[] = $u['User']['role_id'];
+		if (isset($u['User']['Role']))
+			foreach ($u['User']['Role'] as $role) 
+				$g[] = $role;
+		if (in_array( 1, $g))
+			$roles = $this->User->Role->find('list');
+		else
+			$roles = $this->User->Role->find('list', array('conditions' => array('id !='. 1) ));
+		$phones = $this->User->Phone->find('list', array( 'conditions' => array('deleted' => 0)));
+		$locations = $this->User->Location->find('list', array('conditions' => array('deleted' => 0)));
+		$this->set(compact('roles', 'locations', 'phones'));
 	}
 
 	function delete($id = null) {
@@ -109,70 +198,89 @@ class UsersController extends AppController {
 	}
 
 
-	 function initDB() {
+	private function initDB() {
 		 $group =& $this->User->Group;
 		 
 		 //Allow admins to everything
 		 $group->id = 8;
 		 $this->Acl->allow($group, 'controllers');
+		 $this->Acl->allow($group, 'controllers/Modifiers/view');
+		 $this->Acl->allow($group, 'controllers/Modifiers/index');
+		 
+		 $this->Acl->deny($group, 'controllers/Modifiers');
 
 		 //moderators
 		 $group->id = 9;
 		 $this->Acl->allow($group, 'controllers');
 
-		 $this->Acl->allow($group, 'controllers/Stats/updateJSONFile');
-		 $this->Acl->allow($group, 'controllers/Stats/sdrugs');
-		 $this->Acl->allow($group, 'controllers/Stats/streatments');
+		 $this->Acl->allow($group, 'controllers/updateJSONFile');
+		 $this->Acl->allow($group, 'controllers/Stats/sitems');
+		 $this->Acl->allow($group, 'controllers/Stats/ichart');
+		 $this->Acl->allow($group, 'controllers/Stats/facility');
 		 $this->Acl->allow($group, 'controllers/Stats/index');
 		 $this->Acl->allow($group, 'controllers/Stats/view');
-		 $this->Acl->allow($group, 'controllers/Drugs');
-		 $this->Acl->allow($group, 'controllers/Treatments');
-		 $this->Acl->allow($group, 'controllers/DrugsTreatments');
+		 $this->Acl->allow($group, 'controllers/Stats/add');
+		 $this->Acl->allow($group, 'controllers/Stats/edit');
+		 $this->Acl->allow($group, 'controllers/Stats/update_select');
+		  $this->Acl->allow($group, 'controllers/Stats/delete');
+		 $this->Acl->allow($group, 'controllers/Items');
 		 $this->Acl->allow($group, 'controllers/Locations');
 		 $this->Acl->allow($group, 'controllers/Phones');
 		 $this->Acl->allow($group, 'controllers/Rawreports/index');
 		 $this->Acl->allow($group, 'controllers/Rawreports/view');
+		  $this->Acl->allow($group, 'controllers/Rawreports/edit');
+		 $this->Acl->allow($group, 'controllers/Rawreports/update_select');
+		   $this->Acl->allow($group, 'controllers/Rawreports/delete');
 		 $this->Acl->allow($group, 'controllers/Users/logout');
 		 $this->Acl->allow($group, 'controllers/Stats/options');
 		 $this->Acl->allow($group, 'controllers/Users/changePass');
+		 $this->Acl->allow($group, 'controllers/Users/findLocationChildren');
+		 $this->Acl->allow($group, 'controllers/Alerts');
 		 
 		 $this->Acl->deny($group, 'controllers/Users');
 		 $this->Acl->deny($group, 'controllers/Groups');
 		 $this->Acl->deny($group, 'controllers/Users/initDB');
 		 $this->Acl->deny($group, 'controllers/Users/build_acl');
+		 $this->Acl->deny($group, 'controllers/Users/resetUsers');
 		 $this->Acl->deny($group, 'controllers/Stats');
 		 $this->Acl->deny($group, 'controllers/Rawreports');
+		 $this->Acl->deny($group, 'controllers/Modifiers');
 
 		 //Users
 		 $group->id = 10;
 		 $this->Acl->allow($group, 'controllers');
-		 $this->Acl->allow($group, 'controllers/Stats/updateJSONFile');
-		 $this->Acl->allow($group, 'controllers/Stats/sdrugs');
-		 $this->Acl->allow($group, 'controllers/Stats/streatments');
+		 $this->Acl->allow($group, 'controllers/updateJSONFile');
+		 $this->Acl->allow($group, 'controllers/getReport');
+		 $this->Acl->allow($group, 'controllers/findTopParent');
+		 $this->Acl->allow($group, 'controllers/Stats/sitems');
+		 $this->Acl->allow($group, 'controllers/Stats/ichart');
+		 $this->Acl->allow($group, 'controllers/Stats/facility');
 		 $this->Acl->allow($group, 'controllers/Users/logout');
-		 $this->Acl->allow($group, 'controllers/Drugs/view');
-		 $this->Acl->allow($group, 'controllers/Treatments/view');
+		 $this->Acl->allow($group, 'controllers/Item/view');
 		 $this->Acl->allow($group, 'controllers/Locations/view');
 		 $this->Acl->allow($group, 'controllers/Users/changePass');
+		 $this->Acl->allow($group, 'controllers/findLocationChildren');
+		 $this->Acl->allow($group, 'controllers/findLocationParent');
 
 		 $this->Acl->deny($group, 'controllers/Users');
 		 $this->Acl->deny($group, 'controllers/Groups');
 		 $this->Acl->deny($group, 'controllers/Users/initDB');
 		 $this->Acl->deny($group, 'controllers/Users/build_acl');
-		 $this->Acl->deny($group, 'controllers/Drugs');
-		 $this->Acl->deny($group, 'controllers/Treatments');
+		 $this->Acl->deny($group, 'controllers/Users/resetUsers');
+		 $this->Acl->deny($group, 'controllers/Items');
 		 $this->Acl->deny($group, 'controllers/Locations');
 		 $this->Acl->deny($group, 'controllers/Phones');
 		 $this->Acl->deny($group, 'controllers/Stats');
 		 $this->Acl->deny($group, 'controllers/Rawreports');
-		 $this->Acl->deny($group, 'controllers/DrugsTreatments');
 		 $this->Acl->deny($group, 'controllers/Stats/options');
+		 $this->Acl->deny($group, 'controllers/Modifiers');
 		 
-		 echo "all done";
-		 exit;
+		 //echo "all done";
+		 $this->Session->setFlash('User acl reset success', 'flash_success');
+		 $this->setAction('login');
 		 }
 	
-	function build_acl() {
+	private function build_acl() {
   		if (!Configure::read('debug')) {
   			return $this->_stop();
   		}
@@ -253,8 +361,8 @@ class UsersController extends AppController {
   			}
   		}
   		if(count($log)>0) {
-  			debug($log);
-			$this->redirect(array('action' => 'initDB'));
+  			//debug($log);
+			$this->setAction('initDB');
   		}
   	}
 
@@ -367,7 +475,7 @@ class UsersController extends AppController {
 	
 	function changePass() {
 		//only allow the currently logged in user to change his password
-		$id = $this->Auth->User('id');
+		$id = $this->AuthExt->User('id');
 		if (!$id && empty($this->data)) {
 			$this->Session->setFlash(__('Invalid user', true));
 			$this->redirect(array('action' => 'index'));
@@ -376,12 +484,13 @@ class UsersController extends AppController {
 		if (!empty($this->data)) {
 			//don't allow hidden variables tweaking get the group and username 
 			//form the system in case an override occured from the hidden fields
-			$this->data['User']['group_id'] = $this->Auth->User('group_id');
-			$this->data['User']['username'] = $this->Auth->User('username');
+			$this->data['User']['role_id'] = $this->AuthExt->User('role_id');
+			$this->data['User']['username'] = $this->AuthExt->User('username');
 			if ($this->User->save($this->data)) {
 				$this->Session->setFlash('The password change has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index', 'controller' => ''));
 			} else {
+				$this->data = $this->User->read(null, $id);
 				$this->data['User']['password'] = null;
 				$this->data['User']['confirm_passwd'] = null;
 				$this->Session->setFlash('The password could not be saved. Please, try again.', 'flash_failure');
@@ -391,14 +500,15 @@ class UsersController extends AppController {
 			$this->data = $this->User->read(null, $id);
 			$this->data['User']['password'] = null;
 		}
-		$groups = $this->User->Group->find('list');
-		$this->set(compact('groups'));
+		$roles = $this->User->Role->find('list');
+		$this->set(compact('roles'));
 	}
 	
-	function resetUsers() {
+	private function resetUsers() {
 		$this->User->query('DELETE FROM ACOS');
 		$this->User->query('DELETE FROM AROS_ACOS');
-		$this->redirect(array('action' => 'build_acl'));
+		$this->Auth->allowedActions = array('*');
+		$this->setAction('build_acl');
 	}
 }
 ?>

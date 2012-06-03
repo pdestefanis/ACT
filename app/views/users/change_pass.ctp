@@ -1,5 +1,5 @@
 <?php	
-	echo $crumb->getHtml('Add User', null, 'auto') ;	
+	echo $crumb->getHtml('Change Password', null, 'auto') ;	
 	echo '<br /><br />';?><div class="users form">
 	<?php 
 		echo $this->Form->create('User');?>	

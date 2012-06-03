@@ -21,22 +21,37 @@
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php __('NTD Drug Stocks and Treatment Tracking'); ?>
+		
+		<?php 
+		Configure::load('options');
+			$appName = Configure::read('App.name');
+			__($appName); ?>
 		<?php echo $title_for_layout; ?>
 	</title>
-	<?php	echo $this->Html->meta('icon');
-		echo $this->Html->css('cake.generic');
+	<?php	
+		echo $this->Html->meta('icon');
+		echo $this->Html->css(array('cake.generic', 'datePicker.css') );
 		echo $scripts_for_layout;	
+		
 	?>
 </head>
 <body>
 	<div id="container">
 		<div id="header">
-			<div class='title'><h1><?php echo $this->Html->link(__('NTD MDA Stock Tracking', true), '/') ; ?></h1></div>
+			
+			<div class='title'><h1><?php 
+			
+			echo $this->Html->link(__($appName, true), '/') ; ?></h1></div>
 			<div class='logout'><h1><?php  if($access->isLoggedin() )  echo $this->Html->link(__('Logout', true), '/users/logout');  ?></h1></div>
+			
 		</div>
+		<?php
+			if($access->isLoggedin() )
+				echo $this->element('menu');
+		?>
 		<div id="content">
 			<?php echo $this->Session->flash(); ?>
+			<?php echo $this->Session->flash('auth'); ?>
 			<?php echo $content_for_layout; ?>
 		</div>
 		<div id="footer">

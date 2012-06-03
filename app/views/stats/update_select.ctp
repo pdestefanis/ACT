@@ -1,7 +1,12 @@
 
-<?php foreach($options AS $k=>$v) : ?>
+<?php 
+if (!empty($options )) {
+	foreach($options AS $k=>$v) : ?>
 <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-<?php endforeach; ?>
+<?php endforeach; 
+}	//else 
+	//echo "<option value=''>You are not assigned to a location! Cannot add updates</option>";
+?>
 
 
 <?php if (isset ($canhide)) { ?>

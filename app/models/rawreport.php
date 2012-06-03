@@ -15,8 +15,8 @@ class Rawreport extends AppModel {
 	);
 
 	var $hasMany = array(
-		'Stat' => array(
-			'className' => 'Stat',
+		'Track' => array(
+			'className' => 'Track',
 			'foreignKey' => 'rawreport_id',
 			'dependent' => false,
 			'conditions' => '',

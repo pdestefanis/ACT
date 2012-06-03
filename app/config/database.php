@@ -5,9 +5,9 @@ class DATABASE_CONFIG {
 		'driver' => 'mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'ntd_user',
-		'password' => 'A7JKoPbzN',
-		'database' => 'ntd',
+		'login' => 'track_user',
+		'password' => 'vBn5Ql',
+		'database' => 'track',
 	);
 }
 ?>

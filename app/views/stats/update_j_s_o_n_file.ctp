@@ -1,7 +1,7 @@
 ﻿
 <?php
-	echo $crumb->getHtml('Update JSON', null, '' ) ;
-	echo '<br /><br />' ;
+	//echo $crumb->getHtml('Update JSON', null, '' ) ;
+	//echo '<br /><br />' ;
 ?> 
 	
 	<?php
@@ -9,19 +9,15 @@
 	$fileData = $this->UpdateFile->addFileHeader(); 	
 
 	$i = 0;
-	
 	foreach ($locations as $loc) :
-	
-		
-		
 		$fileData .= $this->UpdateFile->addPointHeader($i, $loc['locations']); 
-		if (empty($listdrugs[$loc['locations']['id']]) && empty($listtreatments[$loc['locations']['id']]) )
+		if (empty($listitems[$loc['locations']['id']]) && empty($listtreatments[$loc['locations']['id']]) )
 			$fileData .= $this->UpdateFile->addCloseQuote(); 
-		//get drugs
-		if (!empty($listdrugs[$loc['locations']['id']])) {
+		//get items
+		if (!empty($listitems[$loc['locations']['id']])) {
 			$fileData .= $this->UpdateFile->addDrugsHeader(); 
-			for ($j = 0; $j < count($listdrugs[$loc['locations']['id']]); $j++) { 
-						$fileData .= $this->UpdateFile->addDrugsData($listdrugs[$loc['locations']['id']][$j]['Listdrugs']); 
+			for ($j = 0; $j < count($listitems[$loc['locations']['id']]); $j++) { 
+						$fileData .= $this->UpdateFile->addDrugsData($listitems[$loc['locations']['id']][$j]['Listitems']); 
 			} 	
 			
 			$fileData .= $this->UpdateFile->addDrugsFooter(); 

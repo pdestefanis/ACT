@@ -44,7 +44,8 @@ class PagesController extends AppController {
  * @var array
  * @access public
  */
-	var $helpers = array('Html', 'Form', 'Javascript', 'GoogleMap', 'Crumb', 'UpdateFile', 'Ajax');
+	var $helpers = array('Html', 'Form', 'Javascript', 'GoogleMap', 'Crumb', 'UpdateFile', 'Ajax', 'GoogleChart', 'GoogleMapv3');
+	
 
 /**
  * This controller does not use a model
@@ -61,13 +62,14 @@ class PagesController extends AppController {
  * @access public
  */
 	function  beforeFilter() {
+		parent::beforeFilter();
         //load the stats model to update the points file
 		$this->loadModel('Stat');
     }
 	
 	function display() {
 		$path = func_get_args();
-
+		//$this->buildMenus();
 		$count = count($path);
 		if (!$count) {
 			$this->redirect('/');
@@ -87,12 +89,10 @@ class PagesController extends AppController {
 		
 		$this->set(compact('page', 'subpage', 'title_for_layout'));
 		$this->render(implode('/', $path));
-		
-
 	}
 	
 	//moved from stats contreoller so that file update is on the fly here
-	function updateJSONFile() {
+	private function updateJSONFile() {
 		/* App::import('Controller', 'Stats');
 		var $Stats;
 		
@@ -102,28 +102,48 @@ class PagesController extends AppController {
 		$Stats->constructClasses(); */
 		
 		if (!($this->data['Stat']['JSONFile'])) {	
-				//require_once('db_connect.php');
-				/*$result = runQuery("SELECT * FROM locations");
-
-				while ($row = $result->fetch_assoc()) {
-					$locations[$row['id']] = $row;
-				}
-				*/
-				$locations = $this->Stat->query('SELECT * FROM locations where deleted = 0');
+				$locations = $this->Stat->query('SELECT * FROM locations where id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') ');
+				//$locations = $this->Stat->query('SELECT * FROM locations where deleted = 0 and id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') ');
+	
 				$this->set('locations', $locations);
+				$this->set('allLocations', $this->Stat->query('SELECT * FROM locations'));
+				//$listitems = $this->getReports($locations);
+				//$listitems = $this->getKitReports($locations);
+				$listitems =  array();
+				$this->getKitReport($listitems);
+				
+				$this->set(compact('listitems', $listitems));
+				
+				App::import('Controller', 'Alerts');
+				$Alerts = new AlertsController;
 
-				$listdrugs = array();
-				$listtreatments = array();
+				$Alerts->constructClasses();
+				$alerts = $Alerts->triggeredAlerts();
+				$this->set('alerts', $alerts);
+				
+				
+				App::import('Controller', 'Stats');
+				$Stats = new StatsController;
+
+				$Stats->constructClasses();
+				$graphURL = $Stats->graphTimeline();
+				
+				$this->set('graphURL', $graphURL);
+		}
+	}
+	
+	private function &getReports($locations) {
+				$listitems = array();
 				$temp = array();
 				
 				//for ($j = 1; $j <= count($locations); $j++)
 				foreach ($locations as $loc)
 				{
-					//drugs
-					$query = "SELECT quantity, drugs.name as dname ";
-					$query .= "FROM stats st, drugs ";
-					$query .= "WHERE st.drug_id = drugs.id ";
-					$query .= "AND st.id = (select max(sa.id) from stats sa where sa.drug_id = st.drug_id  ";
+					//items
+					$query = "SELECT quantity_after, unit.code as dname, st.unit_id ";
+					$query .= "FROM stats st, units unit ";
+					$query .= "WHERE st.unit_id = unit.id ";
+					$query .= "AND st.id = (select max(sa.id) from stats sa where sa.unit_id = st.unit_id  ";
 					$query .= "AND location_id =" . $loc['locations']['id'] . " ) ";
 					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
 					$query .= "ORDER by created DESC ";
@@ -131,97 +151,158 @@ class PagesController extends AppController {
 
 					//$result = runQuery($query);
 					$temp = $this->Stat->query($query);
-					//$this->set('listdrugs',$listdrugs);
+					//$this->set('listitems',$listitems);
 
 					$listd= array();
 
 					$i = 0;
 					/*while ($row = $result->fetch_assoc()) {
-						$listd[$i++]['Listdrugs'] = $row;
+						$listd[$i++]['Listitems'] = $row;
 						//print_r($row);
 					}*/
 					
 					foreach ($temp as $row ){
-						$listd[$i++]['Listdrugs'] = $row;
+						$listd[$i++]['Listitems'] = $row;
 					}
 					if (!empty($listd )){
-						$listdrugs[$loc['locations']['id']] = $listd;
+						$listitems[$loc['locations']['id']] = $listd;
 					}
-
-					//$result->close();
-
-
-					$this->set(compact('listdrugs'));
-
-					//treatments
-					$query = "SELECT quantity, treatments.code as dname ";
-					$query .= "FROM stats st, treatments ";
-					$query .= "WHERE st.treatment_id = treatments.id ";
-					$query .= "AND st.id = (select max(sa.id) from stats sa where sa.treatment_id = st.treatment_id  ";
+					
+				}
+				return $listitems;
+	}
+	private function &getKitReports($locations) {
+				$listitems = array();
+				$temp = array();
+				$sent = array();
+				$sentTo = array();
+				$received = array();
+				$expired = array();
+				$patientSent = array();
+				$patientReceived = array();
+				
+				//for ($j = 1; $j <= count($locations); $j++)
+				foreach ($locations as $loc)
+				{
+					//items get count for all
+					$query = "SELECT st.quantity, st.quantity_after, unit.code dname, unit_id ";
+					$query .= "FROM stats st, statuses status, units unit ";
+					$query .= "WHERE st.status_id = status.id ";
+					$query .= "AND st.unit_id = unit.id ";
+					$query .= "AND st.id = (select max(sa.id) from stats sa where sa.unit_id = st.unit_id  ";
 					$query .= "AND location_id =" . $loc['locations']['id'] . " ) ";
 					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
 					$query .= "ORDER by created DESC ";
 
-
+					
 					//$result = runQuery($query);
-					$temp  = $this->Stat->query($query);
-					//$this->set('listtreatments',$listtreatments);
+					$temp = $this->Stat->query($query);
+					
+					//sum up received
+					$query = "select sum(quantity) as sum from stats " .
+					"WHERE status_id = 1 ";
+					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
+					$query .= "AND patient_id is NULL ";
+					//$query .= "ORDER by created DESC ";
+					$received = $this->Stat->query($query);
+					
+					//sum up sent to this location
+					$query = "select sum(quantity) as sum from stats " .
+					"WHERE status_id = 2 ";
+					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
+					$sentTo = $this->Stat->query($query);
+					
+					//sum up sent from this location
+					$query = "select sum(quantity) as sum from stats " .
+					"WHERE status_id = 2 ";
+					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
+					$sent = $this->Stat->query($query);
+					
+					//sum up expired
+					$query = "select sum(quantity) as sum from stats " .
+					"WHERE status_id = 3 ";
+					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
+					$expired = $this->Stat->query($query);
+					
+					/* //sum up sent to patient
+					$query = "select sum(quantity) as sum from stats " .
+					"WHERE status_id = 2 ";
+					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
+					$query .= "AND patient_id is not null ";
+					$patientSent = $this->Stat->query($query);
+					
+					//sum up received from patient
+					$query = "select sum(quantity) as sum from stats " .
+					"WHERE status_id = 1 ";
+					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
+					$query .= "AND patient_id is not null ";
+					$patientReceived = $this->Stat->query($query); */
+					$sentP = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 2 and location_id =' . $loc['locations']['id'] );
+					$receivedP = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 1 and location_id =' . $loc['locations']['id'] );
+					$popped = false;
+					//loop trhough received and remove all patient ids that have a receive record 
+					//patients will more then one send will remain only one send will be removed
+					foreach ($receivedP as $r) { 
+						foreach ($sentP as $key=>$s) {
+							if ($r['s']['patient_id'] == $s['s']['patient_id'] && !$popped){
+								unset($sentP[$key]);
+								$popped = true;
+							}
+						}
+						$popped = false;
+					}
+					$statIds = array();
+					foreach ($sentP as $c) {
+						$statIds[] = $c['s']['id'];
+					}
+					if (empty($statIds))
+						$statIds[] = -1;
+					$query = "SELECT sum(quantity) sum from stats Stat where id in (" . implode(",", $statIds). ")";
+					$patientSent = $this->Stat->query($query); 
+					$atPatient['sum'] =  (!isset($patientSent[0][0]['sum'])?0:$patientSent[0][0]['sum']);
+
+				
 					$listd= array();
 
 					$i = 0;
 					/*while ($row = $result->fetch_assoc()) {
-						$listd[$i++]['Listtreatments'] = $row;
+						$listd[$i++]['Listitems'] = $row;
 						//print_r($row);
 					}*/
+					
 					foreach ($temp as $row ){
-						$listd[$i++]['Listtreatments'] = $row;
+						$listd[$i]['Listitems'] = $row;
+						$received[0][0]['sum'] == ''?($received[0][0]['sum'] =0):'';
+						$listd[$i]['Listitems']['Received'] = $received[0][0];
+						$sentTo[0][0]['sum'] == ''?($sentTo[0][0]['sum'] =0):($sentTo[0][0]['sum'] -=$received[0][0]['sum']);
+						$listd[$i]['Listitems']['Sent to'] = $sentTo[0][0];
+						$listd[$i]['Listitems']['Sent'] = $sent[0][0];
+						$listd[$i]['Listitems']['At Patient'] = $atPatient;
+						//$listd[$i]['Listitems']['ReceivedPatient'] = $patientReceived[0][0];
+						$listd[$i]['Listitems']['Expired'] = $expired[0][0];
+						$i++;
+					}
+					if (empty($temp) && ($sentTo[0][0]['sum'] != '')) {
+						$listd[$i]['Listitems']['st'] = array('quantity' => 0, 'quantity_after' => 0, 'unit_id' => 1);
+						$listd[$i]['Listitems']['unit'] = array('dname' => 'Kit');
+						$received[0][0]['sum'] == ''?($received[0][0]['sum'] =0):'';
+						$listd[$i]['Listitems']['Received'] = $received[0][0];
+						$sentTo[0][0]['sum'] == ''?($sentTo[0][0]['sum'] =0):($sentTo[0][0]['sum'] -=$received[0][0]['sum']);
+						$listd[$i]['Listitems']['Sent to'] = $sentTo[0][0];
+						$listd[$i]['Listitems']['Sent'] = $sent[0][0];
+						$listd[$i]['Listitems']['At Patient'] = $atPatient;
+						//$listd[$i]['Listitems']['ReceivedPatient'] = $patientReceived[0][0];
+						$listd[$i]['Listitems']['Expired'] = $expired[0][0];
+						$i++;
 					}
 					if (!empty($listd )){
-						$listtreatments[$loc['locations']['id']] = $listd;
-					}
-
-					//$result->close();
-
-
-					$this->set(compact('listtreatments'));
-
-
+						$listitems[$loc['locations']['id']] = $listd;
+					} 
+					
 				}
 				
-				//create the new file
-				//touch($filenameNew);
-		 
-				//$this->Session->setFlash('Not implemented yet', 'flash_success');
-			
-			
-			//$this->autoRender = false;
-			//$this->redirect( '/' );
-		} else {
-			define ('SCRIPT_PATH', ROOT.DS.APP_DIR . DS . 'webroot' . DS);
-			$filename = SCRIPT_PATH . 'points.json';
-			
-			if ($fn = fopen($filename, 'w')) {
-				/*$startTime = microtime();
-				 do {
-					$canWrite = flock($fnn, LOCK_EX);
-					// If lock not obtained sleep for 0 - 100 milliseconds, to avoid collision and CPU load
-					if(!$canWrite) usleep(round(rand(0, 100)*100));
-				 } while ((!$canWrite)and((microtime()-$startTime) < 100)); */
-				if (flock($fn, LOCK_EX)){
-					fwrite($fn, $this->data['Stat']['JSONFile']);
-					flock($fn, LOCK_UN);
-					fclose($fn);
-					$this->Session->setFlash('Points updated successfully', 'flash_success');
-					$this->redirect( '/' );
-				} else {
-					$this->Session->setFlash('Points file is in use. Please try again.', 'flash_failure');
-					$this->redirect( '/' );
-				}
-			 } else {
-				$this->Session->setFlash('Can\'t open file please try again' . $filename, 'flash_failure');
-				$this->redirect( '/' );
-			}
-			
-		}
+				//echo "<pre>" . print_r($listitems, true) . "</pre>";
+				return $listitems;
 	}
+	
 }

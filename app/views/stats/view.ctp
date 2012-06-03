@@ -4,11 +4,11 @@ echo '<br /><br />' ;
 
 ?> 
 <div class="stats view">
-<h2><?php  __('Stat');?></h2>
+<h2><?php  __('Update');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		
 		<dt<?php if ($i % 2 == 0) echo $class;?>>
-			<?php if ($stat['Drug']['id'] != 0 && $stat['Drug']['id'] != null){ ?>
+			<?php if ($stat['Unit']['id'] != 0 && $stat['Unit']['id'] != null){ ?>
 				<?php __('Quantity'); ?></dt>
 				<?php } else  {?>
 					<?php __('People'); ?></dt>
@@ -23,19 +23,14 @@ echo '<br /><br />' ;
 			<?php echo $stat['Stat']['created']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Drug'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Unit'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($stat['Drug']['name'], array('controller' => 'drugs', 'action' => 'view', $stat['Drug']['id'])); ?>
+			<?php echo $this->Html->link($stat['Unit']['code'], array('controller' => 'units', 'action' => 'view', $stat['Unit']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Treatment'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Message Received'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($stat['Treatment']['code'], array('controller' => 'treatments', 'action' => 'view', $stat['Treatment']['id'])); ?>
-			&nbsp;
-		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Rawreport'); ?></dt>
-		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($stat['Rawreport']['raw_message'], array('controller' => 'rawreports', 'action' => 'view', $stat['Rawreport']['id'])); ?>
+			<?php echo $this->Html->link($stat['Messagereceived']['rawmessage'], array('controller' => 'messagereceiveds', 'action' => 'view', $stat['Messagereceived']['id'])); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Phone'); ?></dt>
@@ -49,12 +44,12 @@ echo '<br /><br />' ;
 				?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Location'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Facility'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 	
 			<?php
 				if ($stat['Location']['deleted'] == 0 )
-					echo $this->Html->link($stat['Location']['name'], array('controller' => 'phones', 'action' => 'view', $stat['Location']['id']));
+					echo $this->Html->link($stat['Location']['name'], array('controller' => 'locations', 'action' => 'view', $stat['Location']['id']));
 				else
 					echo 'Deleted: ' .  $stat['Location']['name'];
 				?>
@@ -63,9 +58,11 @@ echo '<br /><br />' ;
 	</dl>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<?php 
+	echo $access->checkHtml('Stats/edit', 'html', '<h3>Actions</h3>','' ); ?>
 	<ul>
-		<li><?php echo $this->Html->link(__('Edit Stat', true), array('action' => 'edit', $stat['Stat']['id'])); ?> </li>
-		
+		<li><?php echo $access->checkHtml('Stats/edit', 'link', 'Edit Update','edit/' . $stat['Stat']['id'] ); ?> </li>
+		<li><?php echo $access->checkHtml('Stats/delete', 'delete', 'Delete','delete/' .  $stat['Stat']['id'], 'delete',  $stat['Stat']['quantity'] ); ?></li>	
 	</ul>
+
 </div>

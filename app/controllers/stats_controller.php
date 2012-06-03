@@ -2,23 +2,47 @@
 class StatsController extends AppController {
 
 	var $name = 'Stats';
-	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax', 'UpdateFile');
-	var $components = array('RequestHandler');
+	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax', 'UpdateFile', 'GoogleChart', 'DatePicker' );
+	var $components = array('RequestHandler', 'Access');
 
-	var $uses = array('Stat', 'Phone');
-
-	//var $scaffold;
-
-	function beforeFilter() {
-		   		parent::beforeFilter();
-		    	//$this->Auth->allow(array('*'));
-		    	$this->Auth->allowedActions = array('');
-   }
+   function beforeRender() {
+			if ($this->action == 'view'){
+					if (!in_array($this->viewVars['stat']['Stat']['location_id'], $this->Session->read("userLocations") )) { //view
+						$this->Session->setFlash('You are not allowed to access this record.' . $l, 'flash_failure'); 
+						$this->redirect( '/stats/index', null, false);
+					} 
+			}
+			if ($this->action == 'edit'){
+					if (!in_array($this->data['Stat']['location_id'], $this->Session->read("userLocations") )) { //edit
+						$this->Session->setFlash('You are not allowed to access this record.' . $l, 'flash_failure'); 
+						$this->redirect( '/stats/index', null, false);
+					} 
+			}
+   }	
+   
 
 	function index() {
-		$this->Stat->recursive = 0;
-		$this->paginate['Stat'] = array('order' => 'Stat.created DESC');
+		$this->Stat->recursive = 2;
+		$this->paginate['Stat'] = array('order' => 'Stat.created DESC', 'conditions' => array ('status_id in (1,2,3)'));
+		$search = (empty($this->data['Search']['search'])?(isset($this->passedArgs[0])?$this->passedArgs[0]:$this->data['Search']['search']):$this->data['Search']['search']);
+		if (!empty($search) ) {
+				$this->paginate['Stat'] = array('order' => 'Stat.created DESC',
+										'conditions'=>array( 
+											"OR" => array("Location.name LIKE "=>"%".$search."%", 
+													//"Unit.name LIKE" => "%".$search."%", 
+													"Unit.code LIKE" => "%".$search."%", 
+													"Stat.quantity LIKE" => "%".$search."%",
+													"User.name LIKE" => "%".$search."%",
+													"Phone.name LIKE" => "%".$search."%")
+									));
+		} 
+		
 		$this->set('stats', $this->paginate());
+		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
+		$locations = $this->Stat->Location->find('list', array('callbacks' =>false));
+		$patients = $this->Stat->Patient->find('list', array('callbacks' =>false));
+		$units = $this->Stat->Unit->find('list');
+		$this->set(compact( 'statuses', 'locations', 'patients', 'units'));
 	}
 
 	function view($id = null) {
@@ -26,53 +50,321 @@ class StatsController extends AppController {
 			$this->Session->setFlash(__('Invalid stat', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		$this->set('stat', $this->Stat->read(null, $id));
+		$stat =  $this->Stat->read(null, $id);
+		$this->set('stat', $stat);
 	}
-
-	function add() {
+	
+	private function add() {
 		if (!empty($this->data)) {
-			if (($this->data['Stat']['drug_id'] == 0) && ($this->data['Stat']['treatment_id'] == 0)){
-				$this->set('locations', $this->Stat->Location->find('list', array('conditions' => array('Location.id' => $this->data['Stat']['location_id'] ))));
-				$this->Session->setFlash(__('You need to select drug or treatment for this report', true));
-				$this->Stat->invalidate('drug_id', 'Please select drug or treatment below.');
-				
+			//print_r($this->data['Stat']);
+			if (isset($this->data['Stat']['patient_id']) && $this->data['Stat']['patient_id'] != '' && $this->data['Stat']['quantity'] != 1) {
+				$this->Stat->invalidate('quantity', __('Only one kit can be delivered to patients at a time.', true));
+				$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
+			} else if (isset($this->data['Stat']['patient_id']) &&  $this->data['Stat']['patient_id'] != '' && $this->data['Stat']['sent_to'] != '') {
+				$this->Stat->invalidate('patient_id', __('You can select only patient or receiving facility', true));
+				$this->Stat->invalidate('sent_to', __('You can select receiving facility or patient', true));
+				$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
 			} else {
+				if (isset($this->data['Stat']['location_id']) && isset($this->data['Stat']['unit_id']) && isset ($this->data['Stat']['status_id'])) {
+					$query = 'SELECT quantity_after from stats st ';
+					$query .= ' WHERE location_id=' . $this->data['Stat']['location_id'];
+					$query .= ' AND unit_id='. $this->data['Stat']['unit_id'];
+					$query .= ' AND id = (select max(id) from stats s  WHERE s.location_id=' . $this->data['Stat']['location_id'] . ' AND s.unit_id='. $this->data['Stat']['unit_id'] . ')';
+					
+					$result = $this->Stat->query($query);
+					
+				} else {
+					$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
+				}
 				$this->Stat->create();
 				if ($this->Stat->save($this->data)) {
-					$this->Session->setFlash('The stat has been saved', 'flash_success');
+					$this->Session->setFlash('The update has been saved', 'flash_success');
 					$this->redirect(array('action' => 'index'));
 				} else {
-					$this->Session->setFlash(__('The report could not be saved. Please, try again.', true));
+					$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
 				}
 			}
 		}
-		$drugs = $this->Stat->Drug->find('list');
-		$treatments = $this->Stat->Treatment->find('list');
-		$rawreports = $this->Stat->Rawreport->find('list');
-		$phones = $this->Stat->Phone->find('list', array ('conditions' => 'Phone.deleted = 0')); 
-		//$this->Stat->Location->find('list');
-		$this->set(compact('drugs', 'treatments', 'rawreports', 'phones'));
+		//$items = $this->Stat->Item->find('list');
+		
+		$messagereceived = $this->Stat->Messagereceived->find('all', 
+						array('callbacks' => false, 'conditions' => array('Phone.location_id in (' . implode(",", $this->Session->read("userLocations")) . ')')) ); 
+		foreach ($messagereceived as $rr) {
+			$messagereceiveds[$rr['Messagereceived']['id']] = $rr['Messagereceived']['rawmessage'];
+		}
+		//$phones = $this->Stat->Phone->find('list',  array ('conditions' => array('Phone.deleted = 0','Phone.location_id is not null'))); 
+		$users = $this->Stat->User->find('list', array ('conditions' => array('User.id = '. $this->Session->read('Auth.User.id') )) );
+		$u = $this->AuthExt->user();
+		$locations = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.id = ' . $u['User']['location_id'])));
+		//$locations = $this->Stat->Location->find('list',  array ('conditions' => array('Location.deleted = 0')));
+		//$modifiers = $this->Stat->Modifier->find('list'); 
+		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
+		$locationsp = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$patients = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
+		$this->set(compact('locationsp', 'messagereceiveds', 'locations', 'statuses', 'users', 'patients'));
 
 	}
+	
+	function assignUnits($lastUnits=null){ //2
+		if (is_null($lastUnits)) {
+			$lastUnits =  $this->Session->read("recentlyUsedUnits");
+		}
+		if (!empty($this->data)) {
+			if (empty($this->data['Stat']['Unit']) ) {
+				$this->Stat->invalidate('Unit', __('Please select unit(s)' , true));
+				$this->Session->setFlash(__('Please select a unit.', true));
+			} else if (count($this->data['Stat']['Unit'])>1 &&  !empty($this->data['Stat']['patient_id'])) {
+				$this->Stat->invalidate('Unit', __('Please select only one unit' , true));
+				$this->Session->setFlash(__('You can only select one unit when assigning to patient', true));
+			} else {
+				$locationId = $this->data['Stat']['location_id'];
+				$patientId = $this->data['Stat']['patient_id'];
+				$userId = $this->data['Stat']['user_id'];
+				$old = array();
+				$old = $this->data;
+				$this->data = array();
+				$i = 0;
+				foreach ($old['Stat']['Unit'] as $key => $unit_id) {
+					$this->data['Stat'][$i] = $old['Stat'];
+					$this->data['Stat'][$i]['unit_id'] = $unit_id;
+					$this->data['Stat'][$i]['patient_id'] = $patientId;
+					$this->data['Stat'][$i]['user_id'] = $userId;
+					//add hour minutes seconds field
+					$this->data['Stat'][$i]['created']['hour'] = date('H');
+					$this->data['Stat'][$i]['created']['min'] = date('i');
+					$this->data['Stat'][$i]['created']['sec'] = date('s');
+					$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat'][$i]['created']));
+					//if assiging the same unit to the same facility don't increment quantity
+					$this->data['Stat'][$i]['quantity'] = (($lastFacilityWithKit === $locationId)?0:1);
+					//adjust the quantities only one quantity at a time
+					if ($this->data['Stat'][$i]['quantity'] != 0 && $lastFacilityWithKit != -1)
+						$this->adjustQuantities(
+											$this->data['Stat'][$i]['created'],
+											$unit_id,
+											'A', 
+											(isset($patientId)?0:1), //no need for qty when assigning to patient
+											$locationId, 
+											$patientId,
+											(isset($this->data['Stat'][$i]['phone_id'])?$this->data['Stat'][$i]['phone_id']:NULL),
+											$userId,
+											NULL
+											);		
+					unset($this->data['Stat'][$i++]['Unit']);
+					
+				}	
+				$this->Stat->create();
+				if ($this->Stat->saveAll($this->data['Stat'])) {
+					$this->Session->setFlash('The assignment has been saved', 'flash_success');
+					$lastUnits .= (((is_null($lastUnits) || empty($lastUnits))? "":",") .  implode(",", $old['Stat']['Unit']));
+					//$this->data = $old;
+					$this->Session->write("recentlyUsedUnits", $lastUnits);
+				} else {
+					if (empty($this->data['Stat']['location_id']) )
+						$this->Stat->invalidate('location_id', __('Please select a facility.', true));
+					$this->Session->setFlash(__('The assignment could not be saved. Please, try again.', true));
+					if (isset($old))
+						$this->data = $old;
+				}
+			}
+		}
+		//discarded and opened
+		$discarded = $this->Stat->find('list',  array ('conditions' => array('OR' => array('Stat.status_id = 3',
+																					'Stat.patient_id is not null')
+													), 
+										'fields' => array('unit_id'), 'callbacks' => false) );
+		$discarded = array_unique($discarded);		
+		$unitsArray = explode(",", $lastUnits);
+		$unitsArray = array_diff($unitsArray, $discarded);
+		$unitsArray = array_unique($unitsArray);
+		$lastUnits = implode(",", $unitsArray);									
+		$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array(//'Unit.id not in (' . implode(",",$discarded) . ")",
+										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")
+										//((is_null($lastUnits) || empty($lastUnits))?'':'Unit.id not in (' . $lastUnits . ")") 
+										)
+										));	
+		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
+										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
+		$userId = $this->Session->read('Auth.User.id');
+		$locations = $this->Stat->Location->find('list');
+		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		
+		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));
+		
+	}
+	
+	function receiveUnits($lastUnits=null){ //1
+		if (is_null($lastUnits)) {
+			$lastUnits =  $this->Session->read("recentlyUsedUnits");
+		}
+		if (!empty($this->data)) {
+			if (empty($this->data['Stat']['Unit']) ) {
+				$this->Stat->invalidate('Unit', __('Please select unit(s)' , true));
+				$this->Session->setFlash(__('Please select a unit.', true));
+			} else if (count($this->data['Stat']['Unit'])>1 &&  !empty($this->data['Stat']['patient_id'])) {
+				$this->Stat->invalidate('Unit', __('Please select only one unit' , true));
+				$this->Session->setFlash(__('You can only select one unit when assigning to patient', true));
+			} else {
+				$locationId = $this->data['Stat']['location_id'];
+				$patientId = $this->data['Stat']['patient_id'];
+				$userId = $this->data['Stat']['user_id'];
+				$old = array();
+				$old = $this->data;
+				$this->data = array();
+				$i = 0;
+				foreach ($old['Stat']['Unit'] as $key => $unit_id) {
+					$this->data['Stat'][$i] = $old['Stat'];
+					$this->data['Stat'][$i]['unit_id'] = $unit_id;
+					$this->data['Stat'][$i]['patient_id'] = $patientId;
+					$this->data['Stat'][$i]['user_id'] = $userId;
+					//add hour minutes seconds field
+					$this->data['Stat'][$i]['created']['hour'] = date('H');
+					$this->data['Stat'][$i]['created']['min'] = date('i');
+					$this->data['Stat'][$i]['created']['sec'] = date('s');
+					$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat'][$i]['created']));
+					
+					$wasWithPatient = $this->Stat->find('list',  array ('conditions' => array('patient_id is not null',
+																						'unit_id' => $unit_id
+													), 
+										'fields' => array('unit_id'), 'callbacks' => false) );
+					//if assiging the same unit to the same facility don't increment quantity
+					$this->data['Stat'][$i]['quantity'] = 
+							(($lastFacilityWithKit === $locationId || !empty($wasWithPatient))?0:1);
+					//adjust the quantities only one quantity at a time
+					if ($this->data['Stat'][$i]['quantity'] != 0 && $lastFacilityWithKit != -1)
+						$this->adjustQuantities(
+											$this->data['Stat'][$i]['created'],
+											$unit_id,
+											'A', 
+											(isset($patientId)?0:1), //no need for qty when assigning to patient
+											$locationId, 
+											$patientId,
+											(isset($this->data['Stat'][$i]['phone_id'])?$this->data['Stat'][$i]['phone_id']:NULL),
+											$userId,
+											NULL
+											);		
+					unset($this->data['Stat'][$i++]['Unit']);
+					
+				}	
+				$this->Stat->create();
+				if ($this->Stat->saveAll($this->data['Stat'])) {
+					$this->Session->setFlash('The assignment has been saved', 'flash_success');
+					$lastUnits .= (((is_null($lastUnits) || empty($lastUnits))? "":",") .  implode(",", $old['Stat']['Unit']));
+					//$this->data = $old;
+					$this->Session->write("recentlyUsedUnits", $lastUnits);
+				} else {
+					if (empty($this->data['Stat']['location_id']) )
+						$this->Stat->invalidate('location_id', __('Please select a facility.', true));
+					$this->Session->setFlash(__('The assignment could not be saved. Please, try again.', true));
+					if (isset($old))
+						$this->data = $old;
+				}
+			}
+		}
+		//discarded and opened
+		$discarded = $this->Stat->find('list',  array ('conditions' => array('Stat.status_id = 3'
+													), 
+										'fields' => array('unit_id'), 'callbacks' => false) );
+		$discarded = array_unique($discarded);		
+		$unitsArray = explode(",", $lastUnits);
+		$unitsArray = array_diff($unitsArray, $discarded);
+		$unitsArray = array_unique($unitsArray);
+		$lastUnits = implode(",", $unitsArray);									
+		$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array(//'Unit.id not in (' . implode(",",$discarded) . ")",
+										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")
+										//((is_null($lastUnits) || empty($lastUnits))?'':'Unit.id not in (' . $lastUnits . ")") 
+										)
+										));	
+		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
+										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
+		$userId = $this->Session->read('Auth.User.id');
+		$locations = $this->Stat->Location->find('list');
+		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		
+		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));
+		
+		
+	}
 
+	function discardUnits($lastUnits=null){ //3
+		if (is_null($lastUnits)) {
+			$lastUnits =  $this->Session->read("recentlyUsedUnits");
+		}
+		if (!empty($this->data)) {
+				$locationId = $this->data['Stat']['location_id'];
+				//$patientId = $this->data['Stat']['patient_id'];
+				$userId = $this->data['Stat']['user_id'];
+				$unit_id = $this->data['Stat']['unit_id'];
+				//add hour minutes 
+				$this->data['Stat']['created']['hour'] = date('H');
+				$this->data['Stat']['created']['min'] = date('i');
+				$this->data['Stat']['created']['sec'] = date('s');
+				$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat']['created']));
+				//if assiging the same unit to the same facility don't increment quantity
+				$this->data['Stat']['quantity'] = (($lastFacilityWithKit === $locationId)?0:1);
+
+				if ($this->data['Stat']['quantity'] != 0 && $lastFacilityWithKit != -1)
+						$this->adjustQuantities(
+											$this->data['Stat']['created'],
+											$unit_id,
+											'A', 
+											(isset($patientId)?0:1), //no need for qty when assigning to patient
+											$locationId, 
+											NULL,
+											(isset($this->data['Stat']['phone_id'])?$this->data['Stat']['phone_id']:NULL),
+											$userId,
+											NULL
+											);	
+					
+			$this->Stat->create();
+			if ($this->Stat->save($this->data)) {
+				$this->Session->setFlash('The unit has been discarded', 'flash_success');
+				//$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The unit could not be discarded. Please, try again.', true));
+			}
+		}
+		//discarded and opened
+		$discarded = $this->Stat->find('list',  array ('conditions' => array('Stat.status_id = 3'
+													), 
+										'fields' => array('unit_id'), 'callbacks' => false) );
+		$discarded = array_unique($discarded);		
+		$unitsArray = explode(",", $lastUnits);
+		$unitsArray = array_diff($unitsArray, $discarded);
+		$unitsArray = array_unique($unitsArray);
+		$lastUnits = implode(",", $unitsArray);									
+		$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array(//'Unit.id not in (' . implode(",",$discarded) . ")",
+										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")
+										//((is_null($lastUnits) || empty($lastUnits))?'':'Unit.id not in (' . $lastUnits . ")") 
+										)
+										));	
+		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
+										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
+		$userId = $this->Session->read('Auth.User.id');
+		$locations = $this->Stat->Location->find('list');
+		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		
+		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));
+	}
+	
 	function edit($id = null) {
-
 		if (!$id && empty($this->data)) {
-			$this->Session->setFlash(__('Invalid stat', true));
+			$this->Session->setFlash(__('Invalid update', true));
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
-			if (($this->data['Stat']['drug_id'] == 0) && ($this->data['Stat']['treatment_id'] == 0)){
-				$this->set('locations', $this->Stat->Location->find('list', array('conditions' => array('Location.id' => $this->data['Stat']['location_id'] ))));
-				$this->Session->setFlash(__('You need to select drug or treatment for this report', true));
-				$this->Stat->invalidate('drug_id', 'Please select drug or treatment below.');
-				
-			} else {
+			if ($this->data['Stat']['patient_id'] != '' && $this->data['Stat']['sent_to'] != '') {
+				$this->Stat->invalidate('patient_id', __('You can select only patient or receiving facility', true));
+				$this->Stat->invalidate('sent_to', __('You can select receiving facility or patient', true));
+				$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
+			} else { 
 				if ($this->Stat->save($this->data)) {
-					$this->Session->setFlash('The stat has been saved', 'flash_success');
+					$this->Session->setFlash('The update has been saved', 'flash_success');
 					$this->redirect(array('action' => 'index'));
 				} else {
-					$this->Session->setFlash(__('The stat could not be saved. Please, try again.', true));
+					$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
 				}
 			}
 		}
@@ -80,14 +372,26 @@ class StatsController extends AppController {
 			$this->data = $this->Stat->read(null, $id);
 		}
 
-		$drugs = $this->Stat->Drug->find('list');
-		$treatments = $this->Stat->Treatment->find('list');
-		$rawreports = $this->Stat->Rawreport->find('list');
-		$phones = $this->Stat->Phone->find('list', array ('conditions' => 'Phone.deleted = 0')); 
-		//$locations = $this->Stat->Location->find('list');
+		$units = $this->Stat->Unit->find('list');
+		
+		$messagereceived = $this->Stat->Messagereceived->find('all', 
+						array('callbacks' => false, 'conditions' => 'Phone.location_id in (' . implode(",", $this->Session->read("userLocations")) . ')' ) ); 
+		foreach ($messagereceived as $rr) {
+			$messagereceiveds[$rr['Messagereceived']['id']] = $rr['Messagereceived']['rawmessage'];
+		}
+		$phones = $this->Stat->Phone->find('list',  array ('conditions' => array('Phone.deleted = 0','Phone.location_id is not null'))); 
+		if (isset($this->data['Stat']['user_id'] ))
+			$users = $this->Stat->User->find('list', array ('conditions' => 
+						array('User.id IN ('. $this->Session->read('Auth.User.id') . ", " . $this->data['Stat']['user_id'] .  " )" )) );
+		else 
+			$users = $this->Stat->User->find('list', array ('conditions' => 
+						array('User.id ='. $this->Session->read('Auth.User.id') )) );
+		$locationsp = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$patients = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
 		$this->set('locations', $this->Stat->Location->find('list', array('conditions' => array('Location.id' => $this->data['Stat']['location_id'] ))));
-
-		$this->set(compact('drugs', 'treatments', 'rawreports', 'phones'));
+		$modifiers = $this->Stat->Modifier->find('list');
+		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
+		$this->set(compact('units', 'messagereceiveds', 'users',  'phones', 'locationsp', 'patients', 'statuses'));
 	}
 
 	function delete($id = null) {
@@ -96,294 +400,336 @@ class StatsController extends AppController {
 			$this->redirect(array('action'=>'index'));
 		}
 		if ($this->Stat->delete($id)) {
-			$this->Session->setFlash('Stat deleted', 'flash_success');
+			$this->Session->setFlash('Report deleted.' . $this->Session->read("modelStat") , 'flash_success');
 			$this->redirect(array('action'=>'index'));
 		}
-		$this->Session->setFlash(__('Stat was not deleted', true));
+		$this->Session->setFlash(__('Report was not deleted', true));
 		$this->redirect(array('action' => 'index'));
+
 	}
 
-	function update_select() {
+	function update_units_select() {
 
-			if (isset($this->data['Stat']['phone_id'])) {
-				$phone = $this->Phone->findById($this->data['Stat']['phone_id']);
-				$this->set('options', array($phone['Phone']['location_id']  => $phone['Location']['name']) );
-
+			if (isset($this->data['Stat']) && !isset($this->data['Stat']['action'])) {
+				//discarded and opened
+				$discarded = $this->Stat->find('list',  array ('conditions' => array('OR' => array('Stat.status_id = 3',
+																							'Stat.patient_id is not null')
+															), 
+												'fields' => array('unit_id'), 'callbacks' => false) );
+				$discarded = array_unique($discarded);		
+				$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array(//'Unit.id not in (' . implode(",",$discarded) . ")",
+										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")
+										//((is_null($lastUnits) || empty($lastUnits))?'':'Unit.id not in (' . $lastUnits . ")") 
+										)
+										));
+				$lastUnits =  $this->Session->read("recentlyUsedUnits");
+				$lastUnits = array_unique($lastUnits);
+				$unitsArray = explode(",", $lastUnits);
+				$unitsArray = array_diff($unitsArray, $discarded);
+				foreach ($unitsArray as $key => $value){
+					$removed = 'remove'.$value;
+					if (isset($this->data['Stat'][$removed]) ){
+						unset($unitsArray[$key]);
+					}
+				}
+				$this->Session->write("recentlyUsedUnits", implode(",", $unitsArray));
+				$this->set('options', $units);
+				$this->set(compact( 'units', 'lastUnits'));
 			}
-
-			if ( isset($this->data['Stat']['treatment_id'])) {
-				$this->set('options', array('Stat.drug_id'  => 'Not allowed' ) );
-			} else
-
-			if (isset($this->data['Stat']['drug_id'] )) {
-				$this->set('options', array('Stat.treatment_id'  => 'Not allowed' ) );
+			if (isset($this->data['Stat']['action']) ) {
+				$action = $this->data['Stat']['action'];
+				//discarded and opened
+				$discarded = $this->Stat->find('list',  array ('conditions' => array('OR' => array('Stat.status_id = 3',
+																							'Stat.patient_id is not null')
+															), 
+												'fields' => array('unit_id'), 'callbacks' => false) );
+				$discarded = array_unique($discarded);		
+				$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array(
+										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")
+										)
+										));
+				switch ($action){
+					case '0':
+						$lastUnits =  $this->Session->read("recentlyUsedUnits");
+						$unitsArray = explode(",", $lastUnits);
+						$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array('Unit.id not in (' . implode(",",$discarded) . ")",
+										((empty($unitsArray) || is_null($unitsArray))?'':'Unit.id in (' . implode(",",$unitsArray) . ")") 
+										)
+										));
+						$this->set('options', $units);
+						$this->set(compact( 'units', 'lastUnits'));
+						break;
+					case '1':
+						$lastUnits =  $this->Session->read("recentlyUsedUnits");
+						$unitsArray = explode(",", $lastUnits);
+						$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array('Unit.id not in (' . implode(",",$discarded) . ")",
+										((empty($unitsArray) || is_null($unitsArray))?'':'Unit.id not in (' . implode(",",$unitsArray) . ")") 
+										)
+										));
+						$this->set('options', $units);
+						$this->set(compact( 'units', 'lastUnits'));
+						break;
+					case '2':
+						//$unitsArray = explode(",", $lastUnits);
+						$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")"),
+										((empty($unitsArray) || is_null($unitsArray))?'':'Unit.id in (' . implode(",",$unitsArray) . ")") 
+										)
+										));
+						$lastUnits = '';
+						$this->Session->write("recentlyUsedUnits", $lastUnits);
+						$this->set('options', $units);
+						$this->set(compact( 'units', 'lastUnits'));
+						break;
+					default:
+						//$unitsArray = explode(",", $lastUnits);
+						$units = $this->Stat->Unit->find('list', array('conditions' => 
+										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")"),
+										((empty($unitsArray) || is_null($unitsArray))?'':'Unit.id in (' . implode(",",$unitsArray) . ")") 
+										)
+										));
+						$this->set('options', $units);
+						break;
+				}
 			}
 			$this->render('update_select');
 	}
+	
+	function update_facility_select() {
 
-//this functionlaity is moved to pages controller
-	function updateJSONFile() {
-
-		if (!($this->data['Stat']['JSONFile'])) {	
-				//require_once('db_connect.php');
-				/*$result = runQuery("SELECT * FROM locations");
-
-				while ($row = $result->fetch_assoc()) {
-					$locations[$row['id']] = $row;
-				}
-				*/
-				$locations = $this->Stat->query('SELECT * FROM locations');
-				$this->set('locations', $locations);
-
-				$listdrugs = array();
-				$listtreatments = array();
-				$temp = array();
-				
-				//for ($j = 1; $j <= count($locations); $j++)
-				foreach ($locations as $loc)
-				{
-					//drugs
-					$query = "SELECT quantity, drugs.name as dname ";
-					$query .= "FROM stats st, drugs ";
-					$query .= "WHERE st.drug_id = drugs.id ";
-					$query .= "AND st.id = (select max(sa.id) from stats sa where sa.drug_id = st.drug_id  ";
-					$query .= "AND location_id =" . $loc['locations']['id'] . " ) ";
-					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
-					$query .= "ORDER by created DESC ";
-
-
-					//$result = runQuery($query);
-					$temp = $this->Stat->query($query);
-					//$this->set('listdrugs',$listdrugs);
-
-					$listd= array();
-
-					$i = 0;
-					/*while ($row = $result->fetch_assoc()) {
-						$listd[$i++]['Listdrugs'] = $row;
-						//print_r($row);
-					}*/
-					
-					foreach ($temp as $row ){
-						$listd[$i++]['Listdrugs'] = $row;
-					}
-					if (!empty($listd )){
-						$listdrugs[$loc['locations']['id']] = $listd;
-					}
-
-					//$result->close();
-
-
-					$this->set(compact('listdrugs'));
-
-					//treatments
-					$query = "SELECT quantity, treatments.code as dname ";
-					$query .= "FROM stats st, treatments ";
-					$query .= "WHERE st.treatment_id = treatments.id ";
-					$query .= "AND st.id = (select max(sa.id) from stats sa where sa.treatment_id = st.treatment_id  ";
-					$query .= "AND location_id =" . $loc['locations']['id'] . " ) ";
-					$query .= "AND location_id =" . $loc['locations']['id'] . " ";
-					$query .= "ORDER by created DESC ";
-
-
-					//$result = runQuery($query);
-					$temp  = $this->Stat->query($query);
-					//$this->set('listtreatments',$listtreatments);
-					$listd= array();
-
-					$i = 0;
-					/*while ($row = $result->fetch_assoc()) {
-						$listd[$i++]['Listtreatments'] = $row;
-						//print_r($row);
-					}*/
-					foreach ($temp as $row ){
-						$listd[$i++]['Listtreatments'] = $row;
-					}
-					if (!empty($listd )){
-						$listtreatments[$loc['locations']['id']] = $listd;
-					}
-
-					//$result->close();
-
-
-					$this->set(compact('listtreatments'));
-
-
-				}
-				
-				//create the new file
-				//touch($filenameNew);
-		 
-				//$this->Session->setFlash('Not implemented yet', 'flash_success');
-			
-			
-			//$this->autoRender = false;
-			//$this->redirect( '/' );
-		} else {
-			define ('SCRIPT_PATH', ROOT.DS.APP_DIR . DS . 'webroot' . DS);
-			$filename = SCRIPT_PATH . 'points.json';
-			
-			if ($fn = fopen($filename, 'w')) {
-				/*$startTime = microtime();
-				 do {
-					$canWrite = flock($fnn, LOCK_EX);
-					// If lock not obtained sleep for 0 - 100 milliseconds, to avoid collision and CPU load
-					if(!$canWrite) usleep(round(rand(0, 100)*100));
-				 } while ((!$canWrite)and((microtime()-$startTime) < 100)); */
-				if (flock($fn, LOCK_EX)){
-					fwrite($fn, $this->data['Stat']['JSONFile']);
-					flock($fn, LOCK_UN);
-					fclose($fn);
-					$this->Session->setFlash('Points updated successfully', 'flash_success');
-					$this->redirect( '/' );
-				} else {
-					$this->Session->setFlash('Points file is in use. Please try again.', 'flash_failure');
-					$this->redirect( '/' );
-				}
-			 } else {
-				$this->Session->setFlash('Can\'t open file please try again' . $filename, 'flash_failure');
-				$this->redirect( '/' );
-			}
-			
-		}
+			if (isset($this->data['Stat']['selection']) && $this->data['Stat']['selection'] == "1" ) {
+				$options = $this->Stat->Location->find('list');
+				$this->set('options', $options);
+				$this->set('select', true);
+			} else if (isset($this->data['Stat']['selection']) && $this->data['Stat']['selection'] != "1") { //receive
+				$this->set('options', array('' => __('---Not Allowed---', true)));
+			} 
+			$this->render('update_select_empty');
 	}
 	
-	function sdrugs($strFilter = null) {
-		$locations = $this->Stat->query('SELECT * FROM locations');
-		$this->set(compact('locations'));
-
-		$listdrugs = array();
-		foreach ($locations as $loc)
-		{
-			//drugs
-			$query = "SELECT quantity, drugs.name as dname, drugs.id as did, created, phone_id as pid, stat_drugs.location_id, phones.phonenumber as pnumber, phones.name as pname, phones.deleted as pdeleted, rawreport_id, locations.name as lname ";
-			$query .= "FROM stats stat_drugs, drugs, phones, locations ";
-			$query .= "WHERE stat_drugs.drug_id = drugs.id ";
-			$query .= "AND stat_drugs.phone_id = phones.id ";
-			$query .= "AND stat_drugs.location_id = locations.id ";
-			$query .= "AND stat_drugs.id = (select max(sa.id) from stats sa where sa.drug_id = stat_drugs.drug_id  ";
-			$query .= "AND location_id =" . $loc['locations']['id'] . " ) ";
-			$query .= "AND stat_drugs.location_id =" . $loc['locations']['id'] . " ";
-			if (isset($this->data['Search']['search']) && !is_numeric($this->data['Search']['search']) ) {
-				$query .= "AND (locations.name LIKE '%"  . $this->data['Search']['search'] . "%' ";
-				$query .= "OR drugs.name LIKE '%"  . $this->data['Search']['search'] . "%') ";
-			} else if (isset($this->data['Search']['search']) && is_numeric($this->data['Search']['search']) ) {
-				$query .= "AND (stat_drugs.quantity <=  "  . $this->data['Search']['search'] . " )";
+	function update_patient_select() {
+			if (isset($this->data['Stat']['selection']) && $this->data['Stat']['selection'] == "0" ) {
+				$patient = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
+				$this->set('options', $patient);
+				$this->set('select', true);
+			} else if (isset($this->data['Stat']['selection']) && $this->data['Stat']['selection'] != "0") { //receive
+				$this->set('options', array('' => __('---Not Allowed---', true)));
+			} 
+			$this->render('update_select_empty');
+	}
+	
+	function update_sent_to_select() {
+			if (isset($this->data['Stat']['status_id']) && $this->data['Stat']['status_id'] == 2) { //receive
+				$u = $this->AuthExt->user();
+				$phone = $this->Stat->Location->find('list', array('callbacks' => false,
+									'conditions' => array('Location.id not IN (' .$u['User']['location_id'] .")", 'Location.deleted = 0' )));
+				$this->set('options', $phone);
+				$this->set('select', true);
+			} else if (isset($this->data['Stat']['status_id']) && ($this->data['Stat']['status_id'] == 3 || $this->data['Stat']['status_id'] == 1)) { //receive
+				$this->set('options', array('' => __('---Not Allowed---', true)));
 			}
-			$query .= "ORDER by created DESC ";
-			
-			$listd = $this->Stat->query($query);
+			$this->render('update_select_empty');
+	}
 
-			if (!empty($listd)){
-				$listdrugs[$loc['locations']['id']] = $listd;
+	
+	function aggregatedInventory($strFilter = null) {
+		//print_r($this->Stat->Location->Alert->find('all'));
+		$locations = $this->Stat->Location->find('list',  
+						array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'), 
+											array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))
+								)
+						);
+		
+		$units = $this->Stat->Unit->find('list');
+		$this->set(compact('locations', 'units'));
+
+		$listitems = array();
+
+		$this->getKitReport($listitems, $strFilter);
+		
+		$newlistitems = array();
+		foreach ($locations as $loca=> $locaValue) {
+			if ( isset($listitems[$loca][0]['locations']['parent'] ) && $listitems[$loca][0]['locations']['parent'] == 0) {
+				$newlistitems[$loca] = $listitems[$loca][0]['locations']['parent'];
 			}
-
 		}
-		$this->set('listdrugs', $listdrugs);
+		
+		$this->set('listitems', $listitems);
+		
+		$parent = null;
+		App::import('Controller', 'Users');
+		$app = new UsersController;
+		$app->constructClasses();
+		$u = $app->AuthExt->user();
+		
+		$app->findTopParent($u['User']['location_id'], $parent, $u['User']['reach'] );
+		$report = NULL;
+		$this->processKitItems(1, $parent, $locations, $listitems, $items, $report, $app);
+		
+	
+		$this->set('report', $report);
+		// echo "<pre>" . print_r ($report, true). "</pre>";
+		Configure::load('options');
+		$lev = array( 0=>Configure::read('Facility.level0'),
+						1=>Configure::read('Facility.level1'),
+						2=>Configure::read('Facility.level2'),
+						3=>Configure::read('Facility.level3'),
+						4=>Configure::read('Facility.level4'),
+			);
+		$this->set('lev', $lev);
+		return $report;
+
 
 	}
-	function streatments() 
-	{
-		$locations = $this->Stat->query('SELECT * FROM locations');
-		$this->set(compact('locations'));
-
-		$listtreatments = array();
-		foreach ($locations as $loc)
-		{
-			//treatments
-			$query = "SELECT quantity, treatments.code as dname, treatments.id as did, created, phone_id as pid, stat_drugs.location_id, phones.phonenumber as pnumber, phones.name as pname, phones.deleted as pdeleted, rawreport_id, locations.name as lname  ";
-			$query .= "FROM stats stat_drugs, treatments, phones, locations ";
-			$query .= "WHERE stat_drugs.treatment_id = treatments.id ";
-			$query .= "AND stat_drugs.phone_id = phones.id ";
-			$query .= "AND stat_drugs.location_id = locations.id ";
-			$query .= "AND stat_drugs.id = (select max(sa.id) from stats sa where sa.treatment_id = stat_drugs.treatment_id  ";
-			$query .= "AND location_id =" . $loc['locations']['id'] . " ) ";
-			$query .= "AND stat_drugs.location_id =" . $loc['locations']['id'] . " ";
-			if (isset($this->data['Search']['search']) && !is_numeric($this->data['Search']['search'])) {
-				$query .= "AND (locations.name LIKE '%"  . $this->data['Search']['search'] . "%' ";
-				$query .= "OR treatments.code LIKE '%"  . $this->data['Search']['search'] . "%') ";
-			} else if (isset($this->data['Search']['search']) && is_numeric($this->data['Search']['search']) ) {
-				$query .= "AND (stat_drugs.quantity <=  "  . $this->data['Search']['search'] . " )";
-			}
-			$query .= "ORDER by created DESC ";
-			
-			$listd = $this->Stat->query($query);
-
-			if (!empty($listd)){
-				$listtreatments[$loc['locations']['id']] = $listd;
-			}
-
-		}
-		$this->set('listtreatments', $listtreatments);
 	
+	function aggregatedChart($strFilter = null) {
+		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$this->set('allLocations', $allLocations);
+		$report = $this->aggregatedInventory($strFilter);
+		return $report;
+	}
+	
+	function facilityInventory($strFilter = null) {
+		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$this->set('allLocations', $allLocations);
+		$this->aggregatedInventory($this->data['Search']['search']);
+	}
+	
+	 function graphTimeline() {
+		$locations = $this->Stat->Location->find('list',  array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'), array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))));
+
+		$units = $this->Stat->Unit->find('list');
+		$this->set(compact('locations', 'units'));
+
+		$listitems = array();
+		
+		// foreach ($locations as $loc)
+		// {
+		$listitems = $this->getGraphTimelineReport();
+		// }
+		
+		$graphURL = $this->buildGraphURL($listitems);
+		$this->set('graphURL', $graphURL);
+		
+		return $graphURL;
+	}
+	function mismatchedDeliveries($strFilter = null){
+		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$this->set('allLocations', $allLocations);
+		$this->aggregatedInventory($this->data['Search']['search']);
+	}
+	
+	function kitsInTransit($strFilter = null){
+		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$this->set('allLocations', $allLocations);
+		$this->aggregatedInventory($this->data['Search']['search']);
+	}
+	
+	function kitsExpired($strFilter = null){
+		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$this->set('allLocations', $allLocations);
+		$this->aggregatedInventory($this->data['Search']['search']);
+	}
+	
+	function patientsWithKits($strFilter = null) {
+		$locations = $this->Stat->Location->find('list');
+
+		$patients = $this->Stat->Patient->find('list');
+		$this->set(compact('locations', 'patients'));
+		
+		$sent = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 2 and location_id in (' . implode(",", $this->Session->read("userLocations")) .')');
+		$received = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 1 and location_id in (' . implode(",", $this->Session->read("userLocations")) .')');
+		$popped = false;
+		//loop trhough received and remove all patient ids that have a receive record 
+		//patients will more then one send will remain only one send will be removed
+		foreach ($received as $r) { 
+			foreach ($sent as $key=>$s) {
+				if ($r['s']['patient_id'] == $s['s']['patient_id'] && !$popped){
+					unset($sent[$key]);
+					$popped = true;
+				}
+			}
+			$popped = false;
+		}
+		$statIds = array();
+		foreach ($sent as $c) {
+			$statIds[] = $c['s']['id'];
+		}
+		if (empty($statIds))
+			$statIds[] = -1;
+			//$this->set('send', $this->Stat->query('SELECT * from stats Stat where id in(' . implode(', ', $statIds) .')'));
+			
+		$this->paginate['Stat'] = array('order' => 'Stat.created DESC');
+		$search = (empty($this->data['Search']['search'])?(isset($this->passedArgs[0])?$this->passedArgs[0]:$this->data['Search']['search']):$this->data['Search']['search']);
+		//if (!empty($search) ) {
+				$this->paginate['Stat'] = array('order' => 'Stat.created DESC',
+										'conditions' => array("Stat.id" => $statIds ,
+														"Stat.patient_id is not null", 
+														"Stat.status_id" => 2,  
+											"OR" => array("Location.name LIKE "=>"%".$search."%", 
+													"Location.shortname LIKE" => "%".$search."%", 
+													"Patient.number LIKE" => "%".$search."%")
+											
+											)
+										);
+		//} 
+		$this->set('stats', $this->paginate());
 	}
 	
 	//options action to cater for the last n digits
 	function  options() {
-        
-		define ('SCRIPT_PATH', ROOT.DS.APP_DIR . DS . 'webroot' . DS);
-		$filename = SCRIPT_PATH . 'config.php';
-		$filename = SCRIPT_PATH . 'config.php';
-		$contents = "";
-		$fContents = "";
-		$ndigits = '';
-		
 		if (!($this->data['Stat']['ndigits'])) {
-			if (is_writable($filename)) {
-				if ($handle = fopen($filename, 'r')) {
-					 while (!feof($handle)) {
-						 $contents = fgets($handle); //read line from file
-						 if (stristr($contents, 'define ("PHONE_NUMBER_LENGTH",')) {
-							$fContents .= 'define ("PHONE_NUMBER_LENGTH", ' . $this->data['Stat']['ndigits']  . ");\n";
-							preg_match('/([\d]+)/', $contents, $match);
-							$this->data['Stat']['ndigits'] = $match[0];
-							$this->data['Stat']['ndigitsOld'] = $match[0];
-						} else {
-							$fContents .= $contents;
-						}
-					}
-					fclose($handle);
-				}
-			}  else {
-					$this->Session->setFlash('Config file not writeable', 'flash_failure');
-				}	
+			Configure::load('options');
+			$length = Configure::read('Phone.length');
+			$limit = Configure::read('Graph.limit');
+			$appName = Configure::read('App.name');
+			$level0 = Configure::read('Facility.level0');
+			$level1 = Configure::read('Facility.level1');
+			$level2 = Configure::read('Facility.level2');
+			$level3 = Configure::read('Facility.level3');
+			$level4 = Configure::read('Facility.level4');
+			//set the form
+			$this->data['Stat']['ndigits'] = $length;
+			$this->data['Stat']['ndigitsOld'] = $length;
+			$this->data['Stat']['limit'] = $limit;
+			$this->data['Stat']['appName'] = $appName;
+			$this->data['Facility']['level0'] = $level0;
+			$this->data['Facility']['level1'] = $level1;
+			$this->data['Facility']['level2'] = $level2;
+			$this->data['Facility']['level3'] = $level3;
+			$this->data['Facility']['level4'] = $level4;
+
 		} else {
 			if (($this->data['Stat']['ndigitsOld'] < $this->data['Stat']['ndigits']) 
-				|| $this->data['Stat']['ndigits'] == '' 
+				|| $this->data['Stat']['ndigits'] == '' || $this->data['Stat']['ndigits'] <=6
 				|| !is_numeric($this->data['Stat']['ndigits'])){
-				$this->Session->setFlash(__('Last n digits cannot be empty  or less then the previous value', true));
-				$this->Stat->invalidate('ndigits', 'Please enter numeric value less than the previous value used: <= '. $this->data['Stat']['ndigitsOld']);
+				$this->Session->setFlash(__('Last n digits cannot be empty  or less then the previous value.', true));
+				$this->Stat->invalidate('ndigits', 'Please enter numeric value > 6 and less than the previous value used: <= '. $this->data['Stat']['ndigitsOld']);
+			} else if ($this->data['Stat']['limit'] == ''  || !is_numeric($this->data['Stat']['limit']) 
+					|| $this->data['Stat']['limit'] <=0 || $this->data['Stat']['limit'] > 25){
+				$this->Session->setFlash(__('Number of months must be numeric', true));
+				$this->Stat->invalidate('limit', 'Please enter numeric value between 1 and 24 for number of months');
 			} else {
-				 if (is_writable($filename)) {
-					if ($handle = fopen($filename, 'r')) {
-						 while (!feof($handle)) {
-							 $contents = fgets($handle); //read line from file
-							 if (stristr($contents, 'define ("PHONE_NUMBER_LENGTH",')) {
-								$fContents .= 'define ("PHONE_NUMBER_LENGTH", ' . $this->data['Stat']['ndigits']  . ");\n";
-							} else {
-								$fContents .= $contents;
-							}
-						}
-						fclose($handle);
-						if ($handle = fopen($filename, 'w')) {
-							if (!flock($handle, LOCK_EX)) {
-								$this->Session->setFlash('Cannot lock  file', 'flash_failure');
-								 //echo "Cannot lock  file ($filename)";
-							 }
-							 fwrite ($handle, $fContents );
-					
-						}
-					} else {
-						$this->Session->setFlash('Cannot open  file', 'flash_failure');
-						//echo "Cannot open file ($filename)" ;
-						//exit;
-					}		
-					flock($handle, LOCK_UN);
-					fclose($handle);
-						
-				} else {
-					$this->Session->setFlash('Config file not writeable', 'flash_failure');
-				}
+				$options = array(	'Phone' => 	
+										array('length' => $this->data['Stat']['ndigits'] ),
+									'Graph' =>
+										array('limit' => $this->data['Stat']['limit'] ),
+									'App' =>
+										array('name' => "'". addslashes($this->data['Stat']['appName']) ."'" ),
+									'Facility' =>
+										array('level0' =>"'". addslashes($this->data['Stat']['level0']) ."'",
+										'level1' =>"'". addslashes($this->data['Stat']['level1']) ."'",
+										'level2' =>"'". addslashes($this->data['Stat']['level2']) ."'",
+										'level3' =>"'". addslashes($this->data['Stat']['level3']) ."'",
+										'level4' =>"'". addslashes($this->data['Stat']['level4']) ."'"),
+		
+								);
+				$this->storeConfig('options', $options );
+
 				$this->Session->setFlash('Options updated successfully', 'flash_success');
 				$this->redirect( '/' );
 			}

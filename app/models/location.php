@@ -1,6 +1,7 @@
 <?php
 class Location extends AppModel {
 	var $name = 'Location';
+	var $order = "Location.name ASC";
 	var $validate = array(
 		'name' => array(
 			'notempty' => array(
@@ -71,8 +72,94 @@ class Location extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
+		),
+		'User' => array(
+			'className' => 'User',
+			'foreignKey' => 'location_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
+		'Patient' => array(
+			'className' => 'Patient',
+			'foreignKey' => 'location_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
+		'Alert' => array(
+			'className' => 'Alert',
+			'foreignKey' => 'location_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		), 
 	);
+	
+	var $belongsTo  = array(
+		'Parent' =>
+			array(
+				'className' => 'Location',
+				'foreignKey' => 'parent_id',
+				'dependent' => false,
+				'conditions' => '',
+				'fields' => '',
+				'order' => '',
+				'limit' => '',
+				'offset' => '',
+				'exclusive' => '',
+				'finderQuery' => '',
+				'counterQuery' => ''
+			)
+	);
+	function beforeFind($queryData) {
+		if (get_class($this) === 'Location' ) {
+			if (!empty($queryData)){
+				if (!isset($queryData['conditions']['Location.id'])) { //check if viewing item
+					if (isset($queryData['fields'][0]) && $queryData['fields'][0] == 'Parent.id') {
+						$queryData['conditions'][] = array ('OR' => array ('Parent.id IN (' . implode(",", Configure::read('authLocations')) . ')'));
+					} else {
+						$queryData['conditions'][] = array ('OR' => array ('Location.id IN (' . implode(",", Configure::read('authLocations')) . ')'));
+					}
+						
+				}
+			}
+		}
+		return $queryData;
+	}
 
+	function beforeDelete() {
+		if (get_class($this) == 'Location') {
+			$stat = $this->findById($this->id);
+			$loc = $stat[get_class($this)]['id'];
+				if (!in_array($loc, Configure::read('authLocations') )) {
+					
+					return false;
+				}
+		}
+		//sof delete here
+		$this->query('UPDATE locations set deleted = 1 WHERE id = ' . $this->id);
+		$this->data['softDel'] = 1;
+		return false;
+	}
+	
 }
 ?>

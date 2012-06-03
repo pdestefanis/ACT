@@ -112,7 +112,7 @@
 				}
 				
 			}
-			if ($errorText != "") {
+			if ($errorText != "" ) {
 					setRawreport($phoneId, $phoneNum, $drugTreatName, $quantity, $currDate, $errorText);
 					return -1;
 			}

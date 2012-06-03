@@ -31,17 +31,17 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Location'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($phone['Location']['name'], array('controller' => 'locations', 'action' => 'view', $phone['Location']['id'])); ?>
+			<?php echo $access->checkHtml('Phones/view', 'text', $phone['Location']['name'],'/locations/view/' . $phone['Location']['id'] ); ?>
 			&nbsp;
 		</dd>
 	</dl>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<?php 
+	echo $access->checkHtml('Phones/edit', 'html', '<h3>Actions</h3>','' ); ?>
 	<ul>
-		<li><?php echo $this->Html->link(__('Edit Phone', true), array('action' => 'edit', $phone['Phone']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $phone['Phone']['id']), null, sprintf(__('Are you sure you want to delete %s?', true), $phone['Phone']['name'])); 
-		?></li>
+		<li><?php echo $access->checkHtml('Phones/edit', 'link', 'Edit Phone','edit/' . $phone['Phone']['id'] ); ?></li>
+		<li><?php echo $access->checkHtml('Phones/delete', 'delete', 'Delete','delete/' . $phone['Phone']['id'], 'delete', $phone['Phone']['name'] ); ?></li>
 	</ul>
 </div>
 <div class="related">
@@ -50,8 +50,8 @@
 		echo $this->Form->input('limit', array('label' => 'Display limit', 'options' => array('10' => 10,'20' => 20,'50' => 50, '100' => 100), 'default' => 20, 'onChange' => $v));
 		echo $this->Form->end(__('', true));
 	?>
-	<h3><?php __('Related Rawreports');?></h3>
-	<?php if (!empty($phone['Rawreport'])):?>
+	<h3><?php __('Related Raw Messages');?></h3>
+	<?php if (!empty($phone['Messagereceived'])):?>
 	
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
@@ -60,27 +60,21 @@
 		<th><?php __('Message Code'); ?></th>
 		<!--<th><?php __('Created'); ?></th>-->
 		<!--<th><?php __('Phone Id'); ?></th>-->
-		<th class="actions"><?php __('Actions');?></th>
 	</tr>
 	<?php
 		$i = 0;
-		foreach ($phone['Rawreport'] as $rawreport):
+		foreach ($phone['Messagereceived'] as $messagereceived):
 			$class = null;
 			if ($i++ % 2 == 0) {
 				$class = ' class="altrow"';
 			}
 		?>
 		<tr<?php echo $class;?>>
-			<!--<td><?php echo $rawreport['id'];?></td>-->
-			<td><?php echo $rawreport['raw_message'];?></td>
-			<td><?php echo $rawreport['message_code'];?></td>
-			<!--<td><?php echo $rawreport['created'];?></td>
-			<td><?php echo $rawreport['phone_id'];?></td>-->
-			<td class="actions">
-				<?php echo $this->Html->link(__('View', true), array('controller' => 'rawreports', 'action' => 'view', $rawreport['id'])); ?>
-				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'rawreports', 'action' => 'edit', $rawreport['id'])); ?>
-				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'rawreports', 'action' => 'delete', $rawreport['id']), null, sprintf(__('Are you sure you want to delete %s?', true), $rawreport['id'])); ?>
-			</td>
+			<!--<td><?php echo $messagereceived['id'];?></td>-->
+			<td><?php echo $messagereceived['rawmessage'];?></td>
+			<td><?php echo $messagesents[$messagereceived['id']];?></td>
+			<!--<td><?php echo $messagereceived['created'];?></td>
+			<td><?php echo $messagereceived['phone_id'];?></td>-->
 		</tr>
 	<?php endforeach; ?>
 	</table>

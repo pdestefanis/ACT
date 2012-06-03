@@ -1,10 +1,9 @@
 <?php
-echo $crumb->getHtml('Viewing locations', null, 'auto' ) ;
+echo $crumb->getHtml('Viewing facility', null, 'auto' ) ;
 echo '<br /><br />' ;
-
 ?> 
 <div class="locations view">
-<h2><?php  __('Location');?></h2>
+<h2><?php  __('Facility');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<!--
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>
@@ -23,6 +22,11 @@ echo '<br /><br />' ;
 			<?php echo $location['Location']['shortname']; ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Upstream Facility'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $location['Parent']['name']; ?>
+			&nbsp;
+		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Latitude'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $location['Location']['locationLatitude']; ?>
@@ -38,15 +42,13 @@ echo '<br /><br />' ;
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<?php if($access->check('Drugs') ) { ?>
-		<li><?php echo $this->Html->link(__('Edit Location', true), array('action' => 'edit', $location['Location']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $location['Location']['id']), null, sprintf(__('Are you sure you want to delete %s?', true), $location['Location']['name'])); ?></li>
-		<?php }  ?>
+		<li><?php echo $access->checkHtml('Locations/edit', 'link', 'Edit Facility','edit/' . $location['Location']['id'] ); ?></li>
+		<li><?php echo $access->checkHtml('Locations/delete', 'delete', 'Delete','delete/' . $location['Location']['id'], 'delete', $location['Location']['name'] ); ?></li>
 	</ul>
 </div>
 <div class="related">
 	<h3><?php 
-		if($access->check('Phones') ) {
+		if($access->check('Phones/index') ) {
 		__('Related Phones');?></h3>
 	<?php if (!empty($location['Phone'])):?>
 	<table cellpadding = "0" cellspacing = "0">
@@ -54,8 +56,7 @@ echo '<br /><br />' ;
 		 <th><?php __('Name'); ?></th> 
 		<th><?php __('Phonenumber'); ?></th>
 		<th><?php __('Active'); ?></th>
-		<!--<th><?php __('Location Id'); ?></th> -->
-		<th class="actions"><?php __('Actions');?></th>
+
 	</tr>
 	<?php
 		$i = 0;
@@ -67,15 +68,13 @@ echo '<br /><br />' ;
 		?>
 		<tr<?php echo $class;?>>
 		<?php if ($phone['deleted'] == 0)  {?>
-			<td><?php echo $phone['name'];?></td>
+			<td><?php 
+				echo $access->checkHtml('Phones/view', 'link', $phone['name'],'/phones/view/' . $phone['id'] ); 
+				?></td>
 			<td><?php echo $phone['phonenumber'];?></td>
-			<td><?php echo ($phone['active']?'Active':'Inactive');?></td>
+			<td><?php echo ($phone['active']?'Yes':'No');?></td>
 			<!-- <td><?php echo $phone['location_id'];?></td> -->
-			<td class="actions">
-				<?php echo $this->Html->link(__('View', true), array('controller' => 'phones', 'action' => 'view', $phone['id'])); ?>
-				<?php echo $this->Html->link(__('Edit', true), array('controller' => 'phones', 'action' => 'edit', $phone['id'])); ?>
-				<?php echo $this->Html->link(__('Delete', true), array('controller' => 'phones', 'action' => 'delete', $phone['id']), null, sprintf(__('Are you sure you want to delete %s?', true), $phone['name'])); ?>
-			</td>
+			
 			<?php } ?>
 		</tr>
 	<?php endforeach; ?>
@@ -85,3 +84,42 @@ echo '<br /><br />' ;
 }?>
 
 </div>
+
+<div class="related">
+	<h3><?php 
+		if($access->check('Users/index') ) {
+		__('Related Users');?></h3>
+	<?php if (!empty($location['User'])):?>
+	<table cellpadding = "0" cellspacing = "0">
+	<tr>
+		 <th><?php __('Name'); ?></th> 
+		<th><?php __('Role'); ?></th>
+
+	</tr>
+	<?php
+		$i = 0;
+		foreach ($location['User'] as $user):
+			$class = null;
+			if ($i++ % 2 == 0) {
+				$class = ' class="altrow"';
+			}
+		?>
+		<tr<?php echo $class;?>>
+
+			<td><?php 
+				echo $access->checkHtml('Users/view', 'link', $user['name'],'/users/view/' . $user['id'] ); 
+				?></td>
+			<td><?php 
+				echo $access->checkHtml('Roles/view', 'link', $roles[$user['role_id']],'/roles/view/' . $user['role_id'] ); 
+			?></td>
+			<!-- <td><?php echo $user['location_id'];?></td> -->
+			
+		</tr>
+	<?php endforeach; ?>
+	</table>
+<?php endif; 
+
+}?>
+
+</div>
+

@@ -10,7 +10,7 @@ echo '<br /><br />' ;
 		echo $this->Form->input('name');
 		echo $this->Form->input('phonenumber');
 		//echo $this->Form->input('active');
-		echo $this->Form->radio('active', array('1' => 'Active', '0' => 'Inactive'), null, array('value' => '1'));
+		echo $this->Form->radio('active', array('1' => 'Yes', '0' => 'No'), null, array('value' => '1'));
 		echo $this->Form->input('location_id');
 	?>
 	</fieldset>
