@@ -80,49 +80,6 @@
 	?>
 	</tr>
 	</table>	
-	<table id='recent'>
-		<tr>
-			<th><?php echo __('Unit', true)?></th>
-			<th><?php echo __('Remove from list?', true)?></th>
-			<th><?php echo __('Action', true);
-				echo $this->Form->input('action', array('type' => 'select', 
-													'label' => '',
-													'options' => array(
-																		0 => __('Use only these units',true),
-																		1 => __('Use all but these units',true),
-																		2 => __('Remove all',true),),
-													'empty' => __('---Select---', true), 			
-													)
-									);
-			?></th>
-		</tr>
-		<?php 
-			echo "<br/><h2> ". __("Recently Used Units", true) . "</h2>";
-			if (!empty($lastUnits))
-			foreach (explode(",", $lastUnits) as $unit){
-				$unitId = $unit; ?>
-		<tr id='<?php echo 'removeTr.' . $unitId; ?>'>
-			<td><?php echo $allUnits[$unitId]; ?></td>
-			
-			<td><?php echo $this->Form->input('remove' . $unitId, array('type' => 'checkbox', 
-													'label' => '',
-													'id' => 'remove.' . $unitId,
-													'value' => $unitId, 
-													'checked' => false, 			
-													)
-									);
-			?></td>
-			<td><?php  
-					
-			?></td>
-		</tr>
-		<?php 
-				$options = array('url' => 'update_units_select', 'update' => 'StatUnit', 'after' =>  '$(\'removeTr.' . $unitId  . '\').hide()');
-				echo $ajax->observeField('remove.' . $unitId, $options);
-			}
-			$options = array('url' => 'update_units_select'  , 'update' => 'StatUnit');
-			echo $ajax->observeField('StatAction' , $options);
-		?>
-	</table>
+
 	
 	

@@ -3,15 +3,7 @@ class PhonesController extends AppController {
 
 	var $name = 'Phones';
 	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax');
-	var $components = array('RequestHandler', 'Access', 'Rest.Rest' => array(
-			'catchredir' => true, // Recommended unless you implement something yourself
-			'debug' => 0,
-			'actions' => array(
-				'view' => array(
-					'extract' => array('phone'),
-				),
-			),
-		),);
+	var $components = array('RequestHandler', 'Access',);
 
 	function beforeRender() {
 
@@ -109,7 +101,7 @@ class PhonesController extends AppController {
 			
 			if ($this->Phone->save($this->data)) {
 				$this->Session->setFlash('The phone has been saved', 'flash_success');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index', 'controller' => 'phones'));
 			} else {
 				$this->Session->setFlash('The phone could not be saved. Please, try again.', 'flash_failure');
 			}

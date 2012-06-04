@@ -143,8 +143,18 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//set the date
-			if (is_null($date))
-				$date = date("Y-m-d H:i:s");
+			if (is_null($date)) {
+				$data['Stats']['created']['year'] = date('Y');
+				$data['Stats']['created']['month'] = date('m');
+				$data['Stats']['created']['day'] = date('d');
+				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+			} else { //add jsut the time of entry
+				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+			}
 			//prepare the stats data
 			$data = array('Stats' => array(
 												'created' => $date,
@@ -163,6 +173,22 @@ class ApisController extends AppController {
 			}
 			$stat = $this->Stats->findById($this->Stats->id);	
 			$this->set(compact('stat'));
+			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			//if assiging the same unit to the same facility don't increment quantity
+			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
+			//adjust the quantities only one quantity at a time
+			if ($this->data['Stats']['quantity'] != 0 && $lastFacilityWithKit != -1)
+				$this->adjustQuantities(
+									$data['Stats']['created'],
+									$unit['Units']['id'],
+									'A', 
+									(isset($patient['Patients']['id'])?0:1), //no need for qty when assigning to patient
+									$facility['Locations']['id'], 
+									$patient['Patients']['id'],
+									$phone['Phones']['id'],
+									NULL,
+									NULL
+									);		
 			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
@@ -196,11 +222,21 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//set the date
-			if (is_null($date))
-				$date = date("Y-m-d H:i:s");
+			if (is_null($date)) {
+				$data['Stats']['created']['year'] = date('Y');
+				$data['Stats']['created']['month'] = date('m');
+				$data['Stats']['created']['day'] = date('d');
+				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+			} else { //add jsut the time of entry
+				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+			}
 			//prepare the stats data
 			$data = array('Stats' => array(
-												'created' => $date,
+												'created' => $data['Stats']['created'],
 												'phone_id' => $phone['Phones']['id'],
 												'location_id' => $facility['Locations']['id'],
 												'unit_id' => $unit['Units']['id'],
@@ -208,12 +244,29 @@ class ApisController extends AppController {
 												'status_id' => 2, //1 is assign
 												'patient_id' => $patient['Patients']['id'],
 											) );
+			
 			$this->loadModel('Stats');
 			$this->Stats->create();
 			if (!$this->Stats->save($data)) {
 				$this->Rest->error(__('Record could not be saved: 10103', true));
 				$this->Rest->abort();
 			}
+			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			//if assiging the same unit to the same facility don't increment quantity
+			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
+			//adjust the quantities only one quantity at a time
+			if ($this->data['Stats']['quantity'] != 0 && $lastFacilityWithKit != -1)
+				$this->adjustQuantities(
+									$data['Stats']['created'],
+									$unit['Units']['id'],
+									'A', 
+									(isset($patient['Patients']['id'])?0:1), //no need for qty when assigning to patient
+									$facility['Locations']['id'], 
+									$patient['Patients']['id'],
+									$phone['Phones']['id'],
+									NULL,
+									NULL
+									);		
 			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
@@ -238,8 +291,18 @@ class ApisController extends AppController {
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//set the date
-			if (is_null($date))
-				$date = date("Y-m-d H:i:s");
+			if (is_null($date)) {
+				$data['Stats']['created']['year'] = date('Y');
+				$data['Stats']['created']['month'] = date('m');
+				$data['Stats']['created']['day'] = date('d');
+				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+			} else { //add jsut the time of entry
+				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+			}
 			//prepare the stats data
 			$data = array('Stats' => array(
 												'created' => $date,
@@ -255,6 +318,23 @@ class ApisController extends AppController {
 				$this->Rest->error(__('Record could not be saved: 10104', true));
 				$this->Rest->abort();
 			}
+			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			//if assiging the same unit to the same facility don't increment quantity
+			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
+			echo "LAST" . $lastFacilityWithKit;
+			//adjust the quantities only one quantity at a time
+			if ($this->data['Stats']['quantity'] != 0 && $lastFacilityWithKit != -1)
+				$this->adjustQuantities(
+									$data['Stats']['created'],
+									$unit['Units']['id'],
+									'A', 
+									(isset($patient['Patients']['id'])?0:1), //no need for qty when assigning to patient
+									$facility['Locations']['id'], 
+									$patient['Patients']['id'],
+									$phone['Phones']['id'],
+									NULL,
+									NULL
+									);		
 			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);

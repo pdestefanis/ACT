@@ -72,7 +72,10 @@
 		<tr<?php echo $class;?>>
 			<!--<td><?php echo $messagereceived['id'];?></td>-->
 			<td><?php echo $messagereceived['rawmessage'];?></td>
-			<td><?php echo $messagesents[$messagereceived['id']];?></td>
+			<td><?php 
+				if (isset($messagesents[$messagereceived['id']]))
+					echo $messagesents[$messagereceived['id']];
+				?></td>
 			<!--<td><?php echo $messagereceived['created'];?></td>
 			<td><?php echo $messagereceived['phone_id'];?></td>-->
 		</tr>

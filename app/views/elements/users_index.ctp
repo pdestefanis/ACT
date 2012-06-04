@@ -23,7 +23,7 @@
 			<th><?php echo $this->Paginator->sort(__('Role', true),'FirstRole.name');?></th>
 			<th><?php echo $this->Paginator->sort(__('Active?', true), 'active');?></th>
 			<!--<th><?php echo $this->Paginator->sort('password');?></th>-->
-			<th><?php echo $this->Paginator->sort(__('Site', true), 'location_id');?></th>
+			<th><?php echo $this->Paginator->sort(__('Facility', true), 'location_id');?></th>
 			<th><?php echo $this->Paginator->sort(__('Date Modified', true), 'modified');?></th>
 			
 			

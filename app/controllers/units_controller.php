@@ -42,7 +42,7 @@ class UnitsController extends AppController {
 		if (!empty($this->data)) {
 			$this->Unit->create();
 			if ($this->Unit->save($this->data)) {
-				$this->Session->setFlash(__('The unit has been saved', true));
+				$this->Session->setFlash(__('The unit has been saved', true), 'flash_success');
 				if ($lastUnits !='')
 					$unitsArray = explode(",", $lastUnits);
 				else 	
@@ -71,8 +71,9 @@ class UnitsController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
+			print_r($this->data);
 			if ($this->Unit->save($this->data)) {
-				$this->Session->setFlash(__('The unit has been saved', true));
+				$this->Session->setFlash(__('The unit has been saved', true), 'flash_success');
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The unit could not be saved. Please, try again.', true));
@@ -83,7 +84,8 @@ class UnitsController extends AppController {
 		}
 		$items = $this->Unit->Item->find('list');
 		$batches = $this->Unit->Batch->find('list');
-		$this->set(compact('items', 'batches'));
+		$unitsItems = $this->Unit->UnitsItem->find('list');
+		$this->set(compact('items', 'batches', 'unitsItems'));
 	}
 
 	function delete($id = null) {

@@ -17,11 +17,11 @@
 	
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort(__('Site', true), 'Location.name');?></th>
+			<th><?php echo $this->Paginator->sort(__('Facility', true), 'Location.name');?></th>
 			<th><?php echo 'User';?></th>
 			<th><?php echo $this->Paginator->sort(__('Report', true));?></th>
 			<th><?php echo $this->Paginator->sort(__('Date', true),'created');?></th>
-			<th><?php echo __('Code', true);?></th>
+			<th><?php echo __('ID', true);?></th>
 	</tr>
 	<?php
 	$i = 0;
@@ -77,7 +77,7 @@
 				if (isset ($stat['Messagereceived']['Messagesent'][0]['rawmessage']))
 					echo $access->checkHtml('Messagesents/view', 'text', $stat['Messagereceived']['Messagesent'][0]['rawmessage'], '/messagesents/view/' . $stat['Messagereceived']['Messagesent'][0]['id'] ); 
 				else
-					echo __("Site update", true);
+					echo __("Facility update", true);
 			?>
 		</td>
 	</tr>
@@ -101,8 +101,8 @@
 	<?php 
 	echo $access->checkHtml('Stats/add', 'html', '<h3>Actions</h3>','' ); ?>
 	<ul>
-		<li><?php echo $access->checkHtml('Stats/assignUnits', 'link', __('Assign Units', true),'/stats/assignUnits' ); ?></li>
-		<li><?php echo $access->checkHtml('Stats/receiveUnits', 'link', __('Receive Units', true),'/stats/receiveUnits' ); ?></li>
-		<li><?php echo $access->checkHtml('Stats/discardUnits', 'link', __('Discard Units', true),'/stats/discardUnits' ); ?></li>
+		<li><?php echo $access->checkHtml('Stats/assignUnits', 'link', __('Assign Kits', true),'/stats/assignUnits' ); ?></li>
+		<li><?php echo $access->checkHtml('Stats/receiveUnits', 'link', __('Receive Kits', true),'/stats/receiveUnits' ); ?></li>
+		<li><?php echo $access->checkHtml('Stats/discardUnits', 'link', __('Discard Kits', true),'/stats/discardUnits' ); ?></li>
 	</ul>
 </div>

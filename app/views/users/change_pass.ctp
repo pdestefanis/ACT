@@ -6,10 +6,11 @@
 		<fieldset> 		<legend><?php __('Change password for: ' .  $this->Form->value('username')); ?></legend>	
 		
 		<?php		
+			echo $this->Form->hidden('id');	
 			echo $this->Form->hidden('username');		
 			echo $this->Form->input('password');		
 			echo $form->input('confirm_passwd', array('type' => 'password', 'label' => 'Confirm Password'));			
-			echo $this->Form->hidden('group_id');					
+			echo $this->Form->hidden('role_id');					
 			
 		?>	
 		</fieldset>

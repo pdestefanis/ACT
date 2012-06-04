@@ -490,6 +490,7 @@ class UsersController extends AppController {
 				$this->Session->setFlash('The password change has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index', 'controller' => ''));
 			} else {
+				print_r($this->data);
 				$this->data = $this->User->read(null, $id);
 				$this->data['User']['password'] = null;
 				$this->data['User']['confirm_passwd'] = null;

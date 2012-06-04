@@ -116,7 +116,10 @@ class StatsController extends AppController {
 			} else if (count($this->data['Stat']['Unit'])>1 &&  !empty($this->data['Stat']['patient_id'])) {
 				$this->Stat->invalidate('Unit', __('Please select only one unit' , true));
 				$this->Session->setFlash(__('You can only select one unit when assigning to patient', true));
-			} else {
+			} else if (empty($this->data['Stat']['patient_id']) && empty($this->data['Stat']['location_id'])) {
+				$this->Stat->invalidate('assignSelect', __('Please select facility or patient' , true));
+				$this->Session->setFlash(__('Please select facility or patient', true));
+			}else {
 				$locationId = $this->data['Stat']['location_id'];
 				$patientId = $this->data['Stat']['patient_id'];
 				$userId = $this->data['Stat']['user_id'];
@@ -128,6 +131,7 @@ class StatsController extends AppController {
 					$this->data['Stat'][$i] = $old['Stat'];
 					$this->data['Stat'][$i]['unit_id'] = $unit_id;
 					$this->data['Stat'][$i]['patient_id'] = $patientId;
+					$this->data['Stat'][$i]['location_id'] = $locationId;
 					$this->data['Stat'][$i]['user_id'] = $userId;
 					//add hour minutes seconds field
 					$this->data['Stat'][$i]['created']['hour'] = date('H');
@@ -172,7 +176,7 @@ class StatsController extends AppController {
 																					'Stat.patient_id is not null')
 													), 
 										'fields' => array('unit_id'), 'callbacks' => false) );
-		$discarded = array_unique($discarded);		
+		$discarded = array_unique($discarded);	
 		$unitsArray = explode(",", $lastUnits);
 		$unitsArray = array_diff($unitsArray, $discarded);
 		$unitsArray = array_unique($unitsArray);

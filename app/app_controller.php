@@ -918,7 +918,7 @@ class AppController extends Controller {
 										'exclude' => '',
 										'sub' => '',
 										'tooltip' => ''),
-								array('label' =>'Units',
+								array('label' =>'Kits',
 										'url' => '/units/index',
 										'ACL' => 'Units/index',
 										'order' => '2',
@@ -1121,23 +1121,28 @@ class AppController extends Controller {
 	protected function findLastUnitFacility($unitId, $created){
 		$this->loadModel('Stats');
 		//last location prior to a date - this is to cater for back entry
-		$query = 'SELECT location_id from stats st ';
+		$query = 'SELECT created, location_id from stats st ';
 		$query .= ' WHERE unit_id=' . $unitId;
-		$query .= ' AND created = (select max(created) from stats s  
+		/*$query .= ' AND created = (select max(created) from stats s  
 								WHERE s.unit_id=' . $unitId . 
 								' AND s.created <= \'' . $created . '\''
-								. ' AND quantity != -1) ';
+								. ' AND quantity != -1) ';*/
 		$query .=  ' AND created <= \'' . $created . '\' AND quantity != -1';
 		$result = $this->Stats->query($query);
-		$query = 'SELECT location_id from stats st ';
-		$query .= ' WHERE unit_id=' . $unitId;
-		$query .= ' AND created = (select max(created) from stats s  
-								WHERE s.unit_id=' . $unitId . 
-								' AND s.created <= \'' . $created . '\''
-								. ' AND quantity != -1) ';
-		$query .=  ' AND created <= \'' . $created . '\' AND quantity != -1';
-		$resultNotLatest = $this->Stats->query($query);
-		if (isset($result[0]['st']['location_id'])){
+		$maxCreated = NULL;
+		$maxFacilityId = NULL;
+		
+		foreach ($result as $key => $value) {
+			if (is_null($maxCreated)) { //initial, set the both
+				$maxCreated = $value['st']['created'];
+				$maxFacilityId = $value['st']['location_id'];
+			}
+			if ($maxCreated < $value['st']['created'] && !is_null($value['st']['location_id'])) {
+				$maxCreated = $value['st']['created'];
+				$maxFacilityId = $value['st']['location_id'];
+			}
+		}
+		if (!is_null($maxFacilityId)) {
 			//TODO
 			//unit found see if it was dispensed from this location already
 			//if it was dispensed from thsi location with a system update remove this record 
@@ -1145,7 +1150,8 @@ class AppController extends Controller {
 			//record with this date to assign it to that location
 			//and remove previously assigned record 
 			//return the last record if more than one found
-			return $result[count($result)-1]['st']['location_id'];
+			//return $result[count($result)-1]['st']['location_id'];
+			return $maxFacilityId;
 		}
  
 		return -1;

@@ -1,5 +1,5 @@
 <div class="units view">
-<h2><?php  __('Unit');?></h2>
+<h2><?php  __('Kit');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Code'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
@@ -16,8 +16,8 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Edit Unit', true), array('action' => 'edit', $unit['Unit']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(__('Delete Unit', true), array('action' => 'delete', $unit['Unit']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $unit['Unit']['id'])); ?> </li>
+		<li><?php echo $access->checkHtml('Units/edit', 'link', 'Edit Kit','edit/' . $unit['Unit']['id'] ); ?></li>
+		<li><?php echo $access->checkHtml('Units/delete', 'delete', 'Delete','delete/' . $unit['Unit']['id'], 'delete', $unit['Unit']['code'] ); ?></li>
 	</ul>
 </div>
 
