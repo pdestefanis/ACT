@@ -31,7 +31,7 @@ echo '<br /><br />' ;
 		</tr>
 		<?php 
 			echo "<br/><h2> ". __("Recently Used Units", true) . "</h2>";
-			echo __("To assign these units please click here: ", true); 
+			echo __("To assign these kits please click here: ", true); 
 			echo $this->Html->link(__('Assign Units', true), array('controller' => 'stats', 'action' => 'assignUnits'));
 			if (!empty($lastUnits))
 			foreach (explode(",", $lastUnits) as $unit){

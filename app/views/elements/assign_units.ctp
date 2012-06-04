@@ -66,7 +66,7 @@
 		echo "<td>";
 		//echo $this->Form->end(__('Submit', true));
 		if (empty($units)) {
-			echo __("No more units left", true);
+			echo __("No more kits left", true);
 			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' .$lastUnits, 'update' => 'assign', 'disabled' => 'true'));
 		} else
 			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' . $lastUnits, 'update' => 'assign'));
@@ -93,8 +93,8 @@
 				echo $this->Form->input('action', array('type' => 'select', 
 													'label' => '',
 													'options' => array(
-																		0 => __('Use only these units',true),
-																		1 => __('Use all but these units',true),
+																		0 => __('Use only these kits',true),
+																		1 => __('Use all but these kits',true),
 																		2 => __('Remove all',true),),
 													'empty' => __('---Select---', true), 			
 													)
