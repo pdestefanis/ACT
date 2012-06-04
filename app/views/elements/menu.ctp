@@ -106,7 +106,7 @@
 		echo "</li>";
 		echo "<li>|</li>";
 		echo "<li>";
-		echo $access->checkHtml('Stats/aggregatedChart', 'link', 'Aggregated Chart','/stats/aggregatedChart' );
+		echo $access->checkHtml('Stats/aggregatedChart', 'link', 'Hierarchival Chart','/stats/aggregatedChart' );
 		echo "</li>";
 		echo "<li>|</li>";
 		echo "<li>";

@@ -7,7 +7,7 @@ echo '<br /><br />' ;
 <div class="units form">
 <?php echo $this->Form->create('Unit');?>
 	<fieldset>
-		<legend><?php __('Add Unit'); ?></legend>
+		<legend><?php __('Add Kit'); ?></legend>
 	<?php
 		echo $this->Form->input('code');
 		
@@ -27,12 +27,12 @@ echo '<br /><br />' ;
 	</fieldset>
 <table id='recent'>
 		<tr>
-			<th><?php echo __('Unit', true)?></th>
+			<th><?php echo __('Kit', true)?></th>
 		</tr>
 		<?php 
-			echo "<br/><h2> ". __("Recently Used Units", true) . "</h2>";
+			echo "<br/><h2> ". __("Recently Used Kits", true) . "</h2>";
 			echo __("To assign these kits please click here: ", true); 
-			echo $this->Html->link(__('Assign Units', true), array('controller' => 'stats', 'action' => 'assignUnits'));
+			echo $this->Html->link(__('Assign Kits', true), array('controller' => 'stats', 'action' => 'assignUnits'));
 			if (!empty($lastUnits))
 			foreach (explode(",", $lastUnits) as $unit){
 				$unitId = $unit; ?>

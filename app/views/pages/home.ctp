@@ -33,7 +33,7 @@ endif;
 	echo "</li>";
 	
 	echo "<li>";
-	echo $access->checkHtml('Stats/aggregatedChart', 'link', __('Aggregated Chart', true),'/stats/aggregatedChart' );
+	echo $access->checkHtml('Stats/aggregatedChart', 'link', __('Hierarchical Chart', true),'/stats/aggregatedChart' );
 	echo "</li>";
 	
 	echo "<li>";

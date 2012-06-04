@@ -101,8 +101,8 @@
 	<?php 
 	echo $access->checkHtml('Stats/add', 'html', '<h3>Actions</h3>','' ); ?>
 	<ul>
-		<li><?php echo $access->checkHtml('Stats/assignUnits', 'link', __('Assign Units', true),'/stats/assignUnits' ); ?></li>
-		<li><?php echo $access->checkHtml('Stats/receiveUnits', 'link', __('Receive Units', true),'/stats/receiveUnits' ); ?></li>
-		<li><?php echo $access->checkHtml('Stats/discardUnits', 'link', __('Discard Units', true),'/stats/discardUnits' ); ?></li>
+		<li><?php echo $access->checkHtml('Stats/assignUnits', 'link', __('Assign Kits', true),'/stats/assignUnits' ); ?></li>
+		<li><?php echo $access->checkHtml('Stats/receiveUnits', 'link', __('Receive Kits', true),'/stats/receiveUnits' ); ?></li>
+		<li><?php echo $access->checkHtml('Stats/discardUnits', 'link', __('Discard Kits', true),'/stats/discardUnits' ); ?></li>
 	</ul>
 </div>

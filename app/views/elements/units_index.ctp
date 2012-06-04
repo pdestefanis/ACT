@@ -14,7 +14,7 @@
 	?>
 </div>
 
-	<h2><?php __('Units');?></h2>
+	<h2><?php __('Kits');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('code');?></th>
@@ -61,7 +61,7 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $access->checkHtml('Units/add', 'link', 'New Unit','add' ); ?></li>
+		<li><?php echo $access->checkHtml('Units/add', 'link', 'New Kit','add' ); ?></li>
 		
 	</ul>
 </div>
