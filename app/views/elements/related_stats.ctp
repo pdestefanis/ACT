@@ -139,7 +139,7 @@
 				echo $access->checkHtml('Users/view', 'text', $user['User']['name'], '/users/view/' . $stat['user_id'] );
 			?></td>
 			<td><?php 
-				echo "Site update";
+				echo "Facility update";
 				?>
 		</tr>
 	<?php }

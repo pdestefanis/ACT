@@ -977,7 +977,7 @@ class AppController extends Controller {
 										'exclude' => '',
 										'sub' => '',
 										'tooltip' => ''),
-								'label' => 'Updates and Messages',
+								'label' => 'Updates',
 								'url' => '/stats/index',
 								'ACL' => 'Stats/index',
 								'tooltip' => '',

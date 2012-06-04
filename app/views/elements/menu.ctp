@@ -76,7 +76,7 @@
 	$class = (($this->name == 'Stats' || $this->name == 'Messagereceiveds')&& !($this->action == 'aggregatedInventory' || $this->action == 'facilityInventory'
 		|| $this->action == 'aggregatedChart' || $this->action == 'triggeredAlerts' || $this->action == 'options' ))?'active':'';
 	echo "<li class=$class>";
-	echo $access->checkHtml('Stats/index', 'link', 'Updates and Messages','/stats/index' );
+	echo $access->checkHtml('Stats/index', 'link', 'Updates','/stats/index' );
 	echo "</li>";
 	
 	$class = ($this->name == 'Users' && $this->action == 'changePass')?'active':'';

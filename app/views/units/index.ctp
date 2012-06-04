@@ -5,7 +5,7 @@
 <?php 
 	echo $javascript->link('prototype', false); ?>
 <?php
-	echo $crumb->getHtml('Units', null, '' ) ;
+	echo $crumb->getHtml('Kits', null, '' ) ;
 	echo '<br /><br />' ;
 ?>
 <div class="units index" id="units_index">

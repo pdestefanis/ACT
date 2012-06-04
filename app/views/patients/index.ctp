@@ -1,6 +1,6 @@
 <?php echo $javascript->link('prototype', false); ?>
 <?php
-echo $crumb->getHtml('Patient Listing', null, 'auto' ) ;
+echo $crumb->getHtml('Patient Listing', null, '' ) ;
 echo '<br /><br />' ;
 ?> 
 <div class="patients index">

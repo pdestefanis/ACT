@@ -1,7 +1,7 @@
 <?php
 $config['Phone']['length'] = 8;
 $config['Graph']['limit'] = 3;
-$config['App']['name'] = 'ACT Kit Tracking v08';
+$config['App']['name'] = 'ACT Kits Tracking';
 $config['Facility']['level0'] = 'NCC';
 $config['Facility']['level1'] = 'CH';
 $config['Facility']['level2'] = 'PHC';

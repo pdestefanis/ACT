@@ -18,10 +18,10 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<!--<th><?php echo $this->Paginator->sort('id');?></th>-->
-			<th><?php echo $this->Paginator->sort(__('Site', true),'name');?></th>
+			<th><?php echo $this->Paginator->sort(__('Facility', true),'name');?></th>
 			<th><?php echo __('Level', true);?></th>
 			
-			<th><?php echo $this->Paginator->sort(__('Upstream Site', true), 'Parent.name');?></th>
+			<th><?php echo $this->Paginator->sort(__('Upstream Facility', true), 'Parent.name');?></th>
 			
 			<th><?php echo __('Last Report', true);?></th>
 	</tr>

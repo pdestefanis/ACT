@@ -13,7 +13,7 @@
 	<table cellpadding="0" cellspacing="0" class="norow">
 	
 		<tr>
-			<th><?php echo __("Receiving Site", true);?></th>
+			<th><?php echo __("Receiving Facility", true);?></th>
 			<th><?php echo __("Number of Kits Sent", true);?></th>
 			<th><?php echo __("Number of Kits Received", true);?></th>
 			

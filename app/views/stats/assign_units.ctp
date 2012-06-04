@@ -17,7 +17,7 @@
 
 <div id="assign" >
 <?php
-	echo $crumb->getHtml(__('Assign Unit', true), null, 'auto' ) ;
+	echo $crumb->getHtml(__('Assign Kits', true), null, 'auto' ) ;
 	echo '<br /><br />' ;
 	
 ?> 

@@ -8,15 +8,15 @@
 	?>
 </div>
 	<div class="title">
-	<h2><?php __('Inventory by Site');  ?></h2>
+	<h2><?php __('Inventory by Facility');  ?></h2>
 </div>
 
 	
 	<table cellpadding="0" cellspacing="0" class="norow">
 	
 		<tr>
-			<th><?php echo __("Site Name", true);?></th>
-			<th><?php echo __("Upstream Site", true);?></th>
+			<th><?php echo __("Facility Name", true);?></th>
+			<th><?php echo __("Upstream Facility", true);?></th>
 			<th><?php echo __("Kits", true);?></th>
 			<th><?php echo __("Last Delivery Report", true);?></th>
 		</tr>

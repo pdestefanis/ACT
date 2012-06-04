@@ -20,7 +20,7 @@ echo '<br /><br />' ;
 			<?php echo $item['Item']['name']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Code'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('ID'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $item['Item']['code']; ?>
 			&nbsp;

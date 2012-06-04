@@ -25,7 +25,7 @@ endif;
 <?php
 	
 	/*echo "<li>";
-	echo $access->checkHtml('Stats/facilityInventory', 'link', __('Inventory by Site', true),'/stats/facilityInventory' );
+	echo $access->checkHtml('Stats/facilityInventory', 'link', __('Inventory by Facility', true),'/stats/facilityInventory' );
 	echo "</li>";
 	
 	echo "<li>";
@@ -61,7 +61,7 @@ endif;
 		
 
 		echo "<li>";
-		echo $access->checkHtml('Locations/index', 'link', __('Sites', true),'/locations/index' );
+		echo $access->checkHtml('Locations/index', 'link', __('Facilities', true),'/locations/index' );
 		echo "</li>";
 
 		//echo "<li>";
