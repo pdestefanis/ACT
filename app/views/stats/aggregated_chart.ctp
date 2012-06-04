@@ -1,7 +1,7 @@
 <div id="sitems">
 <?php echo $javascript->link('prototype', false); ?>
 <?php
-	echo $crumb->getHtml('Aggregated Inventory Chart', null, '' ) ;
+	echo $crumb->getHtml('Hierarchical Chart', null, '' ) ;
 	echo '<br /><br />' ;
 ?> 
 		

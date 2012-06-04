@@ -1,5 +1,5 @@
 <div class="title">
-<h2><?php __('Inventory Chart'); ?></h2>
+<h2><?php __('Hierarchical Chart'); ?></h2>
 </div>
 <?php
 $rows =0;
@@ -8,8 +8,8 @@ $rows++;
 $reportHtml = "<table class=\"small\">";
 $reportHtml .= "<tr>";
 $reportHtml .= "<th>" . __('Kits', true) ."</th>";
-$reportHtml .= "<th>Total</th>";
-                $reportHtml .= "<th>Agg</th>";
+$reportHtml .= "<th>Local</th>";
+                $reportHtml .= "<th>Aggr.</th>";
 $reportHtml .= "</tr>";
 foreach ($report[$loc] as $r) {
 if (isset($report[$r['parent']]))

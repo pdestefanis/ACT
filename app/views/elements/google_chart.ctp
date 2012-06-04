@@ -1,5 +1,5 @@
 <div class="title">
-	<h2><?php __('Aggregated Inventory Chart');  ?></h2>
+	<h2><?php __('Hierarchical Chart');  ?></h2>
 </div>
 <?php
 	$rows =0;
