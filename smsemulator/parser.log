@@ -1,0 +1,1378 @@
+[ 2011-07-03 02:48:57 ]:  SMSparser: Sending request (procesSMS): Message: R 1233  MSGUID: 1309657737  Caller: +19193604046
+[ 2011-07-03 11:19:27 ]:  SMSparser: Sending request (procesSMS): Message: D  MSGUID: 1309706367  Caller: +27724008226
+[ 2011-07-03 11:19:27 ]:  SMSparser: Received reply (procesSMS): Error: You need more parameters for that operation 
+
+[ 2011-07-03 11:19:27 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 276
+
+
+[ 2011-07-03 11:19:27 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Error: You need more parameters for that operation 
+</mensaje><simid>5493773475882</simid><msguid>1309706367</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 11:20:19 ]:  SMSparser: Sending request (procesSMS): Message: D 1118  MSGUID: 1309706419  Caller: +27724008226
+[ 2011-07-03 11:20:19 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-03 11:20:19 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 244
+
+
+[ 2011-07-03 11:20:19 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1309706419</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 11:23:13 ]:  SMSparser: Sending request (procesSMS): Message: D 1118  MSGUID: 1309706593  Caller: +27724008226
+[ 2011-07-03 11:23:13 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1118
+[ 2011-07-03 11:23:13 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 263
+
+
+[ 2011-07-03 11:23:13 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Message processed successfully.  D 1118</mensaje><simid>5493773475882</simid><msguid>1309706593</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 15:45:15 ]:  SMSparser: Sending request (procesSMS): Message:   MSGUID:   Caller: 
+[ 2011-07-03 15:45:15 ]:  SMSparser: Received reply (procesSMS): Error: action code  not valid. Please correct and resend 
+
+[ 2011-07-03 15:45:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 247
+
+
+[ 2011-07-03 15:45:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination></destination><mensaje>Error: action code  not valid. Please correct and resend 
+</mensaje><simid></simid><msguid></msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 15:48:39 ]:  SMSparser: Sending request (procesSMS): Message:   MSGUID:   Caller: 
+[ 2011-07-03 15:48:39 ]:  SMSparser: Received reply (procesSMS): Error: action code  not valid. Please correct and resend 
+
+[ 2011-07-03 15:48:39 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 247
+
+
+[ 2011-07-03 15:48:39 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination></destination><mensaje>Error: action code  not valid. Please correct and resend 
+</mensaje><simid></simid><msguid></msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 16:02:15 ]:  SMSparser: Sending request (procesSMS): Message: Test  MSGUID: 1309723334  Caller: +5491167576323
+[ 2011-07-03 16:02:15 ]:  SMSparser: Received reply (procesSMS): Error: action code TEST not valid. Please correct and resend 
+
+[ 2011-07-03 16:02:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 288
+
+
+[ 2011-07-03 16:02:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: action code TEST not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1309723334</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 16:29:15 ]:  SMSparser: Sending request (procesSMS): Message: Test  MSGUID: 1309724954  Caller: +5491167576323
+[ 2011-07-03 16:29:15 ]:  SMSparser: Received reply (procesSMS): Error: action code TEST not valid. Please correct and resend 
+
+[ 2011-07-03 16:29:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 288
+
+
+[ 2011-07-03 16:29:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: action code TEST not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1309724954</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 16:31:15 ]:  SMSparser: Sending request (procesSMS): Message: Accept 3456  MSGUID: 1309725075  Caller: +5491167576323
+[ 2011-07-03 16:31:15 ]:  SMSparser: Received reply (procesSMS): Error: phone number +5491167576323 not found in database. It has been added but you won't be able to enter data until you request activation
+
+[ 2011-07-03 16:31:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 367
+
+
+[ 2011-07-03 16:31:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: phone number +5491167576323 not found in database. It has been added but you won't be able to enter data until you request activation
+</mensaje><simid>5493773475882</simid><msguid>1309725075</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-03 16:33:15 ]:  SMSparser: Sending request (procesSMS): Message: Accept 3456  MSGUID: 1309725195  Caller: +541112345678
+[ 2011-07-03 16:33:15 ]:  SMSparser: Received reply (procesSMS): Error: phone number +541112345678 not found in database. It has been added but you won't be able to enter data until you request activation
+
+[ 2011-07-03 16:33:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 365
+
+
+[ 2011-07-03 16:33:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+541112345678</destination><mensaje>Error: phone number +541112345678 not found in database. It has been added but you won't be able to enter data until you request activation
+</mensaje><simid>5493773475882</simid><msguid>1309725195</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 07:19:55 ]:  SMSparser: Sending request (procesSMS): Message: Accept 2229 0724008227  MSGUID: 1309778395  Caller: +541112345678
+[ 2011-07-04 07:19:55 ]:  SMSparser: Received reply (procesSMS): Error: kit/patient number 0724008227 not valid. Please correct and resend 
+
+[ 2011-07-04 07:19:55 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 300
+
+
+[ 2011-07-04 07:19:55 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+541112345678</destination><mensaje>Error: kit/patient number 0724008227 not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1309778395</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 07:20:51 ]:  SMSparser: Sending request (procesSMS): Message: Accept 2229  MSGUID: 1309778451  Caller: 0724008227
+[ 2011-07-04 07:20:51 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-04 07:20:51 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 242
+
+
+[ 2011-07-04 07:20:51 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008227</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1309778451</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 07:21:36 ]:  SMSparser: Sending request (procesSMS): Message: Accept 2229  MSGUID: 1309778496  Caller: 0724008227
+[ 2011-07-04 07:21:36 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-04 07:21:36 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 242
+
+
+[ 2011-07-04 07:21:36 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008227</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1309778496</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 07:22:29 ]:  SMSparser: Sending request (procesSMS): Message: A 2229  MSGUID: 1309778549  Caller: 0724008227
+[ 2011-07-04 07:22:29 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-04 07:22:29 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 242
+
+
+[ 2011-07-04 07:22:29 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008227</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1309778549</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 07:24:10 ]:  SMSparser: Sending request (procesSMS): Message: A 1118  MSGUID: 1309778650  Caller: 0724008227
+[ 2011-07-04 07:24:10 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1118
+[ 2011-07-04 07:24:10 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 261
+
+
+[ 2011-07-04 07:24:10 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008227</destination><mensaje>Message processed successfully.  A 1118</mensaje><simid>5493773475882</simid><msguid>1309778650</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 07:24:47 ]:  SMSparser: Sending request (procesSMS): Message: D 1118  MSGUID: 1309778687  Caller: 0724008227
+[ 2011-07-04 07:24:47 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1118
+[ 2011-07-04 07:24:47 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 261
+
+
+[ 2011-07-04 07:24:47 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008227</destination><mensaje>Message processed successfully.  D 1118</mensaje><simid>5493773475882</simid><msguid>1309778687</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 07:25:10 ]:  SMSparser: Sending request (procesSMS): Message: X 1118  MSGUID: 1309778710  Caller: 0724008227
+[ 2011-07-04 07:25:10 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  X 1118
+[ 2011-07-04 07:25:10 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 261
+
+
+[ 2011-07-04 07:25:10 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008227</destination><mensaje>Message processed successfully.  X 1118</mensaje><simid>5493773475882</simid><msguid>1309778710</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 08:15:36 ]:  SMSparser: Sending request (procesSMS): Message: A 1118  MSGUID: 1309781736  Caller: 0724008227
+[ 2011-07-04 08:15:36 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1118
+[ 2011-07-04 08:15:36 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 261
+
+
+[ 2011-07-04 08:15:36 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008227</destination><mensaje>Message processed successfully.  A 1118</mensaje><simid>5493773475882</simid><msguid>1309781736</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-04 08:16:12 ]:  SMSparser: Sending request (procesSMS): Message: A 1118  MSGUID: 1309781772  Caller: 0724008230
+[ 2011-07-04 08:16:12 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1118
+[ 2011-07-04 08:16:12 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 261
+
+
+[ 2011-07-04 08:16:12 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008230</destination><mensaje>Message processed successfully.  A 1118</mensaje><simid>5493773475882</simid><msguid>1309781772</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:43:06 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309880584  Caller: +5493515636891
+[ 2011-07-05 11:43:06 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:43:06 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:43:06 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1309880584</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:44:04 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309880644  Caller: +5493515636891
+[ 2011-07-05 11:44:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:44:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:44:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1309880644</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:45:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309880705  Caller: +5493515636891
+[ 2011-07-05 11:45:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:45:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:45:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309880705</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:46:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309880763  Caller: +5493515636891
+[ 2011-07-05 11:46:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:46:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:46:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309880763</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:47:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309880824  Caller: +5493515636891
+[ 2011-07-05 11:47:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:47:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:47:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309880824</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:48:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309880884  Caller: +5493515636891
+[ 2011-07-05 11:48:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:48:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:48:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309880884</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:49:11 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309880945  Caller: +5493515636891
+[ 2011-07-05 11:49:11 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:49:11 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:49:11 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309880945</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:50:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881004  Caller: +5493515636891
+[ 2011-07-05 11:50:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:50:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:50:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881004</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:51:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881064  Caller: +5493515636891
+[ 2011-07-05 11:51:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:51:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:51:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881064</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:52:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881124  Caller: +5493515636891
+[ 2011-07-05 11:52:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:52:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:52:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881124</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:53:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881184  Caller: +5493515636891
+[ 2011-07-05 11:53:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:53:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:53:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881184</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:54:04 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881244  Caller: +5493515636891
+[ 2011-07-05 11:54:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:54:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:54:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881244</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:55:04 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881304  Caller: +5493515636891
+[ 2011-07-05 11:55:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:55:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:55:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881304</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:56:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881365  Caller: +5493515636891
+[ 2011-07-05 11:56:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:56:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:56:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881365</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:57:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881425  Caller: +5493515636891
+[ 2011-07-05 11:57:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:57:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:57:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881425</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:58:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881485  Caller: +5493515636891
+[ 2011-07-05 11:58:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:58:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:58:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881485</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 11:59:10 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881544  Caller: +5493515636891
+[ 2011-07-05 11:59:10 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 11:59:10 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 11:59:10 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881544</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:00:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881605  Caller: +5493515636891
+[ 2011-07-05 12:00:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:00:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:00:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881605</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:01:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881664  Caller: +5493515636891
+[ 2011-07-05 12:01:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:01:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:01:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881664</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:02:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881724  Caller: +5493515636891
+[ 2011-07-05 12:02:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:02:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:02:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881724</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:03:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881784  Caller: +5493515636891
+[ 2011-07-05 12:03:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:03:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:03:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881784</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:04:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881844  Caller: +5493515636891
+[ 2011-07-05 12:04:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:04:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:04:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881844</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:05:04 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881904  Caller: +5493515636891
+[ 2011-07-05 12:05:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:05:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:05:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881904</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:06:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309881964  Caller: +5493515636891
+[ 2011-07-05 12:06:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:06:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:06:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309881964</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:07:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882024  Caller: +5493515636891
+[ 2011-07-05 12:07:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:07:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:07:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882024</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:08:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882084  Caller: +5493515636891
+[ 2011-07-05 12:08:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:08:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:08:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882084</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:09:06 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882145  Caller: +5493515636891
+[ 2011-07-05 12:09:06 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:09:06 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:09:06 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882145</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:10:06 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882205  Caller: +5493515636891
+[ 2011-07-05 12:10:06 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:10:06 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:10:06 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882205</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:11:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882264  Caller: +5493515636891
+[ 2011-07-05 12:11:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:11:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:11:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882264</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:12:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882324  Caller: +5493515636891
+[ 2011-07-05 12:12:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:12:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:12:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882324</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:13:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882384  Caller: +5493515636891
+[ 2011-07-05 12:13:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:13:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:13:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882384</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:14:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882444  Caller: +5493515636891
+[ 2011-07-05 12:14:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:14:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:14:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882444</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:15:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882504  Caller: +5493515636891
+[ 2011-07-05 12:15:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:15:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:15:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882504</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:16:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882564  Caller: +5493515636891
+[ 2011-07-05 12:16:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:16:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:16:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882564</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:17:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882624  Caller: +5493515636891
+[ 2011-07-05 12:17:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:17:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:17:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882624</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:18:04 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882684  Caller: +5493515636891
+[ 2011-07-05 12:18:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:18:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:18:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882684</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:19:04 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882744  Caller: +5493515636891
+[ 2011-07-05 12:19:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:19:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:19:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882744</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:20:06 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882805  Caller: +5493515636891
+[ 2011-07-05 12:20:06 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:20:06 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:20:06 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882805</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:21:08 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882865  Caller: +5493515636891
+[ 2011-07-05 12:21:08 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:21:08 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:21:08 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882865</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:22:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882925  Caller: +5493515636891
+[ 2011-07-05 12:22:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:22:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:22:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882925</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:23:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309882984  Caller: +5493515636891
+[ 2011-07-05 12:23:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:23:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:23:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309882984</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:24:06 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309883044  Caller: +5493515636891
+[ 2011-07-05 12:24:06 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:24:06 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:24:06 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883044</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:25:15 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309883104  Caller: +5493515636891
+[ 2011-07-05 12:25:15 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:25:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:25:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883104</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:26:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309883164  Caller: +5493515636891
+[ 2011-07-05 12:26:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:26:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:26:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883164</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:27:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309883224  Caller: +5493515636891
+[ 2011-07-05 12:27:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:27:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:27:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883224</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:28:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309883284  Caller: +5493515636891
+[ 2011-07-05 12:28:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:28:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:28:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883284</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:29:05 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309883344  Caller: +5493515636891
+[ 2011-07-05 12:29:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:29:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:29:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883344</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:30:15 ]:  SMSparser: Sending request (procesSMS): Message: gfejkkgc ffg gtrg  MSGUID: 1309883414  Caller: +5493515636891
+[ 2011-07-05 12:30:15 ]:  SMSparser: Received reply (procesSMS): Error: action code GFEJKKGC not valid. Please correct and resend 
+
+[ 2011-07-05 12:30:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 292
+
+
+[ 2011-07-05 12:30:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GFEJKKGC not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883414</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:31:59 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883519  Caller: +5493515636891
+[ 2011-07-05 12:31:59 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:31:59 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:31:59 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883519</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:32:04 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883523  Caller: +5493515636891
+[ 2011-07-05 12:32:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:32:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:32:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883523</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:33:06 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883585  Caller: +5493515636891
+[ 2011-07-05 12:33:06 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:33:06 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:33:06 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883585</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:34:04 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883644  Caller: +5493515636891
+[ 2011-07-05 12:34:04 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:34:04 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:34:04 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883644</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:35:05 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883704  Caller: +5493515636891
+[ 2011-07-05 12:35:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:35:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:35:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883704</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:36:05 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883764  Caller: +5493515636891
+[ 2011-07-05 12:36:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:36:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:36:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883764</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:36:48 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883807  Caller: +5493515636891
+[ 2011-07-05 12:36:48 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:36:48 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:36:48 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883807</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:37:05 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883824  Caller: +5493515636891
+[ 2011-07-05 12:37:05 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:37:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:37:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883824</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 12:37:29 ]:  SMSparser: Sending request (procesSMS): Message: gvhddjire frdbter rdhg  MSGUID: 1309883849  Caller: +5493515636891
+[ 2011-07-05 12:37:29 ]:  SMSparser: Received reply (procesSMS): Error: action code GVHDDJIRE not valid. Please correct and resend 
+
+[ 2011-07-05 12:37:29 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-05 12:37:29 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493515636891</destination><mensaje>Error: action code GVHDDJIRE not valid. Please correct and resend 
+</mensaje><simid>5493773507668</simid><msguid>1309883849</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 15:36:15 ]:  SMSparser: Sending request (procesSMS): Message: D 2001  MSGUID: 1309894574  Caller: +5491167576323
+[ 2011-07-05 15:36:15 ]:  SMSparser: Received reply (procesSMS): Error: Kit 2001 is alredy registered!
+
+[ 2011-07-05 15:36:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 264
+
+
+[ 2011-07-05 15:36:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: Kit 2001 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309894574</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 15:42:26 ]:  SMSparser: Sending request (procesSMS): Message: d 2001  MSGUID: 1309894946  Caller: +541167576323
+[ 2011-07-05 15:42:26 ]:  SMSparser: Received reply (procesSMS): Error: Kit 2001 is alredy registered!
+
+[ 2011-07-05 15:42:26 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 263
+
+
+[ 2011-07-05 15:42:26 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+541167576323</destination><mensaje>Error: Kit 2001 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309894946</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 15:44:15 ]:  SMSparser: Sending request (procesSMS): Message: A 2001  MSGUID: 1309895054  Caller: +5491167576323
+[ 2011-07-05 15:44:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 2001
+[ 2011-07-05 15:44:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-05 15:44:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  A 2001</mensaje><simid>5493773475882</simid><msguid>1309895054</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 17:27:15 ]:  SMSparser: Sending request (procesSMS): Message: R 2003  MSGUID: 1309901234  Caller: +5491167576323
+[ 2011-07-05 17:27:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  R 2003
+[ 2011-07-05 17:27:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-05 17:27:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  R 2003</mensaje><simid>5493773475882</simid><msguid>1309901234</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 18:27:15 ]:  SMSparser: Sending request (procesSMS): Message: A 2003  MSGUID: 1309904834  Caller: +5491167576323
+[ 2011-07-05 18:27:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 2003
+[ 2011-07-05 18:27:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-05 18:27:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  A 2003</mensaje><simid>5493773475882</simid><msguid>1309904834</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 18:29:16 ]:  SMSparser: Sending request (procesSMS): Message: D 2003  MSGUID: 1309904955  Caller: +5491167576323
+[ 2011-07-05 18:29:16 ]:  SMSparser: Received reply (procesSMS): Error: Kit 2003 is alredy registered!
+
+[ 2011-07-05 18:29:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 264
+
+
+[ 2011-07-05 18:29:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: Kit 2003 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309904955</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 18:36:16 ]:  SMSparser: Sending request (procesSMS): Message: D 2004  MSGUID: 1309905375  Caller: +5491167576323
+[ 2011-07-05 18:36:16 ]:  SMSparser: Received reply (procesSMS): Error: Kit 2004 is alredy registered!
+
+[ 2011-07-05 18:36:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 264
+
+
+[ 2011-07-05 18:36:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: Kit 2004 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309905375</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 18:39:16 ]:  SMSparser: Sending request (procesSMS): Message: A 2004  MSGUID: 1309905555  Caller: +5491167576323
+[ 2011-07-05 18:39:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 2004
+[ 2011-07-05 18:39:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-05 18:39:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  A 2004</mensaje><simid>5493773475882</simid><msguid>1309905555</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 18:41:15 ]:  SMSparser: Sending request (procesSMS): Message: D 2004  MSGUID: 1309905675  Caller: +5491167576323
+[ 2011-07-05 18:41:15 ]:  SMSparser: Received reply (procesSMS): Error: Kit 2004 is alredy registered!
+
+[ 2011-07-05 18:41:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 264
+
+
+[ 2011-07-05 18:41:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: Kit 2004 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309905675</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 18:45:16 ]:  SMSparser: Sending request (procesSMS): Message: D 2004  MSGUID: 1309905915  Caller: +5491167576323
+[ 2011-07-05 18:45:16 ]:  SMSparser: Received reply (procesSMS): Error: Kit 2004 is alredy registered!
+
+[ 2011-07-05 18:45:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 264
+
+
+[ 2011-07-05 18:45:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: Kit 2004 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309905915</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 19:13:16 ]:  SMSparser: Sending request (procesSMS): Message: A 2005  MSGUID: 1309907595  Caller: +5491167576323
+[ 2011-07-05 19:13:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 2005
+[ 2011-07-05 19:13:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-05 19:13:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  A 2005</mensaje><simid>5493773475882</simid><msguid>1309907595</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 19:17:15 ]:  SMSparser: Sending request (procesSMS): Message: D 2005 43185  MSGUID: 1309907834  Caller: +5491167576323
+[ 2011-07-05 19:17:15 ]:  SMSparser: Received reply (procesSMS): Error: kit/patient number 43185 not valid. Please correct and resend 
+
+[ 2011-07-05 19:17:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 296
+
+
+[ 2011-07-05 19:17:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: kit/patient number 43185 not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1309907834</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-05 19:22:15 ]:  SMSparser: Sending request (procesSMS): Message: D 2006 43185  MSGUID: 1309908134  Caller: +5491167576323
+[ 2011-07-05 19:22:15 ]:  SMSparser: Received reply (procesSMS): Error: kit/patient number 43185 not valid. Please correct and resend 
+
+[ 2011-07-05 19:22:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 296
+
+
+[ 2011-07-05 19:22:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Error: kit/patient number 43185 not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1309908134</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:09:16 ]:  SMSparser: Sending request (procesSMS): Message: D 1001  MSGUID: 1309986555  Caller: +5491158570687
+[ 2011-07-06 17:09:16 ]:  SMSparser: Received reply (procesSMS): Error: Kit 1001 is alredy registered!
+
+[ 2011-07-06 17:09:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 264
+
+
+[ 2011-07-06 17:09:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491158570687</destination><mensaje>Error: Kit 1001 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309986555</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:12:16 ]:  SMSparser: Sending request (procesSMS): Message: r 1001  MSGUID: 1309986735  Caller: +5491158570687
+[ 2011-07-06 17:12:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  r 1001
+[ 2011-07-06 17:12:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-06 17:12:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491158570687</destination><mensaje>Message processed successfully.  r 1001</mensaje><simid>5493773475882</simid><msguid>1309986735</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:18:15 ]:  SMSparser: Sending request (procesSMS): Message: R 1002  MSGUID: 1309987094  Caller: +5491167576323
+[ 2011-07-06 17:18:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  R 1002
+[ 2011-07-06 17:18:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-06 17:18:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  R 1002</mensaje><simid>5493773475882</simid><msguid>1309987094</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:30:16 ]:  SMSparser: Sending request (procesSMS): Message: D 1002  MSGUID: 1309987815  Caller: +5491158570687
+[ 2011-07-06 17:30:16 ]:  SMSparser: Received reply (procesSMS): Error: Kit 1002 is alredy registered!
+
+[ 2011-07-06 17:30:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 264
+
+
+[ 2011-07-06 17:30:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491158570687</destination><mensaje>Error: Kit 1002 is alredy registered!
+</mensaje><simid>5493773475882</simid><msguid>1309987815</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:32:15 ]:  SMSparser: Sending request (procesSMS): Message: A 1002  MSGUID: 1309987935  Caller: +5491158570687
+[ 2011-07-06 17:32:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1002
+[ 2011-07-06 17:32:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-06 17:32:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491158570687</destination><mensaje>Message processed successfully.  A 1002</mensaje><simid>5493773475882</simid><msguid>1309987935</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:34:15 ]:  SMSparser: Sending request (procesSMS): Message: A 1002  MSGUID: 1309988054  Caller: +5491167576323
+[ 2011-07-06 17:34:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1002
+[ 2011-07-06 17:34:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-06 17:34:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  A 1002</mensaje><simid>5493773475882</simid><msguid>1309988054</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:36:15 ]:  SMSparser: Sending request (procesSMS): Message: D 1002 43185111  MSGUID: 1309988174  Caller: +5491167576323
+[ 2011-07-06 17:36:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1002 43185111
+[ 2011-07-06 17:36:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-07-06 17:36:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  D 1002 43185111</mensaje><simid>5493773475882</simid><msguid>1309988174</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-06 17:40:15 ]:  SMSparser: Sending request (procesSMS): Message: A 1002  MSGUID: 1309988414  Caller: +5491158570687
+[ 2011-07-06 17:40:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1002
+[ 2011-07-06 17:40:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-06 17:40:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491158570687</destination><mensaje>Message processed successfully.  A 1002</mensaje><simid>5493773475882</simid><msguid>1309988414</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:08:22 ]:  SMSparser: Sending request (procesSMS): Message: D 1002 43185111  MSGUID: 1310047695  Caller: +5491167576323
+[ 2011-07-07 10:08:22 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1002 43185111
+[ 2011-07-07 10:08:22 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-07-07 10:08:22 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  D 1002 43185111</mensaje><simid>5493773475882</simid><msguid>1310047695</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:25:16 ]:  SMSparser: Sending request (procesSMS): Message: R 1002  MSGUID: 1310048715  Caller: +5491167576323
+[ 2011-07-07 10:25:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  R 1002
+[ 2011-07-07 10:25:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 10:25:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  R 1002</mensaje><simid>5493773475882</simid><msguid>1310048715</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:26:17 ]:  SMSparser: Sending request (procesSMS): Message: A 1002  MSGUID: 1310048776  Caller: +5491167576323
+[ 2011-07-07 10:26:17 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1002
+[ 2011-07-07 10:26:17 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 10:26:17 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  A 1002</mensaje><simid>5493773475882</simid><msguid>1310048776</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:27:16 ]:  SMSparser: Sending request (procesSMS): Message: D 1002  MSGUID: 1310048835  Caller: +5491167576323
+[ 2011-07-07 10:27:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1002
+[ 2011-07-07 10:27:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 10:27:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  D 1002</mensaje><simid>5493773475882</simid><msguid>1310048835</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:28:16 ]:  SMSparser: Sending request (procesSMS): Message: D 1002 43185111  MSGUID: 1310048895  Caller: +5491167576323
+[ 2011-07-07 10:28:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1002 43185111
+[ 2011-07-07 10:28:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-07-07 10:28:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  D 1002 43185111</mensaje><simid>5493773475882</simid><msguid>1310048895</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:46:15 ]:  SMSparser: Sending request (procesSMS): Message: A 1002  MSGUID: 1310049974  Caller: +5493773493090
+[ 2011-07-07 10:46:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1002
+[ 2011-07-07 10:46:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 10:46:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Message processed successfully.  A 1002</mensaje><simid>5493773475882</simid><msguid>1310049974</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:48:16 ]:  SMSparser: Sending request (procesSMS): Message: D 1002 43181234  MSGUID: 1310050095  Caller: +5493773493090
+[ 2011-07-07 10:48:16 ]:  SMSparser: Received reply (procesSMS): Patient consent missing. Please acknowledge consent by sending C space Patient number!
+
+[ 2011-07-07 10:48:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 313
+
+
+[ 2011-07-07 10:48:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Patient consent missing. Please acknowledge consent by sending C space Patient number!
+</mensaje><simid>5493773475882</simid><msguid>1310050095</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:50:16 ]:  SMSparser: Sending request (procesSMS): Message: C 43181234  MSGUID: 1310050215  Caller: +5493773493090
+[ 2011-07-07 10:50:16 ]:  SMSparser: Received reply (procesSMS): Patient 43181234 created
+[ 2011-07-07 10:50:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 250
+
+
+[ 2011-07-07 10:50:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Patient 43181234 created</mensaje><simid>5493773475882</simid><msguid>1310050215</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:52:16 ]:  SMSparser: Sending request (procesSMS): Message: D 1002 43181234  MSGUID: 1310050335  Caller: +5493773493090
+[ 2011-07-07 10:52:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1002 43181234
+[ 2011-07-07 10:52:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-07-07 10:52:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Message processed successfully.  D 1002 43181234</mensaje><simid>5493773475882</simid><msguid>1310050335</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:54:16 ]:  SMSparser: Sending request (procesSMS): Message: A 1256  MSGUID: 1310050455  Caller: +5493773493090
+[ 2011-07-07 10:54:16 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-07 10:54:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 246
+
+
+[ 2011-07-07 10:54:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1310050455</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 10:57:16 ]:  SMSparser: Sending request (procesSMS): Message: D 555  MSGUID: 1310050635  Caller: +5491164623775
+[ 2011-07-07 10:57:16 ]:  SMSparser: Received reply (procesSMS): Error: phone number +5491164623775 not found in database. It has been added but you won't be able to enter data until you request activation
+
+[ 2011-07-07 10:57:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 367
+
+
+[ 2011-07-07 10:57:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491164623775</destination><mensaje>Error: phone number +5491164623775 not found in database. It has been added but you won't be able to enter data until you request activation
+</mensaje><simid>5493773475882</simid><msguid>1310050635</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:03:15 ]:  SMSparser: Sending request (procesSMS): Message: R  1002  MSGUID: 1310050995  Caller: +5493773493090
+[ 2011-07-07 11:03:15 ]:  SMSparser: Received reply (procesSMS): Error: kit  not valid. Please correct and resend 
+
+[ 2011-07-07 11:03:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 276
+
+
+[ 2011-07-07 11:03:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Error: kit  not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1310050995</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:07:17 ]:  SMSparser: Sending request (procesSMS): Message: D   1002   44444444  MSGUID: 1310051236  Caller: +5493773493090
+[ 2011-07-07 11:07:17 ]:  SMSparser: Received reply (procesSMS): Error: kit  not valid. Please correct and resend 
+
+[ 2011-07-07 11:07:17 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 276
+
+
+[ 2011-07-07 11:07:17 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Error: kit  not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1310051236</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:09:19 ]:  SMSparser: Sending request (procesSMS): Message: D 1003 44444444  MSGUID: 1310051354  Caller: +5493773493090
+[ 2011-07-07 11:09:19 ]:  SMSparser: Received reply (procesSMS): Patient consent missing. Please acknowledge consent by sending C space Patient number!
+
+[ 2011-07-07 11:09:19 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 313
+
+
+[ 2011-07-07 11:09:19 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Patient consent missing. Please acknowledge consent by sending C space Patient number!
+</mensaje><simid>5493773475882</simid><msguid>1310051354</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:13:16 ]:  SMSparser: Sending request (procesSMS): Message: A 1002  MSGUID: 1310051595  Caller: +5491167576323
+[ 2011-07-07 11:13:16 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1002
+[ 2011-07-07 11:13:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 11:13:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  A 1002</mensaje><simid>5493773475882</simid><msguid>1310051595</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:19:26 ]:  SMSparser: Sending request (procesSMS): Message: D 1003 43181234  MSGUID: 1310051965  Caller: +5493773493090
+[ 2011-07-07 11:19:26 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-07 11:19:26 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 246
+
+
+[ 2011-07-07 11:19:26 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1310051965</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:19:31 ]:  SMSparser: Sending request (procesSMS): Message: D 1004  MSGUID: 1310051971  Caller: +5491167576323
+[ 2011-07-07 11:19:31 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-07 11:19:31 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 246
+
+
+[ 2011-07-07 11:19:31 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1310051971</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:21:37 ]:  SMSparser: Sending request (procesSMS): Message: D 1002  MSGUID: 1310052097  Caller: +5491167576323
+[ 2011-07-07 11:21:37 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1002
+[ 2011-07-07 11:21:37 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 11:21:37 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  D 1002</mensaje><simid>5493773475882</simid><msguid>1310052097</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:21:44 ]:  SMSparser: Sending request (procesSMS): Message: D 1003  MSGUID: 1310052104  Caller: +5491167576323
+[ 2011-07-07 11:21:44 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-07 11:21:44 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 246
+
+
+[ 2011-07-07 11:21:44 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1310052104</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:21:50 ]:  SMSparser: Sending request (procesSMS): Message: D 1004  MSGUID: 1310052109  Caller: +5491167576323
+[ 2011-07-07 11:21:50 ]:  SMSparser: Received reply (procesSMS): Kit does not exist!
+
+[ 2011-07-07 11:21:50 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 246
+
+
+[ 2011-07-07 11:21:50 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Kit does not exist!
+</mensaje><simid>5493773475882</simid><msguid>1310052109</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:23:05 ]:  SMSparser: Sending request (procesSMS): Message: A 1002  MSGUID: 1310052185  Caller: +5493773493090
+[ 2011-07-07 11:23:05 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1002
+[ 2011-07-07 11:23:05 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 11:23:05 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Message processed successfully.  A 1002</mensaje><simid>5493773475882</simid><msguid>1310052185</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:24:15 ]:  SMSparser: Sending request (procesSMS): Message: D 1001  MSGUID: 1310052255  Caller: +5491167576323
+[ 2011-07-07 11:24:15 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1001
+[ 2011-07-07 11:24:15 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 11:24:15 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5491167576323</destination><mensaje>Message processed successfully.  D 1001</mensaje><simid>5493773475882</simid><msguid>1310052255</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:26:25 ]:  SMSparser: Sending request (procesSMS): Message: D 1002  MSGUID: 1310052385  Caller: +5493773493090
+[ 2011-07-07 11:26:25 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  D 1002
+[ 2011-07-07 11:26:25 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 11:26:25 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Message processed successfully.  D 1002</mensaje><simid>5493773475882</simid><msguid>1310052385</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-07 11:26:33 ]:  SMSparser: Sending request (procesSMS): Message: A 1001  MSGUID: 1310052392  Caller: +5493773493090
+[ 2011-07-07 11:26:33 ]:  SMSparser: Received reply (procesSMS): Message processed successfully.  A 1001
+[ 2011-07-07 11:26:33 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 265
+
+
+[ 2011-07-07 11:26:33 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773493090</destination><mensaje>Message processed successfully.  A 1001</mensaje><simid>5493773475882</simid><msguid>1310052392</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-07-14 16:28:16 ]:  SMSparser: Sending request (procesSMS): Message: Recibiste 3 llamadas del numero 5493773507668, la ultima llamada fue recibida el dia 14/07 a las 17:23 hs. Manda Ideas al 1234 y descarga los mejores contenidos  MSGUID: 1310675295  Caller: +5493773507668
+[ 2011-07-14 16:28:16 ]:  SMSparser: Received reply (procesSMS): Error: action code RECIBISTE not valid. Please correct and resend 
+
+[ 2011-07-14 16:28:16 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 293
+
+
+[ 2011-07-14 16:28:16 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+5493773507668</destination><mensaje>Error: action code RECIBISTE not valid. Please correct and resend 
+</mensaje><simid>5493773475882</simid><msguid>1310675295</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:06:29 ]:  SMSparser: Sending request (procesSMS): Message: S 25  MSGUID: 1317733589  Caller: 0731221221
+[ 2011-10-04 09:07:21 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317733641  Caller: 0731221221
+[ 2011-10-04 09:13:29 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734009  Caller: 0731221221
+[ 2011-10-04 09:20:08 ]:  SMSparser: Sending request (procesSMS): Message:   MSGUID:   Caller: 
+[ 2011-10-04 09:20:47 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734447  Caller: 0731221221
+[ 2011-10-04 09:21:35 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734495  Caller: 0731221221
+[ 2011-10-04 09:21:43 ]:  SMSparser: Sending request (procesSMS): Message:   MSGUID:   Caller: 
+[ 2011-10-04 09:22:00 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734520  Caller: 0731221221
+[ 2011-10-04 15:22:01 ]:  SMSparser: Received reply (procesSMS): Error: phone number 0731221221 not found in database. It has been added but you won't be able to enter data until you request activation
+
+[ 2011-10-04 15:22:01 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 359
+
+
+[ 2011-10-04 15:22:01 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0731221221</destination><mensaje>Error: phone number 0731221221 not found in database. It has been added but you won't be able to enter data until you request activation
+</mensaje><simid>5493773475882</simid><msguid>1317734520</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:22:12 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734532  Caller: 0724008266
+[ 2011-10-04 15:22:12 ]:  SMSparser: Received reply (procesSMS): Error: phone number 0724008266 not found in database. It has been added but you won't be able to enter data until you request activation
+
+[ 2011-10-04 15:22:12 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 359
+
+
+[ 2011-10-04 15:22:12 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008266</destination><mensaje>Error: phone number 0724008266 not found in database. It has been added but you won't be able to enter data until you request activation
+</mensaje><simid>5493773475882</simid><msguid>1317734532</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:22:24 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734544  Caller: 0724008266
+[ 2011-10-04 15:22:24 ]:  SMSparser: Received reply (procesSMS): Error: phone number 0724008266 is not active. You won't be able to enter data until you request activation
+
+[ 2011-10-04 15:22:24 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 329
+
+
+[ 2011-10-04 15:22:24 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>0724008266</destination><mensaje>Error: phone number 0724008266 is not active. You won't be able to enter data until you request activation
+</mensaje><simid>5493773475882</simid><msguid>1317734544</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:22:35 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734555  Caller: +27724008266
+[ 2011-10-04 15:22:35 ]:  SMSparser: Received reply (procesSMS): Error: phone number  27724008266 is not active. You won't be able to enter data until you request activation
+
+[ 2011-10-04 15:22:35 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 333
+
+
+[ 2011-10-04 15:22:35 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008266</destination><mensaje>Error: phone number  27724008266 is not active. You won't be able to enter data until you request activation
+</mensaje><simid>5493773475882</simid><msguid>1317734555</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:23:20 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCC  MSGUID: 1317734600  Caller: +27724008226
+[ 2011-10-04 15:23:20 ]:  SMSparser: Received reply (procesSMS): Message processed successfully. Qty: 25
+[ 2011-10-04 15:23:20 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 263
+
+
+[ 2011-10-04 15:23:20 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Message processed successfully. Qty: 25</mensaje><simid>5493773475882</simid><msguid>1317734600</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:23:28 ]:  SMSparser: Sending request (procesSMS): Message: S 25 NCCP  MSGUID: 1317734608  Caller: +27724008226
+[ 2011-10-04 15:23:28 ]:  SMSparser: Received reply (procesSMS): Cannot find facility with code 'NCCP'. Message not processed
+
+[ 2011-10-04 15:23:28 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 285
+
+
+[ 2011-10-04 15:23:28 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Cannot find facility with code 'NCCP'. Message not processed
+</mensaje><simid>5493773475882</simid><msguid>1317734608</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:23:38 ]:  SMSparser: Sending request (procesSMS): Message: S 25  MSGUID: 1317734618  Caller: +27724008226
+[ 2011-10-04 15:23:38 ]:  SMSparser: Received reply (procesSMS): Incorrect report format. Not processed
+[ 2011-10-04 15:23:38 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 262
+
+
+[ 2011-10-04 15:23:38 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Incorrect report format. Not processed</mensaje><simid>5493773475882</simid><msguid>1317734618</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 09:23:46 ]:  SMSparser: Sending request (procesSMS): Message: S 2555555  MSGUID: 1317734626  Caller: +27724008226
+[ 2011-10-04 15:23:46 ]:  SMSparser: Received reply (procesSMS): Incorrect report format. Not processed
+[ 2011-10-04 15:23:46 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 262
+
+
+[ 2011-10-04 15:23:46 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Incorrect report format. Not processed</mensaje><simid>5493773475882</simid><msguid>1317734626</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:09:47 ]:  SMSparser: Sending request (procesSMS): Message: S 2555555  MSGUID: 1317737387  Caller: +27724008226
+[ 2011-10-04 16:09:47 ]:  SMSparser: Received reply (procesSMS): Incorrect report format. Please correct and resend
+[ 2011-10-04 16:09:47 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-10-04 16:09:47 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Incorrect report format. Please correct and resend</mensaje><simid>5493773475882</simid><msguid>1317737387</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:12:51 ]:  SMSparser: Sending request (procesSMS): Message: S 2555555  MSGUID: 1317737571  Caller: +27724008226
+[ 2011-10-04 16:12:51 ]:  SMSparser: Received reply (procesSMS): Cannot find patient with number '2555555'. Message not processed
+
+[ 2011-10-04 16:12:51 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 289
+
+
+[ 2011-10-04 16:12:51 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Cannot find patient with number '2555555'. Message not processed
+</mensaje><simid>5493773475882</simid><msguid>1317737571</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:13:02 ]:  SMSparser: Sending request (procesSMS): Message: S 43184111  MSGUID: 1317737582  Caller: +27724008226
+[ 2011-10-04 16:13:02 ]:  SMSparser: Received reply (procesSMS): Patient has not given consent '43184111'. Message not processed
+
+[ 2011-10-04 16:13:02 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 288
+
+
+[ 2011-10-04 16:13:02 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Patient has not given consent '43184111'. Message not processed
+</mensaje><simid>5493773475882</simid><msguid>1317737582</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:13:12 ]:  SMSparser: Sending request (procesSMS): Message: C 43184111  MSGUID: 1317737592  Caller: +27724008226
+[ 2011-10-04 16:13:12 ]:  SMSparser: Received reply (procesSMS): Patient has been 'updated'
+
+[ 2011-10-04 16:13:12 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 251
+
+
+[ 2011-10-04 16:13:12 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Patient has been 'updated'
+</mensaje><simid>5493773475882</simid><msguid>1317737592</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:13:17 ]:  SMSparser: Sending request (procesSMS): Message: S 43184111  MSGUID: 1317737597  Caller: +27724008226
+[ 2011-10-04 16:13:17 ]:  SMSparser: Received reply (procesSMS): Message processed successfully. Qty: 1
+[ 2011-10-04 16:13:17 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 262
+
+
+[ 2011-10-04 16:13:17 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Message processed successfully. Qty: 1</mensaje><simid>5493773475882</simid><msguid>1317737597</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:13:26 ]:  SMSparser: Sending request (procesSMS): Message: R 43184111  MSGUID: 1317737606  Caller: +27724008226
+[ 2011-10-04 16:13:26 ]:  SMSparser: Received reply (procesSMS): Message processed successfully. Qty: 1
+[ 2011-10-04 16:13:26 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 262
+
+
+[ 2011-10-04 16:13:26 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Message processed successfully. Qty: 1</mensaje><simid>5493773475882</simid><msguid>1317737606</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:13:38 ]:  SMSparser: Sending request (procesSMS): Message: R 50  MSGUID: 1317737618  Caller: +27724008226
+[ 2011-10-04 16:13:38 ]:  SMSparser: Received reply (procesSMS): Message processed successfully. Qty: 50
+[ 2011-10-04 16:13:38 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 263
+
+
+[ 2011-10-04 16:13:38 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Message processed successfully. Qty: 50</mensaje><simid>5493773475882</simid><msguid>1317737618</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:01 ]:  SMSparser: Sending request (procesSMS): Message: S 50 mch  MSGUID: 1317737641  Caller: +27724008226
+[ 2011-10-04 16:14:01 ]:  SMSparser: Received reply (procesSMS): Message processed successfully. Qty: 50
+[ 2011-10-04 16:14:01 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 263
+
+
+[ 2011-10-04 16:14:01 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Message processed successfully. Qty: 50</mensaje><simid>5493773475882</simid><msguid>1317737641</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:08 ]:  SMSparser: Sending request (procesSMS): Message: S 50 mchl  MSGUID: 1317737648  Caller: +27724008226
+[ 2011-10-04 16:14:08 ]:  SMSparser: Received reply (procesSMS): Cannot find facility with code 'MCHL'. Message not processed
+
+[ 2011-10-04 16:14:08 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 285
+
+
+[ 2011-10-04 16:14:08 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Cannot find facility with code 'MCHL'. Message not processed
+</mensaje><simid>5493773475882</simid><msguid>1317737648</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:19 ]:  SMSparser: Sending request (procesSMS): Message: e 5  MSGUID: 1317737659  Caller: +27724008226
+[ 2011-10-04 16:14:19 ]:  SMSparser: Received reply (procesSMS): Message processed successfully. Qty: 5
+[ 2011-10-04 16:14:19 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 262
+
+
+[ 2011-10-04 16:14:19 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Message processed successfully. Qty: 5</mensaje><simid>5493773475882</simid><msguid>1317737659</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:24 ]:  SMSparser: Sending request (procesSMS): Message: e   MSGUID: 1317737664  Caller: +27724008226
+[ 2011-10-04 16:14:24 ]:  SMSparser: Received reply (procesSMS): Incorrect report format. Please correct and resend
+[ 2011-10-04 16:14:24 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-10-04 16:14:24 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Incorrect report format. Please correct and resend</mensaje><simid>5493773475882</simid><msguid>1317737664</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:30 ]:  SMSparser: Sending request (procesSMS): Message: S   MSGUID: 1317737670  Caller: +27724008226
+[ 2011-10-04 16:14:30 ]:  SMSparser: Received reply (procesSMS): Incorrect report format. Please correct and resend
+[ 2011-10-04 16:14:30 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-10-04 16:14:30 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Incorrect report format. Please correct and resend</mensaje><simid>5493773475882</simid><msguid>1317737670</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:35 ]:  SMSparser: Sending request (procesSMS): Message: r  MSGUID: 1317737675  Caller: +27724008226
+[ 2011-10-04 16:14:35 ]:  SMSparser: Received reply (procesSMS): Incorrect report format. Please correct and resend
+[ 2011-10-04 16:14:35 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-10-04 16:14:35 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Incorrect report format. Please correct and resend</mensaje><simid>5493773475882</simid><msguid>1317737675</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:42 ]:  SMSparser: Sending request (procesSMS): Message: ew  MSGUID: 1317737682  Caller: +27724008226
+[ 2011-10-04 16:14:42 ]:  SMSparser: Received reply (procesSMS): Incorrect report format. Please correct and resend
+[ 2011-10-04 16:14:42 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 274
+
+
+[ 2011-10-04 16:14:42 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Incorrect report format. Please correct and resend</mensaje><simid>5493773475882</simid><msguid>1317737682</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:49 ]:  SMSparser: Sending request (procesSMS): Message: ew 30  MSGUID: 1317737689  Caller: +27724008226
+[ 2011-10-04 16:14:49 ]:  SMSparser: Received reply (procesSMS): Cannot find action ew. Please verify and resend
+
+[ 2011-10-04 16:14:49 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 272
+
+
+[ 2011-10-04 16:14:49 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Cannot find action ew. Please verify and resend
+</mensaje><simid>5493773475882</simid><msguid>1317737689</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:14:59 ]:  SMSparser: Sending request (procesSMS): Message: ew 30 ncc  MSGUID: 1317737699  Caller: +27724008226
+[ 2011-10-04 16:14:59 ]:  SMSparser: Received reply (procesSMS): Cannot find action ew. Please verify and resend
+
+[ 2011-10-04 16:14:59 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 272
+
+
+[ 2011-10-04 16:14:59 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>+27724008226</destination><mensaje>Cannot find action ew. Please verify and resend
+</mensaje><simid>5493773475882</simid><msguid>1317737699</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>
+[ 2011-10-04 10:20:45 ]:  SMSparser: Sending request (procesSMS): Message: e 2  MSGUID: 1317738045  Caller: 3774983994
+[ 2011-10-04 16:20:45 ]:  SMSparser: Received reply (procesSMS): Message processed successfully. Qty: 2
+[ 2011-10-04 16:20:45 ]:  SMSparser output: szHeader: HTTP/1.1 200 OK
+Content-Type: text/xml;charset=UTF-8
+Content-Length: 260
+
+
+[ 2011-10-04 16:20:45 ]:  SMSparser output: szXML: <?xml version='1.0' encoding='UTF-8'?><smsresponse><destination>3774983994</destination><mensaje>Message processed successfully. Qty: 2</mensaje><simid>5493773475882</simid><msguid>1317738045</msguid><retcodigo></retcodigo><extradata></extradata></smsresponse>

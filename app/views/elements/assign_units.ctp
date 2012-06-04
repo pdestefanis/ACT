@@ -1,0 +1,133 @@
+<script type="text/javascript">
+//<![CDATA[
+   function checkDisplayed() {
+      //  $("#StatSelection").click(function(){
+        if (jQuery("#StatSelection").val() == "0" ) {
+        	jQuery("#patient_div").slideDown(); 
+        	jQuery("#location_div").slideUp();
+        } else if (jQuery("#StatSelection").val() == "1" ) {
+        	jQuery("#patient_div").slideUp(); 
+        	jQuery("#location_div").slideDown();
+        } else {
+        	jQuery("#patient_div").slideUp(); 
+        	jQuery("#location_div").slideUp();
+        }
+     //});
+};   
+//]]>
+</script>
+<?php 
+	echo $this->Form->create('Stat');?>
+	<table>
+ 		<tr>
+	<?php
+		echo $this->Form->hidden('status_id', array('value' => 2));
+		echo $this->Form->hidden('user_id', array('value' => $userId));
+		//echo $this->Form->input('sent_to', array('options' => $locationsp, 'label' => 'Receiving Facility', 'empty' => '---Select---'));//,  'div' => array ('id' => 'parent_div', 'style' => 'display:none;', 'class' => 'input select required')));
+		echo "<td>";
+		$checkOptions = array(0 => __('Patient', true), 1 => __('Facility', true));
+		echo $this->Form->input('selection', array('type' => 'select', 
+								'options' => $checkOptions, 
+								'empty' =>  __('---Select---', true),
+								'label' => __('Assign to', true),
+								'div' => array ('class' => 'input select required assignSelect',
+												'id' => 'assignSelect')
+		 ) );
+		
+		echo $this->Form->input('patient_id', array('empty' => __('---Select---', true), 
+								'div' => array ('id' => 'patient_div', 
+										'style' => 'display:none;', 
+										'class' => 'input select required')
+								));
+		echo "<br/>";
+		//echo "</td>";
+		
+		//echo "<td>";
+		echo $this->Form->input('location_id', array('label' => __('Facility', true), 'empty' => '---Select---',
+								'div' => array ('id' => 'location_div', 
+										'style' => 'display:none;', 
+										'class' => 'input select required')
+								));
+		//echo "</td>";
+		//echo "<td>";
+		echo $this->Form->input('created', array(
+							        'label' => __('Date', true),
+							        'type' => 'date',
+							        'dateFormat' => 'YMD',
+									'timeFormat' => '24',
+							        'minYear' => date('Y') - 1,
+							        'maxYear' => date('Y') +1,
+									'separator' => '',
+									));
+		echo "</td>";	
+		echo "<td>";
+		echo $this->Form->input('Unit', array('type' => 'select', 'multiple' => true, 'size' => 10 ));
+		echo "</td>";	
+		echo "<td>";
+		//echo $this->Form->end(__('Submit', true));
+		if (empty($units)) {
+			echo __("No more units left", true);
+			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' .$lastUnits, 'update' => 'assign', 'disabled' => 'true'));
+		} else
+			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' . $lastUnits, 'update' => 'assign'));
+		echo "</td>";
+		//disable on select
+		/*$updatesel = 'update_patient_select' ;
+		$options4 = array('url' => $updatesel, 'update' => 'StatPatientId');
+		echo $ajax->observeField('StatLocationId', $options4);*/
+		
+		$options = array('url' => 'update_patient_select', 'update' => 'StatPatientId', 'after' => 'checkDisplayed()');
+		echo $ajax->observeField('StatSelection', $options);
+		
+		$options = array('url' => 'update_facility_select', 'update' => 'StatLocationId', 'after' => 'checkDisplayed()');
+		echo $ajax->observeField('StatSelection', $options);
+
+	?>
+	</tr>
+	</table>	
+	<table id='recent'>
+		<tr>
+			<th><?php echo __('Unit', true)?></th>
+			<th><?php echo __('Remove from list?', true)?></th>
+			<th><?php echo __('Action', true);
+				echo $this->Form->input('action', array('type' => 'select', 
+													'label' => '',
+													'options' => array(
+																		0 => __('Use only these units',true),
+																		1 => __('Use all but these units',true),
+																		2 => __('Remove all',true),),
+													'empty' => __('---Select---', true), 			
+													)
+									);
+			?></th>
+		</tr>
+		<?php 
+			echo "<br/><h2> ". __("Recently Used Units", true) . "</h2>";
+			if (!empty($lastUnits))
+			foreach (explode(",", $lastUnits) as $unit){
+				$unitId = $unit; ?>
+		<tr id='<?php echo 'removeTr.' . $unitId; ?>'>
+			<td><?php echo $allUnits[$unitId]; ?></td>
+			
+			<td><?php echo $this->Form->input('remove' . $unitId, array('type' => 'checkbox', 
+													'label' => '',
+													'id' => 'remove.' . $unitId,
+													'value' => $unitId, 
+													'checked' => false, 			
+													)
+									);
+			?></td>
+			<td><?php  
+					
+			?></td>
+		</tr>
+		<?php 
+				$options = array('url' => 'update_units_select', 'update' => 'StatUnit', 'after' =>  '$(\'removeTr.' . $unitId  . '\').hide()');
+				echo $ajax->observeField('remove.' . $unitId, $options);
+			}
+			$options = array('url' => 'update_units_select'  , 'update' => 'StatUnit');
+			echo $ajax->observeField('StatAction' , $options);
+		?>
+	</table>
+	
+	
