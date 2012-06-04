@@ -49,7 +49,7 @@
 								echo $access->checkHtml('Locations/view', 'text', $allLocations[$r['parent']], '/locations/view/' . $r['parent'] );
 							//echo $this->Html->link($allLocations[$r['parent']], array('controller' => 'locations', 'action' => 'view', $r['parent'])); ?>&nbsp;</td>
 					<td><table cellpadding="0" cellspacing="0" class="norow"><?php 
-							echo "<tr><td>" . __("Units Assigned", true). "</td>" ;
+							echo "<tr><td>" . __("Current Stock", true). "</td>" ;
 						?>
 						<td class='number'><?php 
 							echo $r['Assigned'] . "</td></tr>";  

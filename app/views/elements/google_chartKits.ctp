@@ -16,7 +16,7 @@
 				else
 					$parent = null;
 				//$parent = $allLocations[$r['parent']];
-			$reportHtml .= "<tr><td>" . __('Kits Assigned', true) ."</td>";
+			$reportHtml .= "<tr><td>" . __('Current Stock', true) ."</td>";
 			$reportHtml .= "<td>" . $r['Assigned'] . "</td></tr>";
 			$reportHtml .= "<tr><td>" . __('Kits Delivered to Patients', true) ."</td>";
 			$reportHtml .= "<td>" . $r['At Patient'] . "</td></tr>";

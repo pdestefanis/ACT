@@ -3,8 +3,8 @@ $config['Phone']['length'] = 8;
 $config['Graph']['limit'] = 3;
 $config['App']['name'] = 'ACT Kit Tracking v08';
 $config['Facility']['level0'] = 'NCC';
-$config['Facility']['level1'] = 'L1';
-$config['Facility']['level2'] = 'L2';
-$config['Facility']['level3'] = 'L3';
-$config['Facility']['level4'] = 'L4';
+$config['Facility']['level1'] = 'CH';
+$config['Facility']['level2'] = 'PHC';
+$config['Facility']['level3'] = 'Sub-PHC';
+$config['Facility']['level4'] = 'Level-4';
 ?>
