@@ -12,7 +12,7 @@ class UpdateFileHelper extends Helper {
 			$fileData .=  ",{" . "";
 		$fileData .=  "\"point\": {\"latitude\":\"" . $data['locationLatitude'] . "\",\"longitude\":\"" . $data['locationLongitude']. "\"},"  . "";
 		$fileData .=  "\"html\": \"<p><strong><a href=locations/view/" .  $data['id'] . ">" . $data['name'] . " (" . $data['shortname'] .")" . "</a></strong></p><br/>";
-		$fileData .=  "<p>" . __("Depends on: ",true) . $parent['name'] . " (" . $parent['shortname'] .")" . "</p><br/>";
+		$fileData .=  "<p>" . __("Reports To: ",true) . $parent['name'] . " (" . $parent['shortname'] .")" . "</p><br/>";
 	
 		return $fileData;
     }
@@ -50,7 +50,7 @@ class UpdateFileHelper extends Helper {
 	public function addKitsHeader() {
 		//prepare header
 		$fileData =  "<div class=infowindow><p><table><tr><td></td>";
-		$fileData .=  "<th>" . __('Number of Units', true) . "</th>";
+		$fileData .=  "<th>" . __('Kits', true) . "</th>";
 		$fileData .=  "</tr> ";
 		return $fileData;
 
@@ -60,15 +60,15 @@ class UpdateFileHelper extends Helper {
 		if ($alarm)
 			$class = "alert";			
 		$fileData = "<tr>";
-		$fileData .= "<th class=" .$class . ">" . __('Units Assigned', true) . "</th>";
+		$fileData .= "<th class=" .$class . ">" . __('Current Stock', true) . "</th>";
 		$fileData .= "<td class=" .$class . ">" . $data['Assigned']['sum'] . "</td>";
 		$fileData .= "</tr>";
 		$fileData .= "<tr>";
-		$fileData .= "<th class=" .$class . ">" . __('Units Dispensed to Patients', true) . "</th>";
+		$fileData .= "<th class=" .$class . ">" . __('Provided to Patients', true) . "</th>";
 		$fileData .= "<td class=" .$class . ">" . $data['At Patient']['sum'] . "</td>";
 		$fileData .= "</tr>";
 		$fileData .= "<tr>";
-		$fileData .= "<th class=" .$class . ">" . __('Units Discarded', true) . "</th>";
+		$fileData .= "<th class=" .$class . ">" . __('Discarded', true) . "</th>";
 		$fileData .= "<td class=" .$class . ">" . $data['Expired']['sum'] . "</td>";
 		$fileData .= "</tr>";
 
