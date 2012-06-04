@@ -214,14 +214,16 @@ class AppController extends Controller {
 					$newListd[$j-1]['stat_items']['quantity_after'] = $sum;
 					$i++;
 				} 
-				if ($old['stat_items']['location_id'] != $listd[$i]['stat_items']['location_id'])
-					$sum = $listd[$i]['stat_items']['quantity'];
-				else
-					$sum += $listd[$i]['stat_items']['quantity'];
-				$newListd[$j] = $listd[$i];		
-				$newListd[$j++]['stat_items']['quantity_after'] = $sum;
-				$old = $listd[$i];
-				$i++;
+				if (isset($listd[$i]['stat_items']['location_id'])){
+					if ($old['stat_items']['location_id'] != $listd[$i]['stat_items']['location_id'])
+						$sum = $listd[$i]['stat_items']['quantity'];
+					else
+						$sum += $listd[$i]['stat_items']['quantity'];
+					$newListd[$j] = $listd[$i];		
+					$newListd[$j++]['stat_items']['quantity_after'] = $sum;
+					$old = $listd[$i];
+					$i++;
+				}
 			} while (($i < count($listd)) && $old['stat_items']['location_id'] == $listd[$i]['stat_items']['location_id'] );
 		}
 		$listd = $newListd;
