@@ -48,7 +48,7 @@ echo '<br /><br />' ;
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
 
-		<li><?php echo $this->Html->link(__('List Units', true), array('action' => 'index'));?></li>
+		<li><?php echo $this->Html->link(__('List Kits', true), array('action' => 'index'));?></li>
 		<li><?php echo $this->Html->link(__('List Items', true), array('controller' => 'items', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Item', true), array('controller' => 'items', 'action' => 'add')); ?> </li>
 	</ul>
