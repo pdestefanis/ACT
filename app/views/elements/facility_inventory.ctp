@@ -17,7 +17,7 @@
 		<tr>
 			<th><?php echo __("Site Name", true);?></th>
 			<th><?php echo __("Upstream Site", true);?></th>
-			<th><?php echo __("Number of Kits", true);?></th>
+			<th><?php echo __("Kits", true);?></th>
 			<th><?php echo __("Last Delivery Report", true);?></th>
 		</tr>
 
@@ -53,11 +53,11 @@
 						?>
 						<td class='number'><?php 
 							echo $r['Assigned'] . "</td></tr>";  
-							echo "<tr><td>" . __("Units Delivered to Patients", true). "</td>" ;
+							echo "<tr><td>" . __("Provided to Patients", true). "</td>" ;
 						?>
 						<td class='number'><?php 
 							echo $r['At Patient'] . "</td></tr>";  
-							echo "<tr><td>" . __("Units Discarded", true). "</td>" ;
+							echo "<tr><td>" . __("Discarded", true). "</td>" ;
 						?>
 						<td class='number'><?php 
 							echo $r['Expired'] . "</td></tr>";  

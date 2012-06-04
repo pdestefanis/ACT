@@ -15,7 +15,7 @@
 		<tr>
 			<th><?php echo __("Facility", true);?></th>
 			<th><?php echo __("Level", true);?></th>
-			<th><?php echo __("Quantities", true);?></th>
+			<th><?php echo __("Counts", true);?></th>
 			
 			
 		</tr>
@@ -57,24 +57,24 @@
 	
 					<td>
 					<table cellpadding="0" cellspacing="0" class="norow">
-						<tr><th><?php echo __("Number of Kits", true);?></th>
-							<th><?php echo __("Aggregated Quantity", true);?></th>
-							<th><?php echo __("Own Quantity", true);?></th>
+						<tr><th><?php echo __("Kits", true);?></th>
+							<th><?php echo __("Aggregated", true);?></th>
+							<th><?php echo __("At Facility", true);?></th>
 							<th><?php echo __("Total", true);?></th>
 						</tr>
 						<tr><td><?php 
-						echo __("Kits Available", true); ?>&nbsp;</td>
+						echo __("Current Stock", true); ?>&nbsp;</td>
 						<td class='number'><?php echo $r['aggregated']; ?>&nbsp;</td>
 						<td class='number'><?php echo $r['own']; ?>&nbsp;</td>
 						<td class='number'><?php echo $r['total']; ?>&nbsp;</td></tr>
 						
 						<tr><td><?php 
-							echo __('Kits Delivered to Patients', true) ?>&nbsp;</td>
+							echo __('Provided to Patients', true) ?>&nbsp;</td>
 						<td class='number'><?php echo $r['agg']['At Patient']; ?>&nbsp;</td>
 						<td class='number'><?php echo $r['At Patient']; ?>&nbsp;</td>
 						<td class='number'><?php echo $r['Total']['At Patient']; ?>&nbsp;</td></tr>
 						<tr><td><?php 
-							echo __('Kits Discarded', true) ?>&nbsp;</td>
+							echo __('Discarded', true) ?>&nbsp;</td>
 						<td class='number'><?php echo $r['agg']['Expired']; ?>&nbsp;</td>
 						<td class='number'><?php echo $r['Expired']; ?>&nbsp;</td>
 						<td class='number'><?php echo $r['Total']['Expired']; ?>&nbsp;</td></tr>

@@ -1,5 +1,5 @@
 <div class="title">
-	<h2><?php __('Aggregated Inventory Chart');  ?></h2>
+	<h2><?php __('Inventory Chart');  ?></h2>
 </div>
 <?php
 	$rows =0;
@@ -7,7 +7,7 @@
 		$rows++;
 		$reportHtml = "<table class=\"small\">";
 		$reportHtml .= "<tr>";
-		$reportHtml .= "<th>" . __('Number of Kits', true) ."</th>";
+		$reportHtml .= "<th>" . __('Kits', true) ."</th>";
 		$reportHtml .= "<th>Total</th>";
 		$reportHtml .= "</tr>";
 		foreach ($report[$loc] as $r) {
@@ -18,9 +18,9 @@
 				//$parent = $allLocations[$r['parent']];
 			$reportHtml .= "<tr><td>" . __('Current Stock', true) ."</td>";
 			$reportHtml .= "<td>" . $r['Assigned'] . "</td></tr>";
-			$reportHtml .= "<tr><td>" . __('Kits Delivered to Patients', true) ."</td>";
+			$reportHtml .= "<tr><td>" . __('Provided to Patients', true) ."</td>";
 			$reportHtml .= "<td>" . $r['At Patient'] . "</td></tr>";
-			$reportHtml .= "<tr><td>" . __('Kits Discarded', true) ."</td>";
+			$reportHtml .= "<tr><td>" . __('Discarded', true) ."</td>";
 			$reportHtml .= "<td>" . $r['Expired'] . "</td></tr>";
 		}
 		$locs[] = array($r['lname'], $parent, $r['lname'], $reportHtml); 
