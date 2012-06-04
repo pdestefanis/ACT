@@ -66,7 +66,7 @@
 		echo "<td>";
 		//echo $this->Form->end(__('Submit', true));
 		if (empty($units)) {
-			echo __("No more units left", true);
+			echo __("No more kits left", true);
 			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' .$lastUnits, 'update' => 'assign', 'disabled' => 'true'));
 		} else
 			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' . $lastUnits, 'update' => 'assign'));

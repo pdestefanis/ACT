@@ -1,5 +1,5 @@
 <div class="unitsItems index">
-	<h2><?php __('Units Items');?></h2>
+	<h2><?php __('Kits Items');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
@@ -48,9 +48,9 @@
 <div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New Units Item', true), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Units', true), array('controller' => 'units', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Unit', true), array('controller' => 'units', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Kits Item', true), array('action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('List Kits', true), array('controller' => 'units', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Kit', true), array('controller' => 'units', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Items', true), array('controller' => 'items', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Item', true), array('controller' => 'items', 'action' => 'add')); ?> </li>
 	</ul>
