@@ -1,4 +1,5 @@
 <?php
+//comment
 class StatsController extends AppController {
 
 	var $name = 'Stats';
