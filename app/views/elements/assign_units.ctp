@@ -23,7 +23,6 @@
 	<?php
 		echo $this->Form->hidden('status_id', array('value' => 2));
 		echo $this->Form->hidden('user_id', array('value' => $userId));
-		//echo $this->Form->input('sent_to', array('options' => $locationsp, 'label' => 'Receiving Facility', 'empty' => '---Select---'));//,  'div' => array ('id' => 'parent_div', 'style' => 'display:none;', 'class' => 'input select required')));
 		echo "<td>";
 		$checkOptions = array(0 => __('Patient', true), 1 => __('Facility', true));
 		echo $this->Form->input('selection', array('type' => 'select', 

@@ -3,7 +3,7 @@
 	$fileData = $this->UpdateFile->addFileHeader(); 	
 
 	$i = 0;
-//echo "<pre>" . print_r($listitems, true) . "</pre>";
+
 	foreach ($locations as $loc) :
 		$alarm = false;
 		$globalAlarm = false;
@@ -13,7 +13,7 @@
 			if ($loc['locations']['parent_id'] == $aLoc['locations']['id']) {
 				$parent = $aLoc;
 			}
-			if ($loc['locations']['parent_id'] == 0) {
+			if ($loc['locations']['parent_id'] === 0) {
 				$parent = $aLoc;
 			}
 		}

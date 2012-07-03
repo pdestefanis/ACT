@@ -259,11 +259,23 @@ class AppController extends Controller {
 			
 			
 			//sum up expired/discarded
-			$query = "select sum(quantity) as sum from stats " .
-			"WHERE status_id = 3 ";
-			$query .= "AND location_id =" . $ld['stat_items']['location_id'] . " ";
+			$query = "select unit_id, location_id from stats s" .
+				" WHERE status_id = 3 ";
+			$query .= "AND (location_id =" . $ld['stat_items']['location_id'] . " OR location_id IS NULL)";
 			$expired = $this->Stat->query($query);
-			
+			foreach ($expired as $key=>$e) { //find latest location for units where it is not specified
+				if (is_null($e['s']['location_id']) ) {
+					$query = "select max(created) as macCre, location_id  from stats s" .
+							" WHERE status_id = 6  " .
+							" AND unit_id =" . $e['s']['unit_id'] . 
+							" AND location_id = " . $ld['stat_items']['location_id'];
+					$expiredLoc = $this->Stat->query($query);
+
+					if (is_null($expiredLoc[0][0]['macCre'] )) //unit doesn't belong to this location
+						unset($expired[$key]);
+				}
+			}
+			$expiredCount[0][0]['sum'] = count($expired);
 			/*TODO check this 
 			 * $sentP = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 2 and location_id =' . $ld['stat_items']['location_id'] );
 			$receivedP = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 1 and location_id =' . $ld['stat_items']['location_id'] );
@@ -293,12 +305,12 @@ class AppController extends Controller {
 			
 			$assigned[0][0]['sum'] == ''?($assigned[0][0]['sum'] =0):'';
 			$atPatient['sum'] == ''?($patientSent['sum'] =0):'';
-			$expired[0][0]['sum'] == ''?($expired[0][0]['sum'] =0):'';
+			$expiredCount[0][0]['sum'] == ''?($expiredCount[0][0]['sum'] =0):'';
 			
 			//received means at the location
 			$listitems[$ld['locations']['lid']][0]['Assigned'] = $assigned[0][0];
 			$listitems[$ld['locations']['lid']][0]['At Patient'] = $atPatient;
-			$listitems[$ld['locations']['lid']][0]['Expired'] = $expired[0][0];
+			$listitems[$ld['locations']['lid']][0]['Expired'] = $expiredCount[0][0];
 		}
 		//echo "<pre>" . print_r($listitems, true) . "</pre>";		
 	}
@@ -1082,7 +1094,7 @@ class AppController extends Controller {
 	
 	protected function isUnusedUnit($unitId) {
 		$this->loadModel('Stats'); 
-		
+		//TODO is this really true?
 		$statUnit = $this->Stats->find('list', array('conditions' => array('unit_id' => $unitId, 'status_id' => 2)));
 		if (empty($statUnit))
 			return true;
@@ -1158,8 +1170,40 @@ class AppController extends Controller {
  
 		return -1;
 	}
+	
 	protected function dateArrayToString($date){
 		return $date['year'] . "-" . $date['month'] ."-" . $date['day'] 
 					. " " . $date['hour'] . ":" . $date['min']  . ":" . $date['sec'];
 	}
+	
+	protected function getUnitCurrentFacility($unitId) {
+			$this->loadModel('Stats');
+			//last location
+			$query = 'SELECT created, patient_id, location_id from stats st ';
+			$query .= ' WHERE unit_id=' . $unitId;
+			$result = $this->Stats->query($query);
+			$maxCreated = NULL;
+			$maxFacilityId = NULL;
+			$maxPatientId = NULL;
+		
+			foreach ($result as $key => $value) {
+				if (is_null($maxCreated)) { //initial, set them both
+					$maxCreated = $value['st']['created'];
+					
+				}
+				if ($maxCreated <= $value['st']['created'] && (!is_null($value['st']['location_id']) 
+												|| !is_null($value['st']['patient_id'])) ) {
+					$maxCreated = $value['st']['created'];
+					$maxFacilityId = $value['st']['location_id'];
+					$maxPatientId = $value['st']['patient_id'];
+				}
+			}
+			if (!is_null($maxFacilityId) || !is_null($maxPatientId)) {
+					return array($maxFacilityId, $maxPatientId);
+			}
+		
+			return -1;
+	}
+	
+	
 }

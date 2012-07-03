@@ -12,9 +12,9 @@ Only user or phone field can be changed. The facility will be populated, after s
  		<legend><?php __('Edit Update'); ?></legend>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('status_id', array('disabled' => 'disabled'));
-		echo $this->Form->input('quantity', array('disabled' => 'disabled'));
-		echo $this->Form->input('sent_to', array('options' => $locationsp, 'label' => 'Receiving Facility', 'empty' => '---Select---'));
+		echo $this->Form->hidden('status_id', array('disabled' => 'disabled'));
+		echo $this->Form->hidden('quantity', array('disabled' => 'disabled'));
+		//echo $this->Form->input('sent_to', array('options' => $locationsp, 'label' => 'Receiving Facility', 'empty' => '---Select---'));
 		echo $this->Form->input('patient_id', array('empty' => '---Select---'));
 		//echo $this->Form->input('item_id', array('empty' => '---Select---'));
 		//echo $this->Form->input('rawreport_id');

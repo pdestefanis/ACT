@@ -1,5 +1,4 @@
 <?php
-//comment
 class StatsController extends AppController {
 
 	var $name = 'Stats';
@@ -188,11 +187,25 @@ class StatsController extends AppController {
 										//((is_null($lastUnits) || empty($lastUnits))?'':'Unit.id not in (' . $lastUnits . ")") 
 										)
 										));	
+		
 		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
 										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
 		$userId = $this->Session->read('Auth.User.id');
 		$locations = $this->Stat->Location->find('list');
 		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		//attach current location to unit
+		$unitsFacility = array();
+		foreach ($units as $unitId => $unit){
+			$latestPatFac = $this->getUnitCurrentFacility($unitId);
+			if (!is_null($latestPatFac[0]) && $latestPatFac != -1)
+				$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
+			else if (!is_null($latestPatFac[1]) && $latestPatFac != -1)
+				$unitsFacility[$unitId] = $unit . "(" . $patients[$latestPatFac[1]] .")";
+			else 
+				$unitsFacility[$unitId] = $unit;
+			
+		}
+		$units = $unitsFacility;
 		
 		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));
 		
@@ -270,6 +283,15 @@ class StatsController extends AppController {
 		$discarded = $this->Stat->find('list',  array ('conditions' => array('Stat.status_id = 3'
 													), 
 										'fields' => array('unit_id'), 'callbacks' => false) );
+		$opened = $this->Stat->find('list',  array ('conditions' => array('Stat.patient_id IS NOT NULL '
+											),
+									'fields' => array('unit_id'), 'callbacks' => false) );
+		$openedAndReceived = $this->Stat->find('list',  array ('conditions' => array(
+				'Stat.status_id = 1', 
+				((is_null($opened) || empty($opened))?'':'Stat.unit_id in (' . implode(",",$opened) . ")")
+				
+				),
+				'fields' => array('unit_id'), 'callbacks' => false) );
 		$discarded = array_unique($discarded);		
 		$unitsArray = explode(",", $lastUnits);
 		$unitsArray = array_diff($unitsArray, $discarded);
@@ -277,7 +299,8 @@ class StatsController extends AppController {
 		$lastUnits = implode(",", $unitsArray);									
 		$units = $this->Stat->Unit->find('list', array('conditions' => 
 										array(//'Unit.id not in (' . implode(",",$discarded) . ")",
-										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")
+										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")"), 
+										((is_null($openedAndReceived) || empty($openedAndReceived))?'':'Unit.id not in (' . implode(",",$openedAndReceived) . ")")
 										//((is_null($lastUnits) || empty($lastUnits))?'':'Unit.id not in (' . $lastUnits . ")") 
 										)
 										));	
@@ -286,6 +309,19 @@ class StatsController extends AppController {
 		$userId = $this->Session->read('Auth.User.id');
 		$locations = $this->Stat->Location->find('list');
 		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		//attach current location to unit
+		$unitsFacility = array();
+		foreach ($units as $unitId => $unit){
+			$latestPatFac = $this->getUnitCurrentFacility($unitId);
+			if (!is_null($latestPatFac[0]) && $latestPatFac != -1)
+				$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
+			else if (!is_null($latestPatFac[1]) && $latestPatFac != -1)
+				$unitsFacility[$unitId] = $unit . "(" . $patients[$latestPatFac[1]] .")";
+			else
+				$unitsFacility[$unitId] = $unit;
+				
+		}
+		$units = $unitsFacility;
 		
 		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));
 		
@@ -391,10 +427,10 @@ class StatsController extends AppController {
 		else 
 			$users = $this->Stat->User->find('list', array ('conditions' => 
 						array('User.id ='. $this->Session->read('Auth.User.id') )) );
-		$locationsp = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		//$locationsp = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
 		$patients = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
 		$this->set('locations', $this->Stat->Location->find('list', array('conditions' => array('Location.id' => $this->data['Stat']['location_id'] ))));
-		$modifiers = $this->Stat->Modifier->find('list');
+		//$modifiers = $this->Stat->Modifier->find('list');
 		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
 		$this->set(compact('units', 'messagereceiveds', 'users',  'phones', 'locationsp', 'patients', 'statuses'));
 	}
@@ -646,23 +682,43 @@ class StatsController extends AppController {
 		$patients = $this->Stat->Patient->find('list');
 		$this->set(compact('locations', 'patients'));
 		
-		$sent = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 2 and location_id in (' . implode(",", $this->Session->read("userLocations")) .')');
-		$received = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 1 and location_id in (' . implode(",", $this->Session->read("userLocations")) .')');
+		$assigned = $this->Stat->query('select id, unit_id, patient_id, created 
+					from stats s 
+					where  patient_id is not null 
+					and status_id = 2 
+					order by created asc');
+					//and location_id in (' . implode(",", $this->Session->read("userLocations")) .')
+		$open = $this->Stat->query('select unit_id, patient_id, created 
+					from stats s 
+					where status_id = 3 
+					
+					order by created asc'); //and location_id in (' . implode(",", $this->Session->read("userLocations")) .') 
 		$popped = false;
-		//loop trhough received and remove all patient ids that have a receive record 
-		//patients will more then one send will remain only one send will be removed
-		foreach ($received as $r) { 
-			foreach ($sent as $key=>$s) {
-				if ($r['s']['patient_id'] == $s['s']['patient_id'] && !$popped){
-					unset($sent[$key]);
+		//loop trhough opened units and remove all patient ids which unit was open
+		//patients with more than one assigned will remain only one send will be removed
+		foreach ($open as $o) { 
+			foreach ($assigned as $key=>$a) {
+				if ($o['s']['unit_id'] == $a['s']['unit_id'] && !$popped
+							&& $o['s']['created'] > $a['s']['created']){
+					unset($assigned[$key]);
 					$popped = true;
 				}
 			}
 			$popped = false;
 		}
 		$statIds = array();
-		foreach ($sent as $c) {
+		$statIdLoc = array();
+		foreach ($assigned as $c) {
+			//attach the location to this patient
+			$kitLocation = $this->Stat->query(' select location_id
+				from stats s
+				where  patient_id = ' . $c['s']['patient_id'] .'
+				and status_id = 6
+				and created = \'' . $c['s']['created'] .'\' 
+				and unit_id = ' . $c['s']['unit_id'] .'
+				order by created asc;');
 			$statIds[] = $c['s']['id'];
+			$statIdLoc[$c['s']['id']] = $kitLocation[0]['s']['location_id'];
 		}
 		if (empty($statIds))
 			$statIds[] = -1;
@@ -673,7 +729,7 @@ class StatsController extends AppController {
 		//if (!empty($search) ) {
 				$this->paginate['Stat'] = array('order' => 'Stat.created DESC',
 										'conditions' => array("Stat.id" => $statIds ,
-														"Stat.patient_id is not null", 
+														//"Stat.patient_id is not null", 
 														"Stat.status_id" => 2,  
 											"OR" => array("Location.name LIKE "=>"%".$search."%", 
 													"Location.shortname LIKE" => "%".$search."%", 
@@ -682,6 +738,7 @@ class StatsController extends AppController {
 											)
 										);
 		//} 
+		$this->set('statIdLoc', $statIdLoc);
 		$this->set('stats', $this->paginate());
 	}
 	

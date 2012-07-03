@@ -12,7 +12,8 @@ class UpdateFileHelper extends Helper {
 			$fileData .=  ",{" . "";
 		$fileData .=  "\"point\": {\"latitude\":\"" . $data['locationLatitude'] . "\",\"longitude\":\"" . $data['locationLongitude']. "\"},"  . "";
 		$fileData .=  "\"html\": \"<p><strong><a href=locations/view/" .  $data['id'] . ">" . $data['name'] . " (" . $data['shortname'] .")" . "</a></strong></p><br/>";
-		$fileData .=  "<p>" . __("Reports To: ",true) . $parent['name'] . " (" . $parent['shortname'] .")" . "</p><br/>";
+		if ($parent['shortname'] != $data['shortname']) //only print parent when not the root facility
+			$fileData .=  "<p>" . __("Reports To: ",true) . $parent['name'] . " (" . $parent['shortname'] .")" . "</p><br/>";
 	
 		return $fileData;
     }
