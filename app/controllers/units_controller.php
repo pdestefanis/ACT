@@ -40,29 +40,55 @@ class UnitsController extends AppController {
 	function add() {
 		$lastUnits =  $this->Session->read("recentlyUsedUnits");
 		if (!empty($this->data)) {
-			$this->Unit->create();
-			if ($this->Unit->save($this->data)) {
-				$this->Session->setFlash(__('The unit has been saved', true), 'flash_success');
-				if ($lastUnits !='')
-					$unitsArray = explode(",", $lastUnits);
-				else 	
-					$unitsArray = array();
-				array_push($unitsArray, $this->Unit->id);
-				$lastUnits = implode(",", $unitsArray);
-				//save related records
-				$this->Unit->UnitsItem->save(array('UnitsItem' => array ( 'unit_id' => $this->Unit->id, 
-										'item_id' => $this->data['Unit']['item_id'] ) ));
-				//$this->redirect(array('action' => 'index'));
-				
+			if (empty($this->data['Unit']['location_id'])  ) {
+				$this->Unit->invalidate('location_id', __('Please select facility' , true));
+				$this->Session->setFlash(__('Facility is required. Please select a facility', true));
 			} else {
-				$this->Session->setFlash(__('The unit could not be saved. Please, try again.', true));
+				$this->Unit->create();
+				if ($this->Unit->save($this->data)) {
+					//create stats assignment data for the new unit
+					$statData['Stats']['created']['year'] = date('Y');
+					$statData['Stats']['created']['month'] = date('m');
+					$statData['Stats']['created']['day'] = date('d');
+					$statData['Stats']['created']['hour'] = date('H');
+					$statData['Stats']['created']['min'] = date('i');
+					$statData['Stats']['created']['sec'] = date('s');
+
+					//prepare the stats data
+					$statData = array('Stats' => array(
+														'created' => $statData['Stats']['created'],
+														'location_id' => $this->data['Unit']['location_id'],
+														'unit_id' => $this->Unit->id,
+														'status_id' => 2, //2 is assign
+														'user_id' => $this->Unit->Stat->Location->data["authUser"]['id'] ,
+													) );
+					$this->loadModel('Stats');
+					$this->Stats->create();
+					$this->Stats->save($statData);
+					
+					$this->Session->setFlash(__('The unit has been saved', true), 'flash_success');
+					if ($lastUnits !='')
+						$unitsArray = explode(",", $lastUnits);
+					else 	
+						$unitsArray = array();
+					array_push($unitsArray, $this->Unit->id);
+					$lastUnits = implode(",", $unitsArray);
+					//save related records
+					$this->Unit->UnitsItem->save(array('UnitsItem' => array ( 'unit_id' => $this->Unit->id, 
+											'item_id' => $this->data['Unit']['item_id'] ) ));
+					//$this->redirect(array('action' => 'index'));
+					
+				} else {
+					$this->Session->setFlash(__('The unit could not be saved. Please, try again.', true));
+				}
 			}
 		}
 		$this->Session->write("recentlyUsedUnits", $lastUnits);
 		$items = $this->Unit->Item->find('list');
+		$locations = $this->Unit->Stat->Location->find('list');
 		$batches = $this->Unit->Batch->find('list');
 		$allUnits = $this->Unit->find('list');
-		$this->set(compact('items', 'batches', 'lastUnits', 'allUnits'));
+		$this->set(compact('items', 'batches', 'lastUnits', 'allUnits', 'locations'));
 	}
 
 	function edit($id = null) {

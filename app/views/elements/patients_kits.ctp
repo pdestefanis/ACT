@@ -44,7 +44,7 @@
 		</td>
 		<td>
 			<?php
-				echo $access->checkHtml('Locations/view', 'text', $locations[$sent['Stat']['location_id']], '/locations/view/' . $sent['Stat']['location_id'] );
+				echo $access->checkHtml('Locations/view', 'text', $locations[$statIdLoc[$sent['Stat']['id']]], '/locations/view/' . $statIdLoc[$sent['Stat']['id']] );
 				?>
 		
 		</td>
