@@ -5,8 +5,8 @@ class DATABASE_CONFIG {
 		'driver' => 'mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'track_user',
-		'password' => 'vBn5Ql',
+		'login' => 'root',
+		'password' => '',
 		'database' => 'track',
 	);
 }
