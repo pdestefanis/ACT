@@ -343,14 +343,14 @@ class StatsController extends AppController {
 				$this->data['Stat']['created']['sec'] = date('s');
 				$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat']['created']));
 				//if assiging the same unit to the same facility don't increment quantity
-				$this->data['Stat']['quantity'] = (($lastFacilityWithKit === $locationId)?0:1);
+				$this->data['Stat']['quantity'] = -1;
 
-				if ($this->data['Stat']['quantity'] != 0 && $lastFacilityWithKit != -1)
+				if ( $lastFacilityWithKit != -1)
 						$this->adjustQuantities(
 											$this->data['Stat']['created'],
 											$unit_id,
 											'A', 
-											(isset($patientId)?0:1), //no need for qty when assigning to patient
+											(isset($locationId)?-1:0), //no need for qty when assigning to patient
 											$locationId, 
 											NULL,
 											(isset($this->data['Stat']['phone_id'])?$this->data['Stat']['phone_id']:NULL),
@@ -710,15 +710,16 @@ class StatsController extends AppController {
 		$statIdLoc = array();
 		foreach ($assigned as $c) {
 			//attach the location to this patient
-			$kitLocation = $this->Stat->query(' select location_id
+			/* $kitLocation = $this->Stat->query(' select location_id
 				from stats s
 				where  patient_id = ' . $c['s']['patient_id'] .'
 				and status_id = 6
 				and created = \'' . $c['s']['created'] .'\' 
 				and unit_id = ' . $c['s']['unit_id'] .'
-				order by created asc;');
+				order by created asc;'); */
 			$statIds[] = $c['s']['id'];
-			$statIdLoc[$c['s']['id']] = $kitLocation[0]['s']['location_id'];
+			$currFacility = $this->getUnitCurrentFacility($c['s']['unit_id'], false);
+			$statIdLoc[$c['s']['id']] = $currFacility[0];
 		}
 		if (empty($statIds))
 			$statIds[] = -1;

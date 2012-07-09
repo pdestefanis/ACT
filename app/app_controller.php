@@ -1176,7 +1176,7 @@ class AppController extends Controller {
 					. " " . $date['hour'] . ":" . $date['min']  . ":" . $date['sec'];
 	}
 	
-	protected function getUnitCurrentFacility($unitId) {
+	protected function getUnitCurrentFacility($unitId, $hasPatient = true) {
 			$this->loadModel('Stats');
 			//last location
 			$query = 'SELECT created, patient_id, location_id from stats st ';
@@ -1192,13 +1192,13 @@ class AppController extends Controller {
 					
 				}
 				if ($maxCreated <= $value['st']['created'] && (!is_null($value['st']['location_id']) 
-												|| !is_null($value['st']['patient_id'])) ) {
+												|| (!is_null($value['st']['patient_id']) && $hasPatient )) ) {
 					$maxCreated = $value['st']['created'];
 					$maxFacilityId = $value['st']['location_id'];
 					$maxPatientId = $value['st']['patient_id'];
 				}
 			}
-			if (!is_null($maxFacilityId) || !is_null($maxPatientId)) {
+			if (!is_null($maxFacilityId) || !is_null($maxPatientId) ) {
 					return array($maxFacilityId, $maxPatientId);
 			}
 		
