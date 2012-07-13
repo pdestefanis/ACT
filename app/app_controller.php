@@ -1104,32 +1104,72 @@ class AppController extends Controller {
 	protected function adjustQuantities($created, $unitId, $action, $quantity, $locationId = null, 
 		$patientId = null, $phoneId = null, $userId = null, $messagereceivedId = null){
 		$this->loadModel('Stats');
-		//if created is less then current //back entry run the update sequence
-		//updateBackEntry();
+		//back entry run the update sequence
+		$shouldAdjust = FALSE;
+		if (!is_null($locationId))	
+			$shouldAdjust = $this->updateBackEntry($created, $unitId,  $locationId);
 		
-		// else current entry
 		//is it a facility or patient assignment?
 		$lastFacilityWithKit = $this->findLastUnitFacility($unitId, $this->dateArrayToString($created));
 		//TODO get the user id of phone 
 		//adjust quantity for last facility that had the unit
-		$data = array();
-		$data['Stats'] = array();
-		$data['Stats']['quantity'] = -1;
-		$data['Stats']['phone_id'] = ((is_null($phoneId)?0:$phoneId));
-		$data['Stats']['location_id'] = $lastFacilityWithKit;
-		$data['Stats']['unit_id'] = $unitId;
-		$data['Stats']['messagereceived_id'] = ((is_null($messagereceivedId)?NULL:$messagereceivedId));;
-		$data['Stats']['user_id'] = ((is_null($userId)?NULL:$userId));;
-		$data['Stats']['status_id'] = 6; //system update
-		$data['Stats']['patient_id'] = ((is_null($patientId)?NULL:$patientId));;
-		$data['Stat']['created'] = $created;
-		$this->Stats->create();
-		$this->Stats->save($data);
-		
+			$data = array();
+			$data['Stats'] = array();
+			$data['Stats']['quantity'] = -1;
+			$data['Stats']['phone_id'] = ((is_null($phoneId)?0:$phoneId));
+			$data['Stats']['location_id'] = $lastFacilityWithKit;
+			$data['Stats']['unit_id'] = $unitId;
+			$data['Stats']['messagereceived_id'] = ((is_null($messagereceivedId)?NULL:$messagereceivedId));;
+			$data['Stats']['user_id'] = ((is_null($userId)?NULL:$userId));;
+			$data['Stats']['status_id'] = 6; //system update
+			$data['Stats']['patient_id'] = ((is_null($patientId)?NULL:$patientId));;
+			$data['Stats']['created'] = $created;
+			$this->Stats->create();
+			$this->Stats->save($data);
 	}
 	//TODO
-	protected function updateBackEntry(){
+	protected function updateBackEntry($created, $unitId,  $locationId){
+		//first see if this unit was already automatically dispensed id 6
+		// from a different facility
+		//if ti was insert the record 
+		$compDate = $this->dateArrayToString($created);
+		$this->loadModel('Stats');
+		//last location prior to a date - this is to cater for back entry
+		$query = 'SELECT id, created, location_id, patient_id from stats st ';
+		$query .= ' WHERE unit_id=' . $unitId;
+		$query .= ' AND created >  \'' . $compDate . '\''
+								. ' AND quantity = -1 '
+								. ' AND status_id = 6 ';
+	
+		$result = $this->Stats->query($query);
+		$maxCreated = NULL;
+		$maxCreatedId = NULL;
+		$maxFacilityId = NULL;
 		
+		foreach ($result as $key => $value) {
+			if (is_null($maxCreated)) { //initial, set the both
+				$maxCreated = $value['st']['created'];
+				$maxCreatedId = $value['st']['id'];
+				$maxFacilityId = $value['st']['location_id'];
+			}
+			if ($maxCreated > $value['st']['created'] && $compDate > $value['st']['created'] 
+						&& !is_null($value['st']['location_id'])) {
+				$maxCreated = $value['st']['created'];
+				$maxCreatedId = $value['st']['id'];
+				$maxFacilityId = $value['st']['location_id'];
+			}
+		}
+		//now use the id to update this record with the newer location
+		if (!is_null($maxCreated)) {
+			$data = array();
+			$data['Stats'] = array();
+			$data['Stats']['id'] = $maxCreatedId;
+			$data['Stats']['location_id'] =  $locationId;
+			//$data['Stats']['created'] = $created;
+			$this->Stats->save($data);
+		//	return FALSE;
+		}
+		//return TRUE;
 	}
 	//TODO
 	protected function findLastUnitFacility($unitId, $created){
@@ -1204,6 +1244,24 @@ class AppController extends Controller {
 		
 			return -1;
 	}
+	protected function getUnitFirstDate($unitId) {
+		$this->loadModel('Stats');
+		//last location
+		$query = 'SELECT min(created) created from stats st ';
+		$query .= ' WHERE unit_id=' . $unitId;
+		$result = $this->Stats->query($query);
+		$minCreated = NULL;
 	
+		foreach ($result as $key => $value) {
+			if (is_null($minCreated)) { //initial, set them both
+				$minCreated = $value[0]['created'];	
+			}
+		}
+		if (!is_null($minCreated) ) {
+			return $minCreated;
+		}
+	
+		return -1;
+	}
 	
 }

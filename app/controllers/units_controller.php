@@ -47,9 +47,7 @@ class UnitsController extends AppController {
 				$this->Unit->create();
 				if ($this->Unit->save($this->data)) {
 					//create stats assignment data for the new unit
-					$statData['Stats']['created']['year'] = date('Y');
-					$statData['Stats']['created']['month'] = date('m');
-					$statData['Stats']['created']['day'] = date('d');
+					$statData['Stats']['created'] = $this->data['Unit']['created'];
 					$statData['Stats']['created']['hour'] = date('H');
 					$statData['Stats']['created']['min'] = date('i');
 					$statData['Stats']['created']['sec'] = date('s');
@@ -57,11 +55,13 @@ class UnitsController extends AppController {
 					//prepare the stats data
 					$statData = array('Stats' => array(
 														'created' => $statData['Stats']['created'],
+														'quantity' => 1,
 														'location_id' => $this->data['Unit']['location_id'],
 														'unit_id' => $this->Unit->id,
 														'status_id' => 2, //2 is assign
 														'user_id' => $this->Unit->Stat->Location->data["authUser"]['id'] ,
 													) );
+					
 					$this->loadModel('Stats');
 					$this->Stats->create();
 					$this->Stats->save($statData);

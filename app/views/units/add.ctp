@@ -19,6 +19,15 @@ echo '<br /><br />' ;
 		
 		</div> <?php 
 		echo $this->Form->input('location_id', array('empty' => '---Select---','label' => __('Facility', true), 'div' => array ('class' => 'required')));
+		echo $this->Form->input('created', array(
+				'label' => __('Date', true),
+				'type' => 'date',
+				'dateFormat' => 'YMD',
+				'timeFormat' => '24',
+				'minYear' => date('Y') - 1,
+				'maxYear' => date('Y') +1,
+				'separator' => '',
+		));
 		echo $this->Form->input('item_id');
 		
 	?>

@@ -110,16 +110,27 @@ class StatsController extends AppController {
 			$lastUnits =  $this->Session->read("recentlyUsedUnits");
 		}
 		if (!empty($this->data)) {
+			$isEarlyCraeted = FALSE;
+			$earlyDate = NULL;
+			foreach ($this->data['Stat']['Unit'] as $key => $unit_id) {
+				$earlyDate = $this->getUnitFirstDate($unit_id);
+				if ($earlyDate != -1 && $earlyDate < $this->data['Stat']['created']) {
+					$isEarlyCraeted = TRUE;
+				}
+			}	
 			if (empty($this->data['Stat']['Unit']) ) {
 				$this->Stat->invalidate('Unit', __('Please select unit(s)' , true));
 				$this->Session->setFlash(__('Please select a unit.', true));
+			} else if ($isEarlyCraeted) {
+				$this->Stat->invalidate('craeted', __('Assignment date is prior to unit creation.' , true));
+				$this->Session->setFlash(__('Please select a date greater than: ' . $earlyDate, true));
 			} else if (count($this->data['Stat']['Unit'])>1 &&  !empty($this->data['Stat']['patient_id'])) {
 				$this->Stat->invalidate('Unit', __('Please select only one unit' , true));
 				$this->Session->setFlash(__('You can only select one unit when assigning to patient', true));
 			} else if (empty($this->data['Stat']['patient_id']) && empty($this->data['Stat']['location_id'])) {
 				$this->Stat->invalidate('assignSelect', __('Please select facility or patient' , true));
 				$this->Session->setFlash(__('Please select facility or patient', true));
-			}else {
+			} else {
 				$locationId = $this->data['Stat']['location_id'];
 				$patientId = $this->data['Stat']['patient_id'];
 				$userId = $this->data['Stat']['user_id'];
@@ -245,7 +256,7 @@ class StatsController extends AppController {
 																						'unit_id' => $unit_id
 													), 
 										'fields' => array('unit_id'), 'callbacks' => false) );
-					//if assiging the same unit to the same facility don't increment quantity
+					//if receiving the same unit from the same facility don't increment quantity
 					$this->data['Stat'][$i]['quantity'] = 
 							(($lastFacilityWithKit === $locationId || !empty($wasWithPatient))?0:1);
 					//adjust the quantities only one quantity at a time
@@ -253,8 +264,8 @@ class StatsController extends AppController {
 						$this->adjustQuantities(
 											$this->data['Stat'][$i]['created'],
 											$unit_id,
-											'A', 
-											(isset($patientId)?0:1), //no need for qty when assigning to patient
+											'R', 
+											(isset($patientId)?0:1), //no need for qty when receiving from patient
 											$locationId, 
 											$patientId,
 											(isset($this->data['Stat'][$i]['phone_id'])?$this->data['Stat'][$i]['phone_id']:NULL),
