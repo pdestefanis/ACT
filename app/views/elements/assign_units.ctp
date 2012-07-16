@@ -14,6 +14,15 @@
         }
      //});
 };   
+jQuery(document).ready(function () {
+	if (jQuery("#StatSelection").val() == "0" ) {
+    	jQuery("#patient_div").slideDown(); 
+    	jQuery("#location_div").slideUp();
+	} else if (jQuery("#StatSelection").val() == "1" ) {
+    	jQuery("#patient_div").slideUp(); 
+    	jQuery("#location_div").slideDown();
+    }
+	});
 //]]>
 </script>
 <?php 

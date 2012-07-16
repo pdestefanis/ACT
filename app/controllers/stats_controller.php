@@ -110,20 +110,29 @@ class StatsController extends AppController {
 			$lastUnits =  $this->Session->read("recentlyUsedUnits");
 		}
 		if (!empty($this->data)) {
-			$isEarlyCraeted = FALSE;
+			//add hour minutes seconds field
+			$this->data['Stat']['created']['hour'] = date('H');
+			$this->data['Stat']['created']['min'] = date('i');
+			$this->data['Stat']['created']['sec'] = date('s');
+			$isEarlyCreated = FALSE;
 			$earlyDate = NULL;
-			foreach ($this->data['Stat']['Unit'] as $key => $unit_id) {
-				$earlyDate = $this->getUnitFirstDate($unit_id);
-				if ($earlyDate != -1 && $earlyDate < $this->data['Stat']['created']) {
-					$isEarlyCraeted = TRUE;
+			if (!empty($this->data['Stat']['Unit'])) {
+				foreach ($this->data['Stat']['Unit'] as $key => $unit_id) {
+					$earlyDate = $this->getUnitFirstDate($unit_id);
+					if ($earlyDate != -1 && $earlyDate > $this->dateArrayToString($this->data['Stat']['created']) ) {
+						$isEarlyCreated = TRUE;
+					}
 				}
 			}	
 			if (empty($this->data['Stat']['Unit']) ) {
 				$this->Stat->invalidate('Unit', __('Please select unit(s)' , true));
 				$this->Session->setFlash(__('Please select a unit.', true));
-			} else if ($isEarlyCraeted) {
-				$this->Stat->invalidate('craeted', __('Assignment date is prior to unit creation.' , true));
+			} else if ($isEarlyCreated) {
+				$this->Stat->invalidate('created', __('Assignment date is prior to unit creation.' , true));
 				$this->Session->setFlash(__('Please select a date greater than: ' . $earlyDate, true));
+			} else if ($this->dateArrayToString($this->data['Stat']['created']) > date("Y-m-d H:i:s")) {
+					$this->Stat->invalidate('created', __('Assignment date is in the future.' , true));
+					$this->Session->setFlash(__('Please select a date that is in the present.', true));
 			} else if (count($this->data['Stat']['Unit'])>1 &&  !empty($this->data['Stat']['patient_id'])) {
 				$this->Stat->invalidate('Unit', __('Please select only one unit' , true));
 				$this->Session->setFlash(__('You can only select one unit when assigning to patient', true));
@@ -144,10 +153,7 @@ class StatsController extends AppController {
 					$this->data['Stat'][$i]['patient_id'] = $patientId;
 					$this->data['Stat'][$i]['location_id'] = $locationId;
 					$this->data['Stat'][$i]['user_id'] = $userId;
-					//add hour minutes seconds field
-					$this->data['Stat'][$i]['created']['hour'] = date('H');
-					$this->data['Stat'][$i]['created']['min'] = date('i');
-					$this->data['Stat'][$i]['created']['sec'] = date('s');
+					
 					$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat'][$i]['created']));
 					//if assiging the same unit to the same facility don't increment quantity
 					$this->data['Stat'][$i]['quantity'] = (($lastFacilityWithKit === $locationId)?0:1);
@@ -356,7 +362,7 @@ class StatsController extends AppController {
 				//if assiging the same unit to the same facility don't increment quantity
 				$this->data['Stat']['quantity'] = -1;
 
-				if ( $lastFacilityWithKit != -1)
+				if ( $lastFacilityWithKit != -1 && empty($locationId)) {
 						$this->adjustQuantities(
 											$this->data['Stat']['created'],
 											$unit_id,
@@ -368,6 +374,9 @@ class StatsController extends AppController {
 											$userId,
 											NULL
 											);	
+				} else if ($lastFacilityWithKit != -1) {
+					$this->data['Stat']['location_id'] = $lastFacilityWithKit;
+				} 
 					
 			$this->Stat->create();
 			if ($this->Stat->save($this->data)) {
