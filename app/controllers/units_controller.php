@@ -33,7 +33,12 @@ class UnitsController extends AppController {
 			$this->Session->setFlash(__('Invalid unit', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		$this->set('unit', $this->Unit->read(null, $id));
+		
+		$unit = $this->Unit->read(null, $id);
+		$unit['Stat']['created'] = $this->getUnitFirstDate($unit['Unit']['id']);
+		$unit['Stat']['assigned'] = $this->getUnitFirstAssignDate($unit['Unit']['id'], $unit['Stat']['created'] );
+		$unit['Stat']['opened'] = $this->getUnitOpenDate($unit['Unit']['id'], $unit['Stat']['created'] );
+		$this->set(compact('unit'));
 		$this->set('batches', $this->Unit->Batch->find('list'));
 	}
 

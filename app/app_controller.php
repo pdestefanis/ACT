@@ -1244,6 +1244,7 @@ class AppController extends Controller {
 		
 			return -1;
 	}
+	//get the unit creation date
 	protected function getUnitFirstDate($unitId) {
 		$this->loadModel('Stats');
 		//last location
@@ -1262,6 +1263,50 @@ class AppController extends Controller {
 		}
 	
 		return -1;
+	}
+	//get the unit first assignment date that isn't unit creatoin
+	protected function getUnitFirstAssignDate($unitId, $created) {
+		$this->loadModel('Stats');
+		//last location
+		$query = 'SELECT min(created) created from stats st ';
+		$query .= ' WHERE unit_id=' . $unitId;
+		$query .= ' AND created != \'' . $created .'\'';
+		$query .= ' AND status_id in (1, 2)';
+		$result = $this->Stats->query($query);
+		$minCreated = NULL;
+	
+		foreach ($result as $key => $value) {
+			if (is_null($minCreated)) { //initial, set them both
+				$minCreated = $value[0]['created'];
+			}
+		}
+		if (!is_null($minCreated) ) {
+			return $minCreated;
+		}
+	
+		return __('Not assigned yet', true);
+	}
+	//get the unit open date
+	protected function getUnitOpenDate($unitId) {
+		$this->loadModel('Stats');
+		//last location
+		$query = 'SELECT min(created) created from stats st ';
+		$query .= ' WHERE unit_id=' . $unitId;
+		$query .= ' AND patient_id IS NOT NULL';
+		$query .= ' AND status_id = 2';
+		$result = $this->Stats->query($query);
+		$minCreated = NULL;
+	
+		foreach ($result as $key => $value) {
+			if (is_null($minCreated)) { //initial, set them both
+				$minCreated = $value[0]['created'];
+			}
+		}
+		if (!is_null($minCreated) ) {
+			return $minCreated;
+		}
+	
+		return __('Not opened yet', true);
 	}
 	
 }
