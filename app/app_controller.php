@@ -105,7 +105,8 @@ class AppController extends Controller {
 	 
 	protected function findTopParent ($loc, &$parents, $reach) {
 		if ($reach >= 0) {	
-			$parent = $this->User->Location->find('list', array('callbacks' => 'false','fields' => array('Location.id', 'Location.parent_id'), 'conditions' => array( 'Location.id' => $loc))); //, 'Location.deleted = 0'
+			$this->loadModel('Location');
+			$parent = $this->Location->find('list', array('callbacks' => 'false','fields' => array('Location.id', 'Location.parent_id'), 'conditions' => array( 'Location.id' => $loc))); //, 'Location.deleted = 0'
 			if ( $parent[$loc] == 0) { //exit top
 				$parents = 0;
 				return;
@@ -169,7 +170,7 @@ class AppController extends Controller {
 		}
 	}
 	
-	protected function getKitReport(&$listitems, $strFilter = null) {
+	protected function getKitReport(&$listitems, $strFilter = null, $created = null) {
 		$query = "select quantity, item.code as icode, item.name as dname, item.id as did,
 						 created, phone_id as pid, stat_items.location_id, stat_items.id as sid, 
 						 stat_items.created as screated, locations.id as lid, locations.name as lname, 
@@ -191,7 +192,12 @@ class AppController extends Controller {
 			$query .= " AND (locations.name LIKE '%"  . $strFilter . "%' )";
 			$query .= " OR items.name LIKE '%"  . $strFilter . "%' ";
 			$query .= " OR items.code LIKE '%"  . $strFilter . "%' ";
-		}  
+		} 
+		if (isset($created)  ) {
+			$timestamp = $this->getFirstLastDates($created);
+			$query .= " AND stat_items.created <= '"  . $timestamp['last'] . "' ";
+			$query .= " AND stat_items.created >= '"  . $timestamp['first'] . "' ";
+		} 
 		$query .= " AND stat_items.location_id IN ( " . implode(",", $this->Session->read("userLocations")) . ") ";
 		$query .= " ORDER by locations.parent_id, location_id, created ASC";
 
@@ -248,13 +254,18 @@ class AppController extends Controller {
 		$listd = $newListd;
 	//echo "<pre>" . print_r($listd, true) . "</pre>";
 		foreach ($listd as $ld){
+			
 			$listitems[$ld['locations']['lid']][] = $ld;
 			$listitems[$ld['locations']['lid']]['Parent'] = $ld['locations']['parent'];
 			
 			$query = "select sum(quantity) as sum from stats ";
 			//"WHERE status_id = 2 ";
 			$query .= " WHERE location_id =" . $ld['stat_items']['location_id'] . " ";
-			//$query .= " AND patient_id is NULL ";
+			if (isset($created)  ) {
+				$timestamp = $this->getFirstLastDates($created);
+				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
+				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
+			} 
 			$assigned = $this->Stat->query($query);
 			
 			
@@ -262,6 +273,11 @@ class AppController extends Controller {
 			$query = "select unit_id, location_id from stats s" .
 				" WHERE status_id = 3 ";
 			$query .= "AND (location_id =" . $ld['stat_items']['location_id'] . " OR location_id IS NULL)";
+			if (isset($created)  ) {
+				$timestamp = $this->getFirstLastDates($created);
+				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
+				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
+			} 
 			$expired = $this->Stat->query($query);
 			foreach ($expired as $key=>$e) { //find latest location for units where it is not specified
 				if (is_null($e['s']['location_id']) ) {
@@ -269,6 +285,7 @@ class AppController extends Controller {
 							" WHERE status_id = 6  " .
 							" AND unit_id =" . $e['s']['unit_id'] . 
 							" AND location_id = " . $ld['stat_items']['location_id'];
+					
 					$expiredLoc = $this->Stat->query($query);
 
 					if (is_null($expiredLoc[0][0]['macCre'] )) //unit doesn't belong to this location
@@ -298,7 +315,11 @@ class AppController extends Controller {
 			$query = "select sum(quantity) as sum from stats " ;
 			$query .= " WHERE location_id =" . $ld['stat_items']['location_id'] . " ";
 			$query .= " AND  patient_id IS NOT NULL ";
-			
+			if (isset($created)  ) {
+				$timestamp = $this->getFirstLastDates($created);
+				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
+				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
+			} 
 			$patientSent = $this->Stat->query($query); 
 			$atPatient['sum'] =  (!isset($patientSent[0][0]['sum'])?0:-$patientSent[0][0]['sum']);
 			
@@ -517,7 +538,8 @@ class AppController extends Controller {
 		}
 		return "$c";
 	} 
-	
+	//TODO
+	//Move this toa componenet for building graphs
 	protected function buildGraphURL($listitems) {
 		$graphURL = array();
 		//$locs = Configure::read('authLocations');
@@ -627,6 +649,7 @@ class AppController extends Controller {
 	}
 	protected function sumKitChildren ($children, &$listitems, $loc) {
 		$sum = NULL;
+		//echo "<pre>" . print_r( $listitems, true) . "</pre>";
 		foreach ($children as $child) {
 			if (isset($listitems[$child])){
 				for ($j = 0; $j < count($listitems[$child])-1; $j++) {
@@ -659,7 +682,7 @@ class AppController extends Controller {
 		return $sum;
 	}
 	
-	protected function processItems($count,  $p, &$locations, &$listitems, &$items, &$report, &$app) {
+	protected function processItems($count,  $p, &$locations, &$listitems, &$items, &$report) {
 	
 		foreach (array_keys($locations) as $l) {
 			if (!isset($listitems[$l]['Parent'])){ //add missing parents to structure so that children with reports are displayed
@@ -672,9 +695,9 @@ class AppController extends Controller {
 
 				$children = NULL;
 				$children[] = $l;
-				$app->findLocationChildren ($l, $children);
+				$this->findLocationChildren ($l, $children);
 				
-				$sum = $app->sumChildren($children, $listitems, $l);
+				$sum = $this->sumChildren($children, $listitems, $l);
 				
 				if (isset($sum)){
 					// foreach (array_keys($items) as $s) {
@@ -714,20 +737,16 @@ class AppController extends Controller {
 								}
 							}
 							$report[$l][$s]['own'] = $own;
-							
 							$report[$l][$s]['total'] =   $own + $agg ;
 							
 						}
 					// }
 				}
-				
 				$this->processItems($count+1,  $l, $locations, $listitems, $items, $report, $app);
-				
-				
 			}
 		}
 	}
-	protected function processKitItems($count,  $p, &$locations, &$listitems, &$items, &$report, &$app) {
+	protected function processKitItems($count,  $p, &$locations, &$listitems, &$items, &$report) {
 	
 		foreach (array_keys($locations) as $l) {
 			if (!isset($listitems[$l]['Parent'])){ //add missing parents to structure so that children with reports are displayed
@@ -740,9 +759,9 @@ class AppController extends Controller {
 
 				$children = NULL;
 				$children[] = $l;
-				$app->findLocationChildren ($l, $children);
+				$this->findLocationChildren ($l, $children);
 				
-				$sum = $app->sumKitChildren($children, $listitems, $l);
+				$sum = $this->sumKitChildren($children, $listitems, $l);
 				
 				if (isset($sum)){
 					// foreach (array_keys($items) as $s) {
@@ -815,10 +834,7 @@ class AppController extends Controller {
 						}
 					// }
 				}
-				
-				$this->processKitItems($count+1,  $l, $locations, $listitems, $items, $report, $app);
-				
-				
+				$this->processKitItems($count+1,  $l, $locations, $listitems, $items, $report);
 			}
 		}
 	}
@@ -881,13 +897,13 @@ class AppController extends Controller {
 										'exclude' => '',
 										'sub' => '',
 										'tooltip' => ''),*/
-								/*array('label' =>'Mismatched Deliveries',
-										'url' => '/stats/mismatchedDeliveries',
-										'ACL' => 'Stats/mismatchedDeliveries',
+								array('label' => __('Drug Usage', true),
+										'url' => '/stats/drugUsage',
+										'ACL' => 'Stats/drugUsage',
 										'order' => '4',
 										'exclude' => '',
 										'sub' => '',
-										'tooltip' => ''),*/
+										'tooltip' => ''),
 								array('label' =>'Kits Expired/Discarded',
 										'url' => '/stats/kitsExpired',
 										'ACL' => 'Stats/kitsExpired',
@@ -1216,6 +1232,7 @@ class AppController extends Controller {
 					. " " . $date['hour'] . ":" . $date['min']  . ":" . $date['sec'];
 	}
 	
+	//get the current facility or patient of a unit
 	protected function getUnitCurrentFacility($unitId, $hasPatient = true) {
 			$this->loadModel('Stats');
 			//last location
@@ -1244,6 +1261,8 @@ class AppController extends Controller {
 		
 			return -1;
 	}
+	
+	
 	//get the unit creation date
 	protected function getUnitFirstDate($unitId) {
 		$this->loadModel('Stats');
@@ -1264,6 +1283,8 @@ class AppController extends Controller {
 	
 		return -1;
 	}
+	
+	
 	//get the unit first assignment date that isn't unit creatoin
 	protected function getUnitFirstAssignDate($unitId, $created) {
 		$this->loadModel('Stats');
@@ -1286,6 +1307,8 @@ class AppController extends Controller {
 	
 		return __('Not assigned yet', true);
 	}
+	
+	
 	//get the unit open date
 	protected function getUnitOpenDate($unitId) {
 		$this->loadModel('Stats');
@@ -1309,4 +1332,31 @@ class AppController extends Controller {
 		return __('Not opened yet', true);
 	}
 	
+	
+	/* //get opened(distributed to patients) units during a single month 
+	//use the month of the supplied date
+	protected function getOpenedKitsPerMonth($created, &$facilities) {
+		$timestamp = $this->getFirstLastDates($created);
+		
+		$query = "select sum(quantity) as sum from stats " ;
+		$query .= " WHERE location_id =" . $facilityId . " ";
+		$query .= " AND  patient_id IS NOT NULL ";
+		$query .= " AND created <= '"  . $timestamp['last'] . "' ";
+		$query .= " AND created >= '"  . $timestamp['first'] . "' ";
+			
+		$patientSent = $this->Stat->query($query);
+		//-(minus)sum becuase we are actually summing up status_id=6 - automatic entries with negative qty
+		return (!isset($patientSent[0][0]['sum'])?0:-$patientSent[0][0]['sum']); 
+	} */
+	
+	
+	//get fist and last days of month in supplied date
+	protected function getFirstLastDates($created){
+		$suppliedDate = strtotime($created); //timestamp for the current date
+		// Current timestamp is assumed, so these find first and last day of THIS month
+		$firstDay = date('Y-m-01 00:00:00', $suppliedDate); //'01' for first day 00 hours for first hour
+		$lastDay = date('Y-m-t 23:59:59', $suppliedDate); 
+		//'t' for last day (number of days = last day) '23.59' for last hour
+		return array('first' => $firstDay, 'last' => $lastDay);
+	}
 }

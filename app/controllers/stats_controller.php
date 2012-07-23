@@ -597,7 +597,7 @@ class StatsController extends AppController {
 	}
 
 	
-	function aggregatedInventory($strFilter = null) {
+	function aggregatedInventory($strFilter = null, $created = null) {
 		//print_r($this->Stat->Location->Alert->find('all'));
 		$locations = $this->Stat->Location->find('list',  
 						array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'), 
@@ -610,7 +610,7 @@ class StatsController extends AppController {
 
 		$listitems = array();
 
-		$this->getKitReport($listitems, $strFilter);
+		$this->getKitReport($listitems, $strFilter, $created);
 		
 		$newlistitems = array();
 		foreach ($locations as $loca=> $locaValue) {
@@ -622,14 +622,11 @@ class StatsController extends AppController {
 		$this->set('listitems', $listitems);
 		
 		$parent = null;
-		App::import('Controller', 'Users');
-		$app = new UsersController;
-		$app->constructClasses();
-		$u = $app->AuthExt->user();
+		$u = $this->AuthExt->user();
 		
-		$app->findTopParent($u['User']['location_id'], $parent, $u['User']['reach'] );
+		$this->findTopParent($u['User']['location_id'], $parent, $u['User']['reach'] );
 		$report = NULL;
-		$this->processKitItems(1, $parent, $locations, $listitems, $items, $report, $app);
+		$this->processKitItems(1, $parent, $locations, $listitems, $items, $report);
 		
 	
 		$this->set('report', $report);
@@ -763,6 +760,64 @@ class StatsController extends AppController {
 		$this->set('stats', $this->paginate());
 	}
 	
+	function drugUsage($strFilter = null, $created = null) {
+		//get n months configurable 
+		// start with root
+		// traverse trhough each and sum up bottom up
+		//for each n month create an n array with the data.
+		$numMonths = null; //TODO
+		if (is_null($numMonths) )//default 5 months
+			$numMonths = 5;
+		
+		$locations = $this->Stat->Location->find('list',
+				array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'),
+						array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))
+				)
+		);
+		$u = $this->AuthExt->user();
+		$units = $this->Stat->Unit->find('list');
+		
+		$this->set(compact('locations', 'units'));
+		
+		$listitems = array();
+		$report = array();
+		$reports = array();
+		$reportFacilities = '';
+		for ($i = 0; $i < $numMonths; $i++) {
+			if ($i == 0)
+				$datetime = date("Y-m-15");
+			else 
+				$datetime = date("Y-m-15", strtotime("-" . $i . " month"));
+			$listitems = array();
+			$this->getKitReport($listitems, $strFilter, $datetime );
+			$parent = null;
+			$this->findTopParent($u['User']['location_id'], $parent, $u['User']['reach'] );
+			$report = NULL;
+			$this->processKitItems(1, $parent, $locations, $listitems, $items, $report);
+			if (!is_null($report)) {
+				$reportFacilities .= "," . implode ( ",", array_keys($report) );
+				$reports[] = $report;
+			}
+		}
+		//organize reports array to better suite the disply format
+		$reportFacilities = explode (",",$reportFacilities);
+		unset($reportFacilities[0]); // reomve empoty at 0
+		$reportFacilities = array_unique($reportFacilities);
+		//Add missing faci\lities
+		
+		$this->set('report', $reports);
+		echo "<pre>" . print_r ($reports, true). "</pre>";
+		Configure::load('options');
+		$lev = array( 0=>Configure::read('Facility.level0'),
+				1=>Configure::read('Facility.level1'),
+				2=>Configure::read('Facility.level2'),
+				3=>Configure::read('Facility.level3'),
+				4=>Configure::read('Facility.level4'),
+		);
+		$this->set('lev', $lev);
+		return $report;
+		
+	}
 	//options action to cater for the last n digits
 	function  options() {
 		if (!($this->data['Stat']['ndigits'])) {
