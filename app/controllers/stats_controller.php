@@ -806,7 +806,7 @@ class StatsController extends AppController {
 		//Add missing faci\lities
 		
 		$this->set('report', $reports);
-		echo "<pre>" . print_r ($reports, true). "</pre>";
+		//echo "<pre>" . print_r ($reports, true). "</pre>";
 		Configure::load('options');
 		$lev = array( 0=>Configure::read('Facility.level0'),
 				1=>Configure::read('Facility.level1'),
