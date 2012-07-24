@@ -8,7 +8,7 @@
 	?>
 	<div class="title">
 		<h2>
-			<?php __('Aggregated Inventory'); ?>
+			<?php __('Drug Usage'); ?>
 		</h2>
 	</div>
 
