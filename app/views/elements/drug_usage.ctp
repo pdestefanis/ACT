@@ -16,49 +16,67 @@
 		<tr>
 			<th><?php echo __("Facility", true);?></th>
 			<th><?php echo __("Level", true);?></th>
-			<th><?php echo __("Month", true);?></th>
+			<?php 
+			$numMonths = 5;
+			for ($k = $numMonths-1; $k >= 0 ;$k--) {
+				if ($k == 0)
+					echo "<th>" .  __("Current Month", true) . "</th>";
+				else
+					echo "<th>" .  __("Month - " . $k, true) . "</th>";
+				}?>
+
 		</tr>
 
 		<?php
-		if (!empty($report)) {
+		if (!empty($reportAll)) {
 			$i = 1;
-			foreach ($report as $rep) :
-			if (!empty($rep))
-			foreach (array_keys($rep) as $loc) :
-
-			$class = ' class=\'norow\'';
-			if ($i++ % 2 != 0) {
-				$class = ' class=\'altrow\'';
-			}
-
-			if (!empty($rep[$loc])) {
-				foreach ($rep[$loc] as $r) {
-					if ($this->Form->value('search') != '' && (stripos($r['lname'], $this->Form->value('search')) === FALSE
-							&& stripos($r['iname'], $this->Form->value('search')) === FALSE
-							&& stripos($r['icode'], $this->Form->value('search')) === FALSE
+			foreach (array_keys($reportAll) as $loc) {
+					$class = ' class=\'norow\'';
+					if ($i++ % 2 != 0) {
+						$class = ' class=\'altrow\'';
+					}
+					?>
+					<tr <?php echo $class;?>> <?php
+					if ($this->Form->value('search') != '' && (stripos($reportAll[$loc][1]['lname'], $this->Form->value('search')) === FALSE
+							&& stripos($reportAll[$loc][1]['iname'], $this->Form->value('search')) === FALSE
+							&& stripos($reportAll[$loc][1]['icode'], $this->Form->value('search')) === FALSE
 							/* && $r['aggregated'] <= $this->Form->value('search')
 							 && $r['own'] <= $this->Form->value('search') */
 					) )
 						continue;
 					?>
-		<tr <?php echo $class;?>>
-			<td><?php
-				echo $access->checkHtml('Locations/view', 'text', str_pad("", $r['level'], "-", STR_PAD_LEFT) . $r['lname'], '/locations/view/' . $loc);
-			?>&nbsp;</td>
-			<td><?php
-				if (isset($lev[$r['level']]) && !empty ($lev[$r['level']]) )
-					echo $lev[$r['level']];
-				else
-					echo $r['level'];
-			?>&nbsp;</td>
-						<td class='number'><?php echo $r['Total']['At Patient']; ?>&nbsp;</td>
-		</tr>
-		<?php }
-			}
-
-			endforeach;
-			endforeach;
-		}
+					<td><?php
+					echo $access->checkHtml('Locations/view', 'text', str_pad("", $reportAll[$loc][1]['level'], "-", STR_PAD_LEFT) . $reportAll[$loc][1]['lname'], '/locations/view/' . $loc);
+					?>&nbsp;</td>
+					<td><?php
+					if (isset($lev[$reportAll[$loc][1]['level']]) && !empty ($lev[$reportAll[$loc][1]['level']]) )
+						echo $lev[$reportAll[$loc][1]['level']];
+					else
+						echo $reportAll[$loc][1]['level'];
+					?>&nbsp;</td>
+					
+					<?php 
+					$k = $numMonths-1;
+						
+					while ($k >= 0) {
+						?>
+														<td class='number'><?php 
+							if (!empty($report[$numMonths-$k-1][$loc])){
+								foreach ($report[$numMonths-$k-1][$loc] as $rep )
+									echo $rep['Total']['At Patient']; 
+							} else { echo  "-"; }
+							?>&nbsp;</td>
+								
+							<?php
+							$k--;
+					}
+				$k = $numMonths-1;
+				
+				?> 
+				</tr>
+				<?php 
+			}// end foreach (array_keys($reportAll) as $loc) {
+		}//end if (!empty($reportAll)) {
 
 		?>
 	</table>

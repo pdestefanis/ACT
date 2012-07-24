@@ -783,30 +783,33 @@ class StatsController extends AppController {
 		$report = array();
 		$reports = array();
 		$reportFacilities = '';
-		for ($i = 0; $i < $numMonths; $i++) {
+		for ($i = $numMonths-1; $i >= 0; $i--) {
 			if ($i == 0)
 				$datetime = date("Y-m-15");
 			else 
-				$datetime = date("Y-m-15", strtotime("-" . $i . " month"));
+				$datetime = date("Y-m-15", strtotime("-" . $i . " month")); 
 			$listitems = array();
 			$this->getKitReport($listitems, $strFilter, $datetime );
 			$parent = null;
 			$this->findTopParent($u['User']['location_id'], $parent, $u['User']['reach'] );
 			$report = NULL;
 			$this->processKitItems(1, $parent, $locations, $listitems, $items, $report);
-			if (!is_null($report)) {
-				$reportFacilities .= "," . implode ( ",", array_keys($report) );
-				$reports[] = $report;
-			}
+			$reports[] = $report;
 		}
-		//organize reports array to better suite the disply format
-		$reportFacilities = explode (",",$reportFacilities);
-		unset($reportFacilities[0]); // reomve empoty at 0
-		$reportFacilities = array_unique($reportFacilities);
-		//Add missing faci\lities
-		
 		$this->set('report', $reports);
-		//echo "<pre>" . print_r ($reports, true). "</pre>";
+		
+		//TODO
+		// this needs to be reorganized
+		//only get the full list of facilities and hiararchy participating in the report
+		// no need to get calculations for all 
+		$listitemsAll = array();
+		$this->getKitReport($listitemsAll, $strFilter );
+		$parentAll = null;
+		$this->findTopParent($u['User']['location_id'], $parentAll, $u['User']['reach'] );
+		$reportAll = NULL;
+		$this->processKitItems(1, $parentAll, $locations, $listitemsAll, $items, $reportAll);
+		$this->set('reportAll', $reportAll);
+		
 		Configure::load('options');
 		$lev = array( 0=>Configure::read('Facility.level0'),
 				1=>Configure::read('Facility.level1'),
