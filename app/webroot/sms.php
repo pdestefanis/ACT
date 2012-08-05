@@ -50,7 +50,6 @@ class sms {
 			$action = $argsEx[0];
 		//action case
 		if ($this->checkAction($action) ) { //action gets set in checkAction
-			
 			if (count($argsEx) != 0) {
 				//determine if patient or qty
 				if (isset($argsEx[1]) && isset($argsEx[2]) ) {
@@ -121,30 +120,6 @@ class sms {
 	
 	function getPatient () {
 		return $this->patient;
-	}
-	
-	function setModifier ($mod) {
-		$this->modifier = $mod;
-	}
-	
-	function check() { //check all fields are set except modifier
-		if ($this->qty != NULL  && $this->phone != NULL)
-			return TRUE;
-		else 
-			return FALSE;
-	}
-	
-	function checkQty() { //check quantity for patient is <> 1
-		if ($this->qty != 1  && $this->patient != NULL)
-			return FALSE;
-		else 
-			return TRUE;
-	}
-	
-	function checkModifier() {
-		$mods = new modifier;
-		$enums = new ReflectionObject($mods);
-		return in_array($this->modifier, $enums->getConstants());
 	}
 	
 	function checkAction($a) {

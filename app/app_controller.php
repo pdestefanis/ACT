@@ -75,17 +75,18 @@ class AppController extends Controller {
 	
 	protected function findLocationChildren ($loc, &$children) {
 		$class = get_class($this);
-		if ($class == 'UsersController') 
+		if ($class == 'UsersController') {
 			$child = $this->User->Location->find('list', array('callbacks' => 'false', 'conditions' => array( 'parent_id' => $loc, 'deleted = 0')));
-		else 
+		} else {
+			$this->loadModel('Location');
 			$child = $this->Location->find('list', array('callbacks' => 'false', 'conditions' => array( 'parent_id' => $loc, 'deleted = 0')));
-			
-			foreach (array_keys($child) as $c) {
-				if ($c == NULL)
-					continue;
-				$children[] = $c; 
-				$this->findLocationChildren($c, $children);	
-			}
+		}	
+		foreach (array_keys($child) as $c) {
+			if ($c == NULL)
+				continue;
+			$children[] = $c; 
+			$this->findLocationChildren($c, $children);	
+		}
 		//return $children;
 	 }
 	 
@@ -1111,7 +1112,7 @@ class AppController extends Controller {
 	protected function isUnusedUnit($unitId) {
 		$this->loadModel('Stats'); 
 		//TODO is this really true?
-		$statUnit = $this->Stats->find('list', array('conditions' => array('unit_id' => $unitId, 'status_id' => 2)));
+		$statUnit = $this->Stats->find('list', array('conditions' => array('unit_id' => $unitId, 'patient_id is not null')));
 		if (empty($statUnit))
 			return true;
 		return false;

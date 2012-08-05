@@ -24,7 +24,7 @@ class ApisController extends AppController {
 		if ($this->Rest->isActive()) {
 			$this->Rest->postData = $this->data;
 			//validate phone numbers optional + and max 11 digits after it
-			if (!preg_match("/^\+?[0-9]{4,11}$/", $phonenumber)){
+			if (!preg_match("/\+?[0-9]{4,11}/", $phonenumber)){
 				$this->Rest->error(__('Invalid phonenumber', true));
 				$this->Rest->abort();
 			}
@@ -123,7 +123,7 @@ class ApisController extends AppController {
 	}
 	
 	//Confirm reception from upstream
-	function receiveUnit($phoneNumber, $unitNumber, $facilityShortname = null, $date = null) {
+	function receiveUnit($phoneNumber, $unitNumber, $facilityShortname = null,$date = null) {
 		if ($this->Rest->isActive()) {
 			$phone = $this->findPhone($phoneNumber);
 			$argsList = func_get_args();
@@ -135,12 +135,8 @@ class ApisController extends AppController {
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//if facility is not set use the phone's assigned facility
-			if (is_null($facilityShortname)){
-				$facility['Locations']['id'] = $phone['Phones']['location_id'];
-			} else {
-				$facility = $this->findFacility($facilityShortname);
-				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
-				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			$facility['Locations']['id'] = $phone['Phones']['location_id'];
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//set the date
 			if (is_null($date)) {
@@ -155,17 +151,43 @@ class ApisController extends AppController {
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
 			}
+			
+			$this->loadModel('Stats');
+			$currentFacilityPatient = $this->getUnitCurrentFacility($unit['Units']['id']);
+			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			
+			$wasWithPatient = $this->Stats->find('list',  array ('conditions' => array('patient_id is not null',
+																'unit_id' => $unit['Units']['id']
+														),
+																'fields' => array('unit_id'), 'callbacks' => false) );
+			//if receiving the same unit from the same facility don't increment quantity
+			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id']  || !empty($wasWithPatient))?0:1);
+			
+			//adjust the quantities only one quantity at a time
+			if ($data['Stats']['quantity']  != 0 && $lastFacilityWithKit != -1)
+				$this->adjustQuantities(
+						$data['Stats']['created'],
+						$unit['Units']['id'],
+						'R',
+						(($wasWithPatient)?0:1), //no need for qty when receiving from patient
+						($wasWithPatient?NULL:$lastFacilityWithKit),
+						((isset($currentFacilityPatient[1]) && $wasWithPatient)?$currentFacilityPatient[1]:999999),
+						$phone['Phones']['id'],
+						NULL,
+						$messagereceivedId
+				);
 			//prepare the stats data
 			$data = array('Stats' => array(
 												'created' => $date,
 												'phone_id' => $phone['Phones']['id'],
-												'location_id' => $facility['Locations']['id'],
+												'location_id' => $lastFacilityWithKit,
+												'patient_id' => (isset($currentFacilityPatient[1])?$currentFacilityPatient[1]:999999),
 												'unit_id' => $unit['Units']['id'],
 												'messagereceived_id' => $messagereceivedId,
 												'status_id' => 1, //1 is receive
 											) );
 											
-			$this->loadModel('Stats');
+			
 			$this->Stats->create();
 			if (!$this->Stats->save($data)) {
 				$this->Rest->error(__('Record could not be saved: 10102', true));
@@ -173,39 +195,20 @@ class ApisController extends AppController {
 			}
 			$stat = $this->Stats->findById($this->Stats->id);	
 			$this->set(compact('stat'));
-			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
-			//if assiging the same unit to the same facility don't increment quantity
-			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
-			//adjust the quantities only one quantity at a time
-			if ($this->data['Stats']['quantity'] != 0 && $lastFacilityWithKit != -1)
-				$this->adjustQuantities(
-									$data['Stats']['created'],
-									$unit['Units']['id'],
-									'A', 
-									(isset($patient['Patients']['id'])?0:1), //no need for qty when assigning to patient
-									$facility['Locations']['id'], 
-									$patient['Patients']['id'],
-									$phone['Phones']['id'],
-									NULL,
-									NULL
-									);		
+			
 			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-		}
 	}
 	
+	
 	//Assign unit to patient
-	function assignToPatient($phoneNumber, $unitNumber, $patientNumber, $facilityShortname = null, $date = null) {
+	function assignToPatient($phoneNumber, $unitNumber, $patientNumber, $date = null) {
 		if ($this->Rest->isActive()) {
 			$phone = $this->findPhone($phoneNumber);
 			$argsList = func_get_args();
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			/*TODO
-			 * $unit = $this->findUnit($unitNumber);
-			var_dump ((bool)$this->isUnusedUnit($unit['Units']['id']));
-			exit;*/
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
@@ -214,13 +217,16 @@ class ApisController extends AppController {
 			$patient = $this->findPatient($patientNumber);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//if facility is not set use the phone's assigned facility
-			if (is_null($facilityShortname)){
-				$facility['Locations']['id'] = $phone['Phones']['location_id'];
-			} else {
+			//if (is_null($facilityShortname)){
+			$facility['Locations']['id'] = $phone['Phones']['location_id'];
+			/* } else {
 				$facility = $this->findFacility($facilityShortname);
 				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			}
+			} */
+			//compare the user facility and children thereof to the kit current facility
+			$this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id']);
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//set the date
 			if (is_null($date)) {
 				$data['Stats']['created']['year'] = date('Y');
@@ -234,11 +240,28 @@ class ApisController extends AppController {
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
 			}
+			//adjust the quantity
+			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			//if assiging the same unit to the same facility don't increment quantity
+			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
+			//adjust the quantities
+			if ($data['Stats'] != 0 && $lastFacilityWithKit != -1)
+				$this->adjustQuantities(
+						$data['Stats']['created'],
+						 $unit['Units']['id'],
+						'A',
+						0, //no need for qty when assigning to patient
+						$lastFacilityWithKit,
+						$patient['Patients']['id'],
+						$phone['Phones']['id'],
+						NULL,
+						$messagereceivedId
+				);
 			//prepare the stats data
 			$data = array('Stats' => array(
 												'created' => $data['Stats']['created'],
 												'phone_id' => $phone['Phones']['id'],
-												'location_id' => $facility['Locations']['id'],
+												'location_id' => $lastFacilityWithKit,
 												'unit_id' => $unit['Units']['id'],
 												'messagereceived_id' => $messagereceivedId,
 												'status_id' => 2, //1 is assign
@@ -303,6 +326,23 @@ class ApisController extends AppController {
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
 			}
+			//adjust the quantity
+			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			//if assiging the same unit to the same facility don't increment quantity
+			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
+			//adjust the quantities
+			if ($data['Stats'] != 0 && $lastFacilityWithKit != -1)
+				$this->adjustQuantities(
+						$data['Stats']['created'],
+						$unit['Units']['id'],
+						'A',
+						1, //qty always one
+						$facility['Locations']['id'],
+						NULL,
+						$phone['Phones']['id'],
+						NULL,
+						$messagereceivedId
+				);
 			//prepare the stats data
 			$data = array('Stats' => array(
 												'created' => $date,
@@ -318,23 +358,7 @@ class ApisController extends AppController {
 				$this->Rest->error(__('Record could not be saved: 10104', true));
 				$this->Rest->abort();
 			}
-			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
-			//if assiging the same unit to the same facility don't increment quantity
-			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
-			echo "LAST" . $lastFacilityWithKit;
-			//adjust the quantities only one quantity at a time
-			if ($this->data['Stats']['quantity'] != 0 && $lastFacilityWithKit != -1)
-				$this->adjustQuantities(
-									$data['Stats']['created'],
-									$unit['Units']['id'],
-									'A', 
-									(isset($patient['Patients']['id'])?0:1), //no need for qty when assigning to patient
-									$facility['Locations']['id'], 
-									$patient['Patients']['id'],
-									$phone['Phones']['id'],
-									NULL,
-									NULL
-									);		
+			
 			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
@@ -445,6 +469,48 @@ class ApisController extends AppController {
 				$messagesent = 	$this->setSent(isset($feedback['info'])?$feedback['info'][0]:$feedback['error'][0], $phoneId, $messagereceivedId);
 				if (isset($feedback['error']) )
 					$this->Rest->abort();
+			}
+		}
+	}
+	/*
+	 * In case of an actionless send or receive
+	 * See if unit is open/new and call the appropriate action
+	 */
+	function actionlessUnit($unitNumber) {
+		;
+	}
+	
+	/*
+	 * Assignment when facility and patient aren't supplied
+	 * also receive if the same conditions above are valid
+	 */
+	function assign($phoneNumber, $unitNumber){
+		//see if kit is opened or closed
+		$unit = $this->findUnit($unitNumber);
+		if ($this->isUnusedUnit($unit['Units']['id'])){
+			//we are assigning it to genereic patient
+			$patientNumber = 999999;
+			$this->assignToPatient($phoneNumber, $unitNumber, $patientNumber);
+		} else {
+			//we are receiving the unit
+			$this->receiveUnit($phoneNumber, $unitNumber);
+		}
+	}
+	
+	/*
+	 * Check if the user is authorised to dispanse this kit in terms the location 
+	 * on hi phone number assignment
+	 */
+	function checkKitFacility($kitId, $facilityId){
+		$lastFacilityPatient = $this->getUnitCurrentFacility($kitId);
+		if ($lastFacilityPatient[0] != $facilityId){ //different location see if it is child facility
+			$children = array();
+			$this->findLocationChildren($facilityId, $children);
+			if ( !in_array($lastFacilityPatient[0], $children)) {
+				$this->Rest->error(__('This unit doesn\'t belong to your facility and cannot be dispensed: 10107', true));
+				$this->Rest->abort();
+			} else {
+				return true;
 			}
 		}
 	}
