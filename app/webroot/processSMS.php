@@ -87,7 +87,7 @@ class Action{
 			}
 		}
 		
-		//check for presentce of patient
+		//check for presence of patient
 		//Patient starts with a P and contains 5-6 digits
 		$what = "/\b[P][0-9]{5,6}\b/";
 		preg_match($what, $msg, $matchedPatient);
@@ -102,7 +102,10 @@ class Action{
 		//Kits - calling it kits for preparation of multiple kits processing
 		$what = "/\bKIT{0,1}[0-9]{4}\b|\b[0-9]{4}\b/";
 		preg_match($what, $msg, $matchedUnits);
-		print_r($matchedAction);
+		
+		//TODO try matching for an unknow everything but the above
+		// if it exists what should we do reject or process as much as we understand?
+		
 		if (!is_null($matchedAction) ) {
 			//action supplied
 			//make sure it is only one
@@ -127,18 +130,25 @@ class Action{
 						$thing = $pest->get('/apis/receiveUnit/' . $caller .  "/" . $matchedUnits[0]  .".xml", $headers);
 					}
 				} else if ($matchedAction[0]  == 'EXPIRE') {
-					//TODO
+					if(isset($matchedFacility[0])) {
+						$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" . 
+								$matchedUnits[0] . "/" . $matchedFacility[0] .   ".xml", $headers);
+					} else {
+						$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" .
+								$matchedUnits[0] .  ".xml", $headers);
+					}
 				} else if ($matchedAction[0]  == 'CONSENT') {
 					//TODO
 				}
-			}else {
-				//more then one actions given 
-				//reject message
+			} else {
+				//more then one action detected
+				//reject
+				$thing = $pest->get('/apis/rejectMessage/moreActions', $headers);
 			}
 			echo getResult($thing);
 		} else {
 			//action not supplied
-			//call actionless assign
+			//call actionless assign/receive
 			$thing = $pest->get('/apis/assign/' . $caller . "/" . $matchedUnits[0] .  ".xml", $headers);//$facility.
 			echo getResult($thing);
 		}
@@ -146,9 +156,13 @@ class Action{
 		exit;
 		
 	}
+	/*
+	 * Return the message part of the XML
+	 */
 	function getResult($thing) {
 		$util = new Utils();
-		$array = $util->xmlToArray($thing);
+		//TODO direct XML processing could replace this
+		$array = $util->xmlToArray($thing); //convert xml to array
 		
 		$find = 'message';
 		$result = array();

@@ -362,12 +362,14 @@ class StatsController extends AppController {
 				//if assiging the same unit to the same facility don't increment quantity
 				$this->data['Stat']['quantity'] = -1;
 
+				//TODO is this if really true? why empty locationid?
+				//what if last and current are the same?
 				if ( $lastFacilityWithKit != -1 && empty($locationId)) {
 						$this->adjustQuantities(
 											$this->data['Stat']['created'],
 											$unit_id,
 											'A', 
-											(isset($locationId)?-1:0), //no need for qty when assigning to patient
+											(isset($locationId)?-1:0), //no need for qty when same facility
 											$locationId, 
 											NULL,
 											(isset($this->data['Stat']['phone_id'])?$this->data['Stat']['phone_id']:NULL),
