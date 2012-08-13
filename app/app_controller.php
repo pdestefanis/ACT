@@ -294,25 +294,7 @@ class AppController extends Controller {
 				}
 			}
 			$expiredCount[0][0]['sum'] = count($expired);
-			/*TODO check this 
-			 * $sentP = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 2 and location_id =' . $ld['stat_items']['location_id'] );
-			$receivedP = $this->Stat->query('select id, patient_id from stats s where  patient_id is not null and status_id = 1 and location_id =' . $ld['stat_items']['location_id'] );
-			$popped = false;
-			//loop trhough received and remove all patient ids that have a receive record 
-			//patients will more then one send will remain only one send will be removed
-			foreach ($receivedP as $r) { 
-				foreach ($sentP as $key=>$s) {
-					if ($r['s']['patient_id'] == $s['s']['patient_id'] && !$popped){
-						unset($sentP[$key]);
-						$popped = true;
-					}
-				}
-				$popped = false;
-			}
-			$statIds = array();
-			foreach ($sentP as $c) {
-				$statIds[] = $c['s']['id'];
-			}*/
+			
 			$query = "select sum(quantity) as sum from stats " ;
 			$query .= " WHERE location_id =" . $ld['stat_items']['location_id'] . " ";
 			$query .= " AND  patient_id IS NOT NULL ";
@@ -540,7 +522,7 @@ class AppController extends Controller {
 		return "$c";
 	} 
 	//TODO
-	//Move this toa componenet for building graphs
+	//Move this to a componenet for building graphs
 	protected function buildGraphURL($listitems) {
 		$graphURL = array();
 		//$locs = Configure::read('authLocations');
@@ -1111,12 +1093,20 @@ class AppController extends Controller {
 	
 	protected function isUnusedUnit($unitId) {
 		$this->loadModel('Stats'); 
-		//TODO is this really true?
 		$statUnit = $this->Stats->find('list', array('conditions' => array('unit_id' => $unitId, 'patient_id is not null')));
 		if (empty($statUnit))
 			return true;
 		return false;
 	}
+	
+	protected function isDiscardedUnit($unitId) {
+		$this->loadModel('Stats');
+		$statUnit = $this->Stats->find('list', array('conditions' => array('unit_id' => $unitId, 'status_id =3')));
+		if (empty($statUnit))
+			return true;
+		return false;
+	}
+	
 	
 	protected function adjustQuantities($created, $unitId, $action, $quantity, $locationId = null, 
 		$patientId = null, $phoneId = null, $userId = null, $messagereceivedId = null){
@@ -1144,7 +1134,6 @@ class AppController extends Controller {
 			$this->Stats->create();
 			$this->Stats->save($data);
 	}
-	//TODO
 	protected function updateBackEntry($created, $unitId,  $locationId){
 		//first see if this unit was already automatically dispensed id 6
 		// from a different facility
@@ -1188,7 +1177,7 @@ class AppController extends Controller {
 		}
 		//return TRUE;
 	}
-	//TODO
+
 	protected function findLastUnitFacility($unitId, $created){
 		$this->loadModel('Stats');
 		//last location prior to a date - this is to cater for back entry
@@ -1332,23 +1321,6 @@ class AppController extends Controller {
 	
 		return __('Not opened yet', true);
 	}
-	
-	
-	/* //get opened(distributed to patients) units during a single month 
-	//use the month of the supplied date
-	protected function getOpenedKitsPerMonth($created, &$facilities) {
-		$timestamp = $this->getFirstLastDates($created);
-		
-		$query = "select sum(quantity) as sum from stats " ;
-		$query .= " WHERE location_id =" . $facilityId . " ";
-		$query .= " AND  patient_id IS NOT NULL ";
-		$query .= " AND created <= '"  . $timestamp['last'] . "' ";
-		$query .= " AND created >= '"  . $timestamp['first'] . "' ";
-			
-		$patientSent = $this->Stat->query($query);
-		//-(minus)sum becuase we are actually summing up status_id=6 - automatic entries with negative qty
-		return (!isset($patientSent[0][0]['sum'])?0:-$patientSent[0][0]['sum']); 
-	} */
 	
 	
 	//get fist and last days of month in supplied date

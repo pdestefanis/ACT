@@ -251,6 +251,7 @@ class StatsController extends AppController {
 					$this->data['Stat'][$i] = $old['Stat'];
 					$this->data['Stat'][$i]['unit_id'] = $unit_id;
 					$this->data['Stat'][$i]['patient_id'] = $patientId;
+					
 					$this->data['Stat'][$i]['user_id'] = $userId;
 					//add hour minutes seconds field
 					$this->data['Stat'][$i]['created']['hour'] = date('H');
@@ -262,17 +263,22 @@ class StatsController extends AppController {
 																						'unit_id' => $unit_id
 													), 
 										'fields' => array('unit_id'), 'callbacks' => false) );
+					if (empty($this->data['Stat'][$i]['location_id']))
+						$this->data['Stat'][$i]['location_id'] = $lastFacilityWithKit;
 					//if receiving the same unit from the same facility don't increment quantity
+					
 					$this->data['Stat'][$i]['quantity'] = 
-							(($lastFacilityWithKit === $locationId || !empty($wasWithPatient))?0:1);
+							(($lastFacilityWithKit === $this->data['Stat'][$i]['location_id'] )?0:1); //|| !empty($wasWithPatient)
+					//echo $this->data['Stat'][$i]['quantity'] ."LAST:" .$lastFacilityWithKit . " CURR: "  . $locationId ;
 					//adjust the quantities only one quantity at a time
-					if ($this->data['Stat'][$i]['quantity'] != 0 && $lastFacilityWithKit != -1)
+					if ($lastFacilityWithKit != $this->data['Stat'][$i]['location_id'] 
+							&& $lastFacilityWithKit != -1)
 						$this->adjustQuantities(
 											$this->data['Stat'][$i]['created'],
 											$unit_id,
 											'R', 
 											(isset($patientId)?0:1), //no need for qty when receiving from patient
-											$locationId, 
+											$lastFacilityWithKit, // put the last facility for $locationId, 
 											$patientId,
 											(isset($this->data['Stat'][$i]['phone_id'])?$this->data['Stat'][$i]['phone_id']:NULL),
 											$userId,
@@ -303,12 +309,14 @@ class StatsController extends AppController {
 		$opened = $this->Stat->find('list',  array ('conditions' => array('Stat.patient_id IS NOT NULL '
 											),
 									'fields' => array('unit_id'), 'callbacks' => false) );
-		$openedAndReceived = $this->Stat->find('list',  array ('conditions' => array(
-				'Stat.status_id = 1', 
-				((is_null($opened) || empty($opened))?'':'Stat.unit_id in (' . implode(",",$opened) . ")")
-				
+		$opened = array_unique($opened);
+		$received = $this->Stat->find('list',  array ('conditions' => array(
+				'Stat.status_id = 1',
+				'Stat.patient_id IS NOT NULL '
 				),
 				'fields' => array('unit_id'), 'callbacks' => false) );
+		$openedAndReceived = $received;
+		
 		$discarded = array_unique($discarded);		
 		$unitsArray = explode(",", $lastUnits);
 		$unitsArray = array_diff($unitsArray, $discarded);
@@ -360,25 +368,27 @@ class StatsController extends AppController {
 				$this->data['Stat']['created']['sec'] = date('s');
 				$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat']['created']));
 				//if assiging the same unit to the same facility don't increment quantity
-				$this->data['Stat']['quantity'] = -1;
+				
+				if (!isset($locationId)){
+					$this->data['Stat']['quantity'] = -1;
+				} else {
+					$this->data['Stat']['location_id'] = $userId = $this->Session->read('Auth.User.location_id');
+					$this->data['Stat']['quantity'] = 0;
+				}
 
-				//TODO is this if really true? why empty locationid?
-				//what if last and current are the same?
-				if ( $lastFacilityWithKit != -1 && empty($locationId)) {
+				if ( $lastFacilityWithKit != -1 && $this->isUnusedUnit($unit_id)) {
 						$this->adjustQuantities(
 											$this->data['Stat']['created'],
 											$unit_id,
 											'A', 
-											(isset($locationId)?-1:0), //no need for qty when same facility
-											$locationId, 
+											(($lastFacilityWithKit != $locationId)?-1:0),
+											((isset($locationId) && $lastFacilityWithKit !=$locationId )?$lastFacilityWithKit:$locationId),
 											NULL,
 											(isset($this->data['Stat']['phone_id'])?$this->data['Stat']['phone_id']:NULL),
 											$userId,
 											NULL
 											);	
-				} else if ($lastFacilityWithKit != -1) {
-					$this->data['Stat']['location_id'] = $lastFacilityWithKit;
-				} 
+				}
 					
 			$this->Stat->create();
 			if ($this->Stat->save($this->data)) {

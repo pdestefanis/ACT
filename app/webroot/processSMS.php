@@ -5,6 +5,7 @@ class Action{
 	public $receive = array ('RECEIVE', 'R');
 	public $expire = array ('EXPIRE', 'E');
 	public $consent = array ('CONSENT', 'C');
+	public $create = array ('CREATE', 'CR');
 	private $actions = NULL;
 	private static $instance;
 	
@@ -39,6 +40,7 @@ class Action{
 
 	require 'Pest.php';
 	
+	//TODO for testing purpose only
 	init('1122!!;;R', '+15553349901');
 	
 	define('__ROOT__', dirname(dirname(__FILE__))); //this is a workaround for the require
@@ -103,9 +105,10 @@ class Action{
 		$what = "/\bKIT{0,1}[0-9]{4}\b|\b[0-9]{4}\b/";
 		preg_match($what, $msg, $matchedUnits);
 		
-		//TODO try matching for an unknow everything but the above
+		//TODO try matching for an unknown => everything but the above
 		// if it exists what should we do reject or process as much as we understand?
 		
+		//TODO mulitple units is not proceesed yet
 		if (!is_null($matchedAction) ) {
 			//action supplied
 			//make sure it is only one
@@ -137,20 +140,24 @@ class Action{
 						$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" .
 								$matchedUnits[0] .  ".xml", $headers);
 					}
+				} else if ($matchedAction[0]  == 'CREATE') {
+					$thing = $pest->get('/apis/createUnit/' . $caller .  "/" . 
+								$matchedUnits[0] . "/" . $matchedFacility[0] .   ".xml", $headers);
 				} else if ($matchedAction[0]  == 'CONSENT') {
-					//TODO
+					$thing = $pest->get('/apis/patientConsent/' . $caller .  "/" .
+								$matchedPatient[0] .  ".xml", $headers);
 				}
 			} else {
 				//more then one action detected
 				//reject
 				$thing = $pest->get('/apis/rejectMessage/moreActions', $headers);
 			}
-			echo getResult($thing);
+			return getResult($thing);
 		} else {
 			//action not supplied
 			//call actionless assign/receive
 			$thing = $pest->get('/apis/assign/' . $caller . "/" . $matchedUnits[0] .  ".xml", $headers);//$facility.
-			echo getResult($thing);
+			return getResult($thing);
 		}
 			
 		exit;
@@ -164,7 +171,9 @@ class Action{
 		//TODO direct XML processing could replace this
 		$array = $util->xmlToArray($thing); //convert xml to array
 		
-		$find = 'message';
+		//for now we only care about the message wether 
+		//it is an error or info doesn't matter here just return the message
+		$find = 'message'; 
 		$result = array();
 		$util->findArrayElement($array, $find, $result);
 		return $result['_v'];
