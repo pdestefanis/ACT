@@ -433,10 +433,16 @@ class ApisController extends AppController {
 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
-			} else { //TODO add the date sent from the parser ALSO check this date
-				$data['Stats']['created']['hour'] = date('H');
+			} else { 
+				$data['Stats']['created'] = date_parse($date) ;
+ 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
+				/*TODO finihs this up as well as provding date regexp 
+				 *  if ($data['Stats']['created']['error_count'] != 0) //date format unrecognized
+				$this->Rest->error(__('The date you supplied is not recognized. Please provide date yyyy-mm-dd', true));
+				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId); */
 			}
 
 			
@@ -685,7 +691,7 @@ class ApisController extends AppController {
 	
 	/*
 	 * Find unit
-	*/
+	 */
 	private function findUnit($unitNumber) {
 		if ($this->Rest->isActive()) {
 			$this->loadModel('Units');
@@ -710,7 +716,7 @@ class ApisController extends AppController {
 	
 	/*
 	 * Find facility
-	*/
+	 */
 	private function findFacility($facilityShortname) {
 		if ($this->Rest->isActive()) {
 			$this->loadModel('Locations');
@@ -725,12 +731,14 @@ class ApisController extends AppController {
 	}
 	/*
 	 * Errors not caught come here and messages get rejected
-	*/
+	 */
 	function rejectMessage($what = null){
 		if ($what == 'moreActions') {
 			$this->Rest->error(__('Too many keywords were supplied. Message not processed: 10108', true));
 		} else if ($what == 'lessParams') {
 			$this->Rest->error(__('Missing parameter. Message not processed: 10109', true));
+		} else if ($what == 'lessMissParams') {
+			$this->Rest->error(__('Missing or incorrect parameter. Message not processed: 10110', true));
 		} else {
 			$this->Rest->error(__('Something went wrong. Your message was not processed: 10999', true));
 		}

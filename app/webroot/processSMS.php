@@ -1,7 +1,7 @@
 <?php
 class Action{
 	/* TODO can I move this to a config file instead? */
-	public $send = array ('SEND', 'S');
+	public $send = array ('ASSIGN', 'SEND', 'A');
 	public $receive = array ('RECEIVE', 'R');
 	public $expire = array ('EXPIRE', 'E');
 	public $consent = array ('CONSENT', 'C');
@@ -37,11 +37,10 @@ class Action{
 	}
 }
 	require_once('utils.php');
-
 	require 'Pest.php';
 	
 	//TODO for testing purpose only
-	init('1122!!;;R', '+15553349901');
+	init(' a 1002..', '+15553349901');
 	
 	define('__ROOT__', dirname(dirname(__FILE__))); //this is a workaround for the require
 	require_once(__ROOT__ . '/config/options.php'); //use this configuration so that we can make use of App::Configure in cake for the form
@@ -50,9 +49,11 @@ class Action{
 	
 	function init($msg, $caller){
 		//TODO move this into config file
+		//app api URL
 		$pest = new Pest('http://localhost:10080/track');
 		$headers = array(
-				'Authorization: TRUEREST username=admin&password=admin12&apikey=247b5a2f72df375279573f2746686daa',
+				//Username and password to use for API login
+				'Authorization: TRUEREST username=admin&password=dmin12&apikey=247b5a2f72df375279573f2746686daa',
 				'Content-Type: text/xml'
 		);
 		
@@ -78,6 +79,7 @@ class Action{
 		$matchedPatient = NULL;
 		$matchedFacility = NULL;
 		$matchedUnits = NULL;
+		$thing = NULL;
 		
 		//loop through all actions and see if sms contains one
 		foreach ($actions as $act => $aliases) {
@@ -99,7 +101,8 @@ class Action{
 			$what = "/\b[^" . $matchedAction[0] . "]\b" . "\b[0-9|A-Z]{2,3}\b/"; //exclude actions from matching
 		else 	
 			$what = "/\b[0-9|A-Z]{2,3}\b/";
-		preg_match($what, $msg, $matchedFacility);
+		if (preg_match($what, $msg, $matchedFacility) )
+			$matchedFacility[0] = trim($matchedFacility[0]);
 
 		//Kits - calling it kits for preparation of multiple kits processing
 		$what = "/\bKIT{0,1}[0-9]{4}\b|\b[0-9]{4}\b/";
@@ -108,13 +111,15 @@ class Action{
 		//TODO try matching for an unknown => everything but the above
 		// if it exists what should we do reject or process as much as we understand?
 		
+		//TODO have an auth function to make sure you can authenticate.
+		//Also have a disconect. Auth authentication may require to extent Pest class to handle the exception properly
+		
 		//TODO mulitple units is not proceesed yet
 		if (!is_null($matchedAction) ) {
 			//action supplied
 			//make sure it is only one
 			if (!isset($matchedAction[1])){
-				
-				if ($matchedAction[0]  == 'SEND') {
+				if ($matchedAction[0]  == 'SEND') { //unit or facility + phone number are required
 					if (!isset($matchedFacility[0]) && !isset($matchedPatient[0]) ) { 
 						//Assignment without a patient or facility
 						$thing = $pest->get('/apis/assign/' . $caller . "/" . $matchedUnits[0] .  ".xml", $headers); 
@@ -126,40 +131,51 @@ class Action{
 								$matchedUnits[0] .  "/" . $matchedPatient[0] . ".xml", $headers); 
 					}
 				} else if ($matchedAction[0]  == 'RECEIVE') {
-					if(isset($matchedFacility[0])) {
+					if (isset($matchedFacility[0]) && isset($matchedUnits[0])) {
 						$thing = $pest->get('/apis/receiveUnit/' . $caller .  "/" . 
 								$matchedUnits[0] . "/" . $matchedFacility[0] .   ".xml", $headers);
-					} else {
+					} else if (isset($matchedUnits[0])){
 						$thing = $pest->get('/apis/receiveUnit/' . $caller .  "/" . $matchedUnits[0]  .".xml", $headers);
+					} else {
+						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
 					}
 				} else if ($matchedAction[0]  == 'EXPIRE') {
-					if(isset($matchedFacility[0])) {
+					if(isset($matchedFacility[0]) && isset($matchedUnits[0])) {
 						$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" . 
 								$matchedUnits[0] . "/" . $matchedFacility[0] .   ".xml", $headers);
-					} else {
+					} else if (isset($matchedUnits)){
 						$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" .
 								$matchedUnits[0] .  ".xml", $headers);
+					} else {
+						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
 					}
 				} else if ($matchedAction[0]  == 'CREATE') {
-					$thing = $pest->get('/apis/createUnit/' . $caller .  "/" . 
+					if (isset($matchedFacility[0]) && isset($matchedUnits[0])) {
+						$thing = $pest->get('/apis/createUnit/' . $caller .  "/" . 
 								$matchedUnits[0] . "/" . $matchedFacility[0] .   ".xml", $headers);
+					} else {
+						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
+					}
 				} else if ($matchedAction[0]  == 'CONSENT') {
-					$thing = $pest->get('/apis/patientConsent/' . $caller .  "/" .
+					if (isset($matchedPatient[0])) {
+						$thing = $pest->get('/apis/patientConsent/' . $caller .  "/" .
 								$matchedPatient[0] .  ".xml", $headers);
+					} else {
+						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
+					}
 				}
 			} else {
-				//more then one action detected
-				//reject
+				//more then one action detectedreject
 				$thing = $pest->get('/apis/rejectMessage/moreActions', $headers);
 			}
-			return getResult($thing);
 		} else {
 			//action not supplied
 			//call actionless assign/receive
-			$thing = $pest->get('/apis/assign/' . $caller . "/" . $matchedUnits[0] .  ".xml", $headers);//$facility.
-			return getResult($thing);
+			if (isset($matchedUnits[0]))
+				$thing = $pest->get('/apis/assign/' . $caller . "/" . $matchedUnits[0] .  ".xml", $headers);//$facility.
 		}
-			
+		echo getResult($thing); //TODO remove this testing only
+		return getResult($thing);
 		exit;
 		
 	}

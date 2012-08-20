@@ -26,6 +26,7 @@ class PatientsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			$this->Patient->create();
+			$this->data['Patient']['number'] = strtoupper($this->data['Patient']['number']);
 			if ($this->Patient->save($this->data)) {
 				$this->Session->setFlash('The patient has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index'));
@@ -43,6 +44,7 @@ class PatientsController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
+			$this->data['Patient']['number'] = strtoupper($this->data['Patient']['number']);
 			if ($this->Patient->save($this->data)) {
 				$this->Session->setFlash('The patient has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index'));

@@ -282,8 +282,8 @@ class StatsController extends AppController {
 											$patientId,
 											(isset($this->data['Stat'][$i]['phone_id'])?$this->data['Stat'][$i]['phone_id']:NULL),
 											$userId,
-											NULL
-											);		
+											NULL,
+											$this->data['Stat'][$i]['location_id']);		
 					unset($this->data['Stat'][$i++]['Unit']);
 					
 				}	

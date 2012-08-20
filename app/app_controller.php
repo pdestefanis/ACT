@@ -1088,34 +1088,43 @@ class AppController extends Controller {
 
 		$this->set('menus', $menus);
 
-	}	
+		}	
 	}
 	
-	protected function isUnusedUnit($unitId) {
+	protected function isUnusedUnit($unitId, $date = null) {
 		$this->loadModel('Stats'); 
-		$statUnit = $this->Stats->find('list', array('conditions' => array('unit_id' => $unitId, 'patient_id is not null')));
+		$conditions = array('unit_id' => $unitId, 'patient_id is not null', (!is_null(' created <= \''.$date.'\'')?$date:'') );
+		
+		$statUnit = $this->Stats->find('list', array('conditions' => $conditions));
 		if (empty($statUnit))
 			return true;
 		return false;
 	}
 	
-	protected function isDiscardedUnit($unitId) {
+	protected function isDiscardedUnit($unitId, $date=null) {
 		$this->loadModel('Stats');
-		$statUnit = $this->Stats->find('list', array('conditions' => array('unit_id' => $unitId, 'status_id =3')));
+		$conditions = array('unit_id' => $unitId, 'status_id =3', (!is_null(' created <= \''.$date.'\'')?$date:'') );
+		$statUnit = $this->Stats->find('list', array('conditions' => $conditions));
 		if (empty($statUnit))
 			return true;
 		return false;
 	}
 	
-	
+	/*
+	 * adjsut the quantities so that sql sum on a faiclity always returns current total 
+	 */
 	protected function adjustQuantities($created, $unitId, $action, $quantity, $locationId = null, 
-		$patientId = null, $phoneId = null, $userId = null, $messagereceivedId = null){
+		$patientId = null, $phoneId = null, $userId = null, $messagereceivedId = null, $extraFacility = null){
 		$this->loadModel('Stats');
 		//back entry run the update sequence
 		$shouldAdjust = FALSE;
-		if (!is_null($locationId))	
-			$shouldAdjust = $this->updateBackEntry($created, $unitId,  $locationId);
-		
+		if (!is_null($locationId)){
+			if ($action == 'R')
+				//when receiveing locationId is lastfacility not the current one
+				$this->updateBackEntry($created, $unitId,  $extraFacility); 
+			else 
+				$this->updateBackEntry($created, $unitId,  $locationId);
+		}
 		//is it a facility or patient assignment?
 		$lastFacilityWithKit = $this->findLastUnitFacility($unitId, $this->dateArrayToString($created));
 		//TODO get the user id of phone 
@@ -1134,6 +1143,10 @@ class AppController extends Controller {
 			$this->Stats->create();
 			$this->Stats->save($data);
 	}
+	/*
+	 * Updates the next record for backentry. 
+	 * I.e. updates the the location_id of the record de-asigning the unit after the current entry
+	 */
 	protected function updateBackEntry($created, $unitId,  $locationId){
 		//first see if this unit was already automatically dispensed id 6
 		// from a different facility
@@ -1173,11 +1186,15 @@ class AppController extends Controller {
 			$data['Stats']['location_id'] =  $locationId;
 			//$data['Stats']['created'] = $created;
 			$this->Stats->save($data);
+			echo "ID: " . $maxCreatedId . " date: " . $maxCreated . " loc: " . $maxFacilityId . "</br>";
 		//	return FALSE;
 		}
 		//return TRUE;
 	}
 
+	/*
+	 * Find the facility that had the unit up to a date
+	 */
 	protected function findLastUnitFacility($unitId, $created){
 		$this->loadModel('Stats');
 		//last location prior to a date - this is to cater for back entry
@@ -1223,15 +1240,19 @@ class AppController extends Controller {
 	}
 	
 	//get the current facility or patient of a unit
-	protected function getUnitCurrentFacility($unitId, $hasPatient = true) {
+	protected function getUnitCurrentFacility($unitId, $hasPatient = true, $date = null) {
 			$this->loadModel('Stats');
 			//last location
 			$query = 'SELECT created, patient_id, location_id from stats st ';
 			$query .= ' WHERE unit_id=' . $unitId;
+			if (!is_null($date)) {
+				$query .= ' and created <=\'' . $date .'\'';
+			}
 			$result = $this->Stats->query($query);
 			$maxCreated = NULL;
 			$maxFacilityId = NULL;
 			$maxPatientId = NULL;
+			$maxStatusId = NULL;
 		
 			foreach ($result as $key => $value) {
 				if (is_null($maxCreated)) { //initial, set them both
@@ -1243,10 +1264,11 @@ class AppController extends Controller {
 					$maxCreated = $value['st']['created'];
 					$maxFacilityId = $value['st']['location_id'];
 					$maxPatientId = $value['st']['patient_id'];
+					$maxStatusId = $value['st']['status_id'];
 				}
 			}
 			if (!is_null($maxFacilityId) || !is_null($maxPatientId) ) {
-					return array($maxFacilityId, $maxPatientId);
+					return array($maxFacilityId, $maxPatientId, $maxStatusId);
 			}
 		
 			return -1;
@@ -1331,5 +1353,28 @@ class AppController extends Controller {
 		$lastDay = date('Y-m-t 23:59:59', $suppliedDate); 
 		//'t' for last day (number of days = last day) '23.59' for last hour
 		return array('first' => $firstDay, 'last' => $lastDay);
+	}
+	
+	/*
+	 * Check if operation that is going to be performed is allowed
+	 * action can be A, R, or E
+	 * Not finihsed as I am not sure if we need so much ristriction
+	 */
+	function isActionAllowed($unitId, $facility = null, $action = null, $date) {
+		$unitStats = $this->getUnitCurrentFacility($unit);
+		//TODO is unused kit must be date sensitive
+		$isUnsed = $this->isUnusedUnit($unitId, $date);
+		$isDiscarded = $this->isDiscardedUnit($unitId, $date); //TODO is unit expired
+		if ($action == 'A') { //only possible with unused
+				if ($isUnsed && !$isDiscarded)
+					return true;
+		} else if ($action == 'R') {
+				if (!$isDiscarded)
+					return true;
+		} else if ($action == 'E') {
+			if (!$isDiscarded)
+				return true;
+		}
+		return false;
 	}
 }

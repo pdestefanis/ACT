@@ -8,8 +8,8 @@ class Unit extends AppModel {
 	var $validate = array(
 		'code' => array(
 			'notempty' => array(
-				'rule' => array('between', 3, 14),
-				'message' => 'Unit code must be between 3 and 14 characters',
+				'rule' => array('between', 4, 4),
+				'message' => 'Unit code must be 4 digits',
 				'allowEmpty' => false,
 			),
 			'isUnique' => array(
