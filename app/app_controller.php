@@ -1358,7 +1358,7 @@ class AppController extends Controller {
 	/*
 	 * Check if operation that is going to be performed is allowed
 	 * action can be A, R, or E
-	 * Not finihsed as I am not sure if we need so much ristriction
+	 * Not finihsed as I am not sure if we need so much restriction
 	 */
 	function isActionAllowed($unitId, $facility = null, $action = null, $date) {
 		$unitStats = $this->getUnitCurrentFacility($unit);

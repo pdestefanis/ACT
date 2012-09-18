@@ -94,8 +94,8 @@ class UpdateFileHelper extends Helper {
 		//http://gmaps-utility-library.googlecode.com/svn/trunk/mapiconmaker/1.1/examples/markericonoptions-wizard.html
 		if ($globalAlarm)
 			$html = "\"markerImage\":\"img/star-red.png\" }";
-		//else if ($empty) // case where no items have been reported 
-		//	$html = "\"markerImage\":\"img/star-grey.png\" }";
+		else if ($empty) // case where no items have been reported 
+			$html = "\"markerImage\":\"img/star-grey.png\" }";
 		else
 			$html = "\"markerImage\":\"img/star-blue.png\" }";
 		return $html;
