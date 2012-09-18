@@ -29,6 +29,7 @@ echo '<br /><br />' ;
 				'separator' => '',
 		));
 		echo $this->Form->input('item_id');
+		echo $this->Form->input('comment');
 		
 	?>
 	<?php echo $this->Form->end(__('Submit', true));?>

@@ -5,8 +5,9 @@
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('code');
-		echo $this->Form->input('batch_id');
+		echo $this->Form->input('batch_id', array('empty' => __('---Select---', true) ));
 		echo $this->Form->input('item_id');
+		echo $this->Form->input('comment');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

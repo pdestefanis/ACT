@@ -1236,7 +1236,8 @@ class AppController extends Controller {
 	
 	protected function dateArrayToString($date){
 		return $date['year'] . "-" . $date['month'] ."-" . $date['day'] 
-					. " " . $date['hour'] . ":" . $date['min']  . ":" . $date['sec'];
+					. " " . (!isset($date['hour'])?"00":$date['hour']) . ":" . (!isset($date['min'])?"00":$date['min']) 
+								 . ":" . (!isset($date['min'])?"01":$date['min']) ;
 	}
 	
 	//get the current facility or patient of a unit

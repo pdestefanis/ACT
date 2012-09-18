@@ -19,7 +19,11 @@
 	<tr>
 			<th><?php echo $this->Paginator->sort('code');?></th>
 			<th><?php echo __('Batch');?></th>
-			<th class="actions"><?php __('Actions');?></th>
+			<th><?php echo __('Created');?></th>
+			<th><?php echo __('First Assigned');?></th>
+			<th><?php echo __('Opened');?></th>
+			<th><?php echo __('Comment');?></th>
+		
 	</tr>
 	<?php
 	
@@ -36,11 +40,11 @@
 		<td><?php 
 			if (isset($batches[$unit['Unit']['batch_id']]))
 				echo $batches[$unit['Unit']['batch_id']]; ?>&nbsp;</td>
-		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $unit['Unit']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $unit['Unit']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $unit['Unit']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $unit['Unit']['id'])); ?>
-		</td>
+		<td><?php echo $unitDates[$unit['Unit']['id']]['created']; ?>&nbsp;</td>
+		<td><?php echo $unitDates[$unit['Unit']['id']]['assigned']; ?>&nbsp;</td>
+		<td><?php echo $unitDates[$unit['Unit']['id']]['opened']; ?>&nbsp;</td>
+		<td><?php echo $unit['Unit']['comment']; ?>&nbsp;</td>
+		
 	</tr>
 <?php endforeach; ?>
 	</table>

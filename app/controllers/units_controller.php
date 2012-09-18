@@ -24,6 +24,15 @@ class UnitsController extends AppController {
 													)
 									));
 		} 
+		//populate the dates
+		$units = $this->Unit->find('list', array('callbacks' =>false));
+		$unitDates = array();
+		foreach ($units as $id => $unit){
+			$unitDates[$id]['created'] = $this->getUnitFirstDate($id);
+			$unitDates[$id]['assigned'] = $this->getUnitFirstAssignDate($id, $units[$id]['created']);
+			$unitDates[$id]['opened'] = $this->getUnitOpenDate($id, $units[$id]['created'] );
+		}
+		$this->set(compact('unitDates'));
 		$this->set('units', $this->paginate());
 		$this->set('batches', $this->Unit->Batch->find('list'));
 	}
@@ -48,6 +57,9 @@ class UnitsController extends AppController {
 			if (empty($this->data['Unit']['location_id'])  ) {
 				$this->Unit->invalidate('location_id', __('Please select facility' , true));
 				$this->Session->setFlash(__('Facility is required. Please select a facility', true));
+			} else if ($this->dateArrayToString($this->data['Unit']['created']) > date("Y-m-d H:i:s")) {
+				$this->Unit->invalidate('created', __('Created date cannot be in the future.' , true));
+				$this->Session->setFlash(__('Please select date', true));
 			} else {
 				$this->Unit->create();
 				if ($this->Unit->save($this->data)) {

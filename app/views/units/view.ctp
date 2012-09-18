@@ -8,7 +8,10 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Batch Number'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $batches[$unit['Unit']['batch_id']]; ?>
+			<?php 
+				if (isset($batches[$unit['Unit']['batch_id']]))	
+					echo $batches[$unit['Unit']['batch_id']]; 
+				?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Created'); ?></dt>
@@ -24,6 +27,11 @@
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Opened'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $unit['Stat']['opened']; ?>
+			&nbsp;
+		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Comment'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $unit['Unit']['comment']; ?>
 			&nbsp;
 		</dd>
 	</dl>
