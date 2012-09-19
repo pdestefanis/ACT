@@ -26,7 +26,7 @@ class ItemsController extends AppController {
 									));
 		} 
 		$this->set('items', $this->paginate());
-		$this->set('modifiers', $this->Item->Modifier->find('list'));
+		//$this->set('modifiers', $this->Item->Modifier->find('list'));
 	}
 
 	function view($id = null) {
@@ -47,7 +47,7 @@ class ItemsController extends AppController {
 		//$this->set('item', $this->Item->find('all', array('conditions' => array('Location.id IN (' . implode(",", $this->Session->read("userLocations")) . ')' , 'Item.id = ' . $id), 'recursive' => 1)));
 		$this->set('locations', $this->Item->Stat->Location->find('list', array ('conditions' => array('Location.deleted = 0'))));
 		$this->set('phones', $this->Item->Stat->Phone->find('list', array ('conditions' => array('Phone.deleted = 0'), 'callbacks' => false)));
-		$this->set('modifiers', $this->Item->Modifier->find('list'));
+		//$this->set('modifiers', $this->Item->Modifier->find('list'));
 		$this->set('users', $this->Item->Stat->User->find('list'));
 	}
 
@@ -62,7 +62,7 @@ class ItemsController extends AppController {
 				$this->Session->setFlash('The item could not be saved. Please, try again.','flash_failure');
 			}
 		}
-		$this->set('modifiers', $this->Item->Modifier->find('list'));
+		//$this->set('modifiers', $this->Item->Modifier->find('list'));
 	}
 
 	function edit($id = null) {
@@ -82,7 +82,7 @@ class ItemsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Item->read(null, $id);
 		}
-		$this->set('modifiers', $this->Item->Modifier->find('list'));
+		//$this->set('modifiers', $this->Item->Modifier->find('list'));
 	}
 
 	function delete($id = null) {

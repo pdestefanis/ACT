@@ -9,10 +9,11 @@ class UnitsController extends AppController {
 		parent::beforeFilter();
 		$this->Unit->Stat->Location->data["authUser"] =  $this->Session->read("Auth.User") ;
 		$this->Unit->Stat->Location->data["authLocations"] =  $this->Session->read("userLocations") ;
-		
    }
    
 	function index() {
+		$this->Unit->softDelete($this->Unit, true);
+		//$this->Unit->softDelete('deleted');
 		$this->Unit->recursive = 0;
 		$this->paginate['Unit'] = array('order' => 'Unit.id DESC');
 		$search = (empty($this->data['Search']['search'])?(isset($this->passedArgs[0])?$this->passedArgs[0]:$this->data['Search']['search']):$this->data['Search']['search']);
@@ -25,12 +26,12 @@ class UnitsController extends AppController {
 									));
 		} 
 		//populate the dates
-		$units = $this->Unit->find('list', array('callbacks' =>false));
+		$units = $this->Unit->find('list');//, array('callbacks' =>false));
 		$unitDates = array();
 		foreach ($units as $id => $unit){
 			$unitDates[$id]['created'] = $this->getUnitFirstDate($id);
-			$unitDates[$id]['assigned'] = $this->getUnitFirstAssignDate($id, $units[$id]['created']);
-			$unitDates[$id]['opened'] = $this->getUnitOpenDate($id, $units[$id]['created'] );
+			$unitDates[$id]['assigned'] = $this->getUnitFirstAssignDate($id, $unitDates[$id]['created']);
+			$unitDates[$id]['opened'] = $this->getUnitOpenDate($id, $unitDates[$id]['created'] );
 		}
 		$this->set(compact('unitDates'));
 		$this->set('units', $this->paginate());
@@ -136,6 +137,7 @@ class UnitsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for unit', true));
 			$this->redirect(array('action'=>'index'));
 		}
+		
 		if ($this->Unit->delete($id)) {
 			$this->Session->setFlash(__('Unit deleted', true));
 			$this->redirect(array('action'=>'index'));

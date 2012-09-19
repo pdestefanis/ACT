@@ -69,7 +69,7 @@ class Item extends AppModel {
 			)
 			
 	);
-	var $belongsTo = array(
+	/* var $belongsTo = array(
 			'Modifier' => array(
 				'className' => 'Modifier',
 				'foreignKey' => 'modifier_id',
@@ -83,7 +83,7 @@ class Item extends AppModel {
 				'finderQuery' => '',
 				'counterQuery' => ''
 			)	
-	);
+	); */
 
 }
 ?>

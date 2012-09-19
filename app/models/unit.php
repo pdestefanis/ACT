@@ -4,6 +4,7 @@ class Unit extends AppModel {
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $order ='Unit.id desc';
 	var $displayField ='code';
+	var $actsAs  = array('Utils.SoftDelete');// => array('deleted'));
 	
 	var $validate = array(
 		'code' => array(

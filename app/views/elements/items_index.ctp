@@ -20,7 +20,7 @@
 			<th><?php echo $this->Paginator->sort('name');?></th>
 			<th><?php echo $this->Paginator->sort('code');?></th>
 			<th><?php echo $this->Paginator->sort('units');?></th>
-			<th><?php echo $this->Paginator->sort('Default Modifier', 'modifier_id');?></th>
+			
 	</tr>
 	<?php
 	$i = 0;
@@ -36,7 +36,7 @@
 			?>&nbsp;</td>
 		<td><?php echo $item['Item']['code']; ?>&nbsp;</td>
 		<td><?php echo $item['Item']['units']; ?>&nbsp;</td>
-		<td><?php echo $item['Modifier']['name']; ?>&nbsp;</td>
+		
 	</tr>
 <?php endforeach; ?>
 	</table>

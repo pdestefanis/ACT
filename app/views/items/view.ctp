@@ -39,7 +39,7 @@ echo '<br /><br />' ;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Default Modifier'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $item['Modifier']['name']; ?>
+			<?php //echo $item['Modifier']['name']; ?>
 			&nbsp;
 		</dd>
 	</dl>

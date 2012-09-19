@@ -36,7 +36,7 @@ class StatsController extends AppController {
 													"Phone.name LIKE" => "%".$search."%")
 									));
 		} 
-		
+		//echo "<pre>" . print_r($this->paginate(), true) . "</pre>";
 		$this->set('stats', $this->paginate());
 		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
 		$locations = $this->Stat->Location->find('list', array('callbacks' =>false));

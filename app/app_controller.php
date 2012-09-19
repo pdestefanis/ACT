@@ -200,6 +200,7 @@ class AppController extends Controller {
 			$query .= " AND stat_items.created >= '"  . $timestamp['first'] . "' ";
 		} 
 		$query .= " AND stat_items.location_id IN ( " . implode(",", $this->Session->read("userLocations")) . ") ";
+		$query .= " AND units.deleted = 0 ";
 		$query .= " ORDER by locations.parent_id, location_id, created ASC";
 
 		$listd = $this->Stat->query($query);
@@ -252,8 +253,15 @@ class AppController extends Controller {
 				}
 		}
 		//
+		//find deleted unit_ids and remove them from count
+		//searching for deleted as I am assuming that the non deleted ones will be much more
+		$this->loadModel('Unit');
+		$conditions = array('deleted' => 1);
+		$deletedUnits = $this->Unit->find('list', array('conditions' => $conditions));
+		$deletedUnits = array_keys($deletedUnits);
+		
 		$listd = $newListd;
-	//echo "<pre>" . print_r($listd, true) . "</pre>";
+		//echo "<pre>" . print_r($listd, true) . "</pre>";
 		foreach ($listd as $ld){
 			
 			$listitems[$ld['locations']['lid']][] = $ld;
@@ -267,8 +275,8 @@ class AppController extends Controller {
 				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
 				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
 			} 
+			$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")";//remove deleted units
 			$assigned = $this->Stat->query($query);
-			
 			
 			//sum up expired/discarded
 			$query = "select unit_id, location_id from stats s" .
@@ -279,6 +287,7 @@ class AppController extends Controller {
 				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
 				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
 			} 
+			$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")"; //remove deleted units
 			$expired = $this->Stat->query($query);
 			foreach ($expired as $key=>$e) { //find latest location for units where it is not specified
 				if (is_null($e['s']['location_id']) ) {
@@ -303,6 +312,7 @@ class AppController extends Controller {
 				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
 				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
 			} 
+			$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")";//remove deleted units
 			$patientSent = $this->Stat->query($query); 
 			$atPatient['sum'] =  (!isset($patientSent[0][0]['sum'])?0:-$patientSent[0][0]['sum']);
 			

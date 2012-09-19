@@ -3,6 +3,7 @@ class Stat extends AppModel {
 	var $name = 'Stat';
 	var $order = "Stat.created DESC";
 	var $inserted_ids = array();
+	
 	var $validate = array(
 		/* 'item_id' => array(
 			'numeric' => array(
@@ -129,7 +130,7 @@ class Stat extends AppModel {
 		'Unit' => array(
 			'className' => 'Unit',
 			'foreignKey' => 'unit_id',
-			'conditions' => '',
+			//'conditions' => 'Unit.deleted = 0' , //TODO why is this not working? moved to beforeFind below
 			'fields' => '',
 			'order' => ''
 		),
@@ -199,12 +200,10 @@ class Stat extends AppModel {
 		if (get_class($this) === 'Stat' ) {
 			if (!empty($queryData))
 			{
-				
-				//if ($sess->read("Auth.User.group_id") != 8){ // check if admin user
-					if (!isset($queryData['conditions'][get_class($this) . '.id'])) { //check if viewing item
-						$queryData['conditions'][] = array (get_class($this) .'.location_id IN (' . implode(", ", Configure::read('authLocations')) . ')');
-					}
-				//}
+				if (!isset($queryData['conditions'][get_class($this) . '.id'])) { //check if viewing item
+					$queryData['conditions'][] = array (get_class($this) .'.location_id IN (' . implode(", ", Configure::read('authLocations')) . ')');
+					$queryData['conditions'][] = array ('Unit.deleted = 0');
+				}
 			}
 		}
 		return $queryData;
