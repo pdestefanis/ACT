@@ -202,7 +202,7 @@ class Stat extends AppModel {
 			{
 				if (!isset($queryData['conditions'][get_class($this) . '.id'])) { //check if viewing item
 					$queryData['conditions'][] = array (get_class($this) .'.location_id IN (' . implode(", ", Configure::read('authLocations')) . ')');
-					$queryData['conditions'][] = array ('Unit.deleted = 0');
+					//$queryData['conditions'][] = array ('Unit.deleted = 0');
 				}
 			}
 		}
