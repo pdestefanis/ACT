@@ -19,7 +19,9 @@ echo '<br /><br />' ;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Registered at'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $locations[$patient['Patient']['location_id']]; ?>
+			<?php 
+				if (isset($locations[$patient['Patient']['location_id']]))
+				echo $locations[$patient['Patient']['location_id']]; ?>
 			&nbsp;
 		</dd>
 	</dl>

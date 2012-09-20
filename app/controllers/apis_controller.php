@@ -34,12 +34,12 @@ class ApisController extends AppController {
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id']);
 			if (!$isDiscarded) {
 				$this->Rest->error(__('This kit is already discarded', true));
-				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//if facility is not set use the phone's assigned facility
@@ -47,7 +47,7 @@ class ApisController extends AppController {
 				$facility['Locations']['id'] = $phone['Phones']['location_id'];
 			} else {
 				$facility = $this->findFacility($facilityShortname);
-				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//set the date
@@ -96,10 +96,10 @@ class ApisController extends AppController {
 			$this->Stats->create();
 			if (!$this->Stats->save($data)) {
 				$this->Rest->error(__('Record could not be saved: 10101', true));
-				$this->Rest->abort();
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$stat = $this->Stats->findById($this->Stats->id);
 			$this->set(compact('stat'));
@@ -122,7 +122,7 @@ class ApisController extends AppController {
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//if facility is not set use the phone's assigned facility
 			if (is_null($facilityShortname))
@@ -191,13 +191,13 @@ class ApisController extends AppController {
 		$this->Stats->create();
 		if (!$this->Stats->save($data)) {
 			$this->Rest->error(__('Record could not be saved: 10102', true));
-			$this->Rest->abort();
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 		}
 		$stat = $this->Stats->findById($this->Stats->id);
 		$this->set(compact('stat'));
 			
 		$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
-		$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+		//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 		$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 	}
 
@@ -215,12 +215,12 @@ class ApisController extends AppController {
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$isUnused = $this->isUnusedUnit($unit['Units']['id']);
 			if (!$isUnused) {
 				$this->Rest->error(__('This kit is open cannot be assigned to patient', true));
-				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//find patient
@@ -282,7 +282,7 @@ class ApisController extends AppController {
 			$this->Stats->create();
 			if (!$this->Stats->save($data)) {
 				$this->Rest->error(__('Record could not be saved: 10103', true));
-				$this->Rest->abort();
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			//if assiging the same unit to the same facility don't increment quantity
@@ -301,7 +301,7 @@ class ApisController extends AppController {
 						NULL
 				);
 			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 
 			$this->set(compact('stat'));
@@ -314,8 +314,11 @@ class ApisController extends AppController {
 	*/
 	function assignToFacility($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
 		if ($this->Rest->isActive()) {
-			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($facilityShortname))
+			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($facilityShortname)) {
 				$this->rejectMessage("lessParams");
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				//$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
 				
 			$phone = $this->findPhone($phoneNumber);
 			$argsList = func_get_args();
@@ -323,17 +326,17 @@ class ApisController extends AppController {
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$isUnused = $this->isUnusedUnit($unit['Units']['id']);
 			if (!$isUnused) {
 				$this->Rest->error(__('This kit is open and cannot be assigne to facility', true));
-				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//find facility
 			$facility = $this->findFacility($facilityShortname);
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//set the date
 			if (is_null($date)) {
@@ -379,11 +382,11 @@ class ApisController extends AppController {
 			$this->Stats->create();
 			if (!$this->Stats->save($data)) {
 				$this->Rest->error(__('Record could not be saved: 10104', true));
-				$this->Rest->abort();
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 				
 			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$stat = $this->Stats->findById($this->Stats->id);
 			$this->set(compact('stat'));
@@ -406,7 +409,7 @@ class ApisController extends AppController {
 			
 			//find facility
 			$facility = $this->findFacility($facilityShortname);
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			
 			//first create the unit
@@ -414,14 +417,14 @@ class ApisController extends AppController {
 			$unit = $this->Units->findByCode($unitNumber);			
 			if (!empty($unit)) { //reject units that already aexist
 				$this->Rest->error(__('This unit already exists: ' . $unitNumber, true));
-				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$unitData = array('Units' => array ('code' => $unitNumber));
 			$this->Units->create();
 			if (!$this->Units->save($unitData)) {
 				$this->Rest->error(__('Record could not be saved: 10301', true));
-				$this->Rest->abort();
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$newUnitId = $this->Units->id;
 			
@@ -462,11 +465,11 @@ class ApisController extends AppController {
 				//if stats can't be saved try deleting the unit as well
 				$this->Units->delete($newUnitId);
 				$this->Rest->error(__('Record could not be saved: 10104', true));
-				$this->Rest->abort();
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			
 			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$stat = $this->Stats->findById($this->Stats->id);
 			$this->set(compact('stat'));
@@ -520,7 +523,7 @@ class ApisController extends AppController {
 				$this->Phones->create();
 				if (!$this->Phones->save($data)) {
 					$this->Rest->error(__('Phone could not be saved: 10107', true));
-					$this->Rest->abort();
+					$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 				}
 				$phone = $this->Phones->findById($this->Phones->id);
 				$this->Rest->error(__('Phone number not found. It will be added but you will not be able to report until it is activated.', true));
@@ -614,8 +617,8 @@ class ApisController extends AppController {
 			$children = array();
 			$this->findLocationChildren($facilityId, $children);
 			if ( !in_array($lastFacilityPatient[0], $children)) {
-				$this->Rest->error(__('This unit doesn\'t belong to your facility and cannot be dispensed: 10107', true));
-				$this->Rest->abort();
+				$this->Rest->error(__('This unit does not belong to your facility and cannot be dispensed: 10107', true));
+				//$this->Rest->abort();
 			} else {
 				return true;
 			}

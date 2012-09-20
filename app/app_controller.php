@@ -1254,7 +1254,7 @@ class AppController extends Controller {
 	protected function getUnitCurrentFacility($unitId, $hasPatient = true, $date = null) {
 			$this->loadModel('Stats');
 			//last location
-			$query = 'SELECT created, patient_id, location_id from stats st ';
+			$query = 'SELECT created, patient_id, location_id, status_id from stats st ';
 			$query .= ' WHERE unit_id=' . $unitId;
 			if (!is_null($date)) {
 				$query .= ' and created <=\'' . $date .'\'';

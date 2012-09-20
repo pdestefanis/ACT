@@ -40,7 +40,7 @@ class Action{
 	require 'Pest.php';
 	
 	//TODO for testing purpose only
-	init(' a 1002..', '+15553349901');
+	init(' r 1004..smt', '+15553349901');
 	
 	define('__ROOT__', dirname(dirname(__FILE__))); //this is a workaround for the require
 	require_once(__ROOT__ . '/config/options.php'); //use this configuration so that we can make use of App::Configure in cake for the form
@@ -53,7 +53,7 @@ class Action{
 		$pest = new Pest('http://localhost:10080/track');
 		$headers = array(
 				//Username and password to use for API login
-				'Authorization: TRUEREST username=admin&password=dmin12&apikey=247b5a2f72df375279573f2746686daa',
+				'Authorization: TRUEREST username=admin&password=admin12&apikey=247b5a2f72df375279573f2746686daa',
 				'Content-Type: text/xml'
 		);
 		
@@ -174,7 +174,7 @@ class Action{
 			if (isset($matchedUnits[0]))
 				$thing = $pest->get('/apis/assign/' . $caller . "/" . $matchedUnits[0] .  ".xml", $headers);//$facility.
 		}
-		echo getResult($thing); //TODO remove this testing only
+		//echo getResult($thing); //TODO remove this testing only
 		return getResult($thing);
 		exit;
 		
@@ -182,11 +182,10 @@ class Action{
 	/*
 	 * Return the message part of the XML
 	 */
-	function getResult($thing) {
+	function getResult(&$thing) {
 		$util = new Utils();
 		//TODO direct XML processing could replace this
 		$array = $util->xmlToArray($thing); //convert xml to array
-		
 		//for now we only care about the message wether 
 		//it is an error or info doesn't matter here just return the message
 		$find = 'message'; 
