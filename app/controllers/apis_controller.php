@@ -637,6 +637,12 @@ class ApisController extends AppController {
 				$this->Rest->error(__('Patient does not exist: ' , true) . $patientNumber);
 				//$this->Rest->abort();
 			}
+			$consent = $this->Patients->find('first', array('conditions' => $conditions, 
+						'fields' => array('Patients.id','Patients.consent'), 'callbacks' => false));
+			if (isset($patient['Patients']['consent']) && $patient['Patients']['consent'] == 0) {
+				$this->Rest->error(__('Patient consent missing: ' , true) . $patientNumber);
+				//$this->Rest->abort();
+			}
 			$this->set(compact('patient'));
 			return $patient;
 		}
@@ -735,17 +741,25 @@ class ApisController extends AppController {
 	/*
 	 * Errors not caught come here and messages get rejected
 	 */
-	function rejectMessage($what = null){
+	function rejectMessage($phoneNum, $what = null){
 		if ($what == 'moreActions') {
 			$this->Rest->error(__('Too many keywords were supplied. Message not processed: 10108', true));
 		} else if ($what == 'lessParams') {
 			$this->Rest->error(__('Missing parameter. Message not processed: 10109', true));
 		} else if ($what == 'lessMissParams') {
-			$this->Rest->error(__('Missing or incorrect parameter. Message not processed: 10110', true));
+			$this->Rest->error(__('Missing or incorrect parameter. Message not processed: 10111', true));
 		} else {
 			$this->Rest->error(__('Something went wrong. Your message was not processed: 10999', true));
 		}
-		$this->Rest->abort();
+		Configure::load('options');
+		$length = Configure::read('Phone.length');
+		$argsList = array();
+		$this->loadModel('Phones');
+		$phoneNum = substr($phoneNum, -$length);
+		$conditions = array("Phones.phonenumber LIKE " => "%%" . $phoneNum . "%%");
+		$phone = $this->Phones->find('first', array('conditions' => $conditions, 'callbacks' => false));
+		$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+		$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 	}
 }
 ?>

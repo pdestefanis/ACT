@@ -40,8 +40,8 @@ class Action{
 	require 'Pest.php';
 	
 	//TODO for testing purpose only
-	init(' r 1004..smt', '+15553349901');
-	
+	init('e stm 1003 P000011', '+15559811021');// +15559342341'); 15559922431 +15559811021
+	//P000011
 	define('__ROOT__', dirname(dirname(__FILE__))); //this is a workaround for the require
 	require_once(__ROOT__ . '/config/options.php'); //use this configuration so that we can make use of App::Configure in cake for the form
 
@@ -115,7 +115,7 @@ class Action{
 		//Also have a disconect. Auth authentication may require to extent Pest class to handle the exception properly
 		
 		//TODO mulitple units is not proceesed yet
-		if (!is_null($matchedAction) ) {
+		if (!is_null($matchedAction) && isset($matchedUnits[0])) {
 			//action supplied
 			//make sure it is only one
 			if (!isset($matchedAction[1])){
@@ -129,6 +129,8 @@ class Action{
 					} else if(!isset($matchedFacility[0]) && isset($matchedPatient[0])) {
 						$thing = $pest->get('/apis/assignToPatient/' . $caller . "/" . 
 								$matchedUnits[0] .  "/" . $matchedPatient[0] . ".xml", $headers); 
+					} else {
+						$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 					}
 				} else if ($matchedAction[0]  == 'RECEIVE') {
 					if (isset($matchedFacility[0]) && isset($matchedUnits[0])) {
@@ -137,7 +139,7 @@ class Action{
 					} else if (isset($matchedUnits[0])){
 						$thing = $pest->get('/apis/receiveUnit/' . $caller .  "/" . $matchedUnits[0]  .".xml", $headers);
 					} else {
-						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
+						$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 					}
 				} else if ($matchedAction[0]  == 'EXPIRE') {
 					if(isset($matchedFacility[0]) && isset($matchedUnits[0])) {
@@ -147,35 +149,37 @@ class Action{
 						$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" .
 								$matchedUnits[0] .  ".xml", $headers);
 					} else {
-						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
+						$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 					}
 				} else if ($matchedAction[0]  == 'CREATE') {
 					if (isset($matchedFacility[0]) && isset($matchedUnits[0])) {
 						$thing = $pest->get('/apis/createUnit/' . $caller .  "/" . 
 								$matchedUnits[0] . "/" . $matchedFacility[0] .   ".xml", $headers);
 					} else {
-						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
+						$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 					}
 				} else if ($matchedAction[0]  == 'CONSENT') {
 					if (isset($matchedPatient[0])) {
 						$thing = $pest->get('/apis/patientConsent/' . $caller .  "/" .
 								$matchedPatient[0] .  ".xml", $headers);
 					} else {
-						$thing = $pest->get('/apis/rejectMessage/apis/rejectMessage/lessMissParams.xml', $headers);
+						$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 					}
 				}
 			} else {
 				//more then one action detectedreject
-				$thing = $pest->get('/apis/rejectMessage/moreActions', $headers);
+				$thing = $pest->get('/apis/rejectMessage/' . $caller . '/moreActions.xml', $headers);
 			}
-		} else {
+		} else if (isset($matchedUnits[0]) && !isset($matchedPatient[0])) {
 			//action not supplied
 			//call actionless assign/receive
 			if (isset($matchedUnits[0]))
 				$thing = $pest->get('/apis/assign/' . $caller . "/" . $matchedUnits[0] .  ".xml", $headers);//$facility.
+		} else { //we need at least the unit to be supplied
+			$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 		}
 		//echo getResult($thing); //TODO remove this testing only
-		return getResult($thing);
+		echo getResult($thing);
 		exit;
 		
 	}
