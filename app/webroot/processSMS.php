@@ -176,7 +176,7 @@ class Action{
 			$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 		}
 		//echo getResult($thing); //TODO remove this testing only
-		echo getResult($thing);
+		return getResult($thing);
 		exit;
 		
 	}
