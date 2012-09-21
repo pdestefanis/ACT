@@ -40,7 +40,7 @@ class Action{
 	require 'Pest.php';
 	
 	//TODO for testing purpose only
-	init('e stm 1003 P000011', '+15559811021');// +15559342341'); 15559922431 +15559811021
+	init('c ', '+15559811021');// +15559342341'); 15559922431 +15559811021
 	//P000011
 	define('__ROOT__', dirname(dirname(__FILE__))); //this is a workaround for the require
 	require_once(__ROOT__ . '/config/options.php'); //use this configuration so that we can make use of App::Configure in cake for the form
@@ -56,7 +56,6 @@ class Action{
 				'Authorization: TRUEREST username=admin&password=admin12&apikey=247b5a2f72df375279573f2746686daa',
 				'Content-Type: text/xml'
 		);
-		
 		error_reporting(-1);
 		//THIS MUST BE CHANGED FOR EACH PROJECTS' TIMEZONE
 		//OTHERWISE PHP DATE AND MYSQL DATE FROM THE WEBAPP MAY BE DIFFERENT
@@ -80,7 +79,6 @@ class Action{
 		$matchedFacility = NULL;
 		$matchedUnits = NULL;
 		$thing = NULL;
-		
 		//loop through all actions and see if sms contains one
 		foreach ($actions as $act => $aliases) {
 			foreach ($aliases as $key => $alias) {
@@ -90,7 +88,6 @@ class Action{
 				}
 			}
 		}
-		
 		//check for presence of patient
 		//Patient starts with a P and contains 5-6 digits
 		$what = "/\b[P][0-9]{5,6}\b/";
@@ -115,7 +112,7 @@ class Action{
 		//Also have a disconect. Auth authentication may require to extent Pest class to handle the exception properly
 		
 		//TODO mulitple units is not proceesed yet
-		if (!is_null($matchedAction) && isset($matchedUnits[0])) {
+		if (!is_null($matchedAction) && (isset($matchedUnits[0]) || $matchedAction[0]  == 'CONSENT' )) {
 			//action supplied
 			//make sure it is only one
 			if (!isset($matchedAction[1])){
