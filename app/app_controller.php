@@ -588,9 +588,11 @@ class AppController extends Controller {
 						. ((round($l['scaleMin']/4) == $l['scaleMin'] || round($l['scaleMin']/4) == 3*$l['scaleMin']/4 || round($l['scaleMin']/4) == $l['scaleMin']/2)? "":round($l['scaleMin']/4). "|")   
 			: "" ) //isset scaleMin 
 						. $l['min']    . "|"
-						 . ((round($l['max']/4) == $l['max'] || round($l['max']/4) == 3*$l['max']/4 || round($l['max']/4) == $l['min'])? "":round($l['max']/4). "|")
-						. ((round($l['max']/2) == $l['max'] || round($l['max']/2) == 3*$l['max']/4 || round($l['max']/2) == $l['min'])? "":round($l['max']/2). "|")
-						. ((round(3*$l['max']/4) == $l['max'] || round($l['max']/2) == 3*$l['max']/4 || round($l['max']/2) == $l['min']) ? "":round(3*$l['max']/4). "|")   
+						//after some playing a around for a few hours: there is always a problem with small numbers and the axis
+						//giving up by just dividing the region into two
+						. ((round($l['max']/2) == $l['max'])? "":round($l['max']/2,2). "|")
+						/* . ((round($l['max']/2) == round($l['max']/4) || round($l['max']/2) == round(3*$l['max']/4))? "":round($l['max']/2). "|")
+						. ((round(3*$l['max']/4) == $l['max'] || round($l['max']/2) == round(3*$l['max']/4))? "":round(3*$l['max']/4). "|")    */
 						/* . (round($l['max']/4) . "|" ) 
 						 . (round($l['max']/2) . "|" )
 						 . (round(3*$l['max']/4) . "|" ) */

@@ -51,7 +51,6 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//set the date
-			//set the date
 			if (is_null($date)) {
 				$data['Stats']['created']['year'] = date('Y');
 				$data['Stats']['created']['month'] = date('m');
@@ -59,10 +58,19 @@ class ApisController extends AppController {
 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
-			} else { //add jsut the time of entry
-				$data['Stats']['created']['hour'] = date('H');
+			} else { 
+				$matchedDate = NULL;
+				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+				preg_match($what, $date, $matchedDate);
+				$data['Stats']['created']['year'] = $matchedDate[1];
+				$data['Stats']['created']['month'] = $matchedDate[2];
+				$data['Stats']['created']['day'] = $matchedDate[3];
+				//timestamp is also needed
+ 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
+				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 				
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
@@ -132,18 +140,27 @@ class ApisController extends AppController {
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 		}
 		//set the date
-		if (is_null($date)) {
-			$data['Stats']['created']['year'] = date('Y');
-			$data['Stats']['created']['month'] = date('m');
-			$data['Stats']['created']['day'] = date('d');
-			$data['Stats']['created']['hour'] = date('H');
-			$data['Stats']['created']['min'] = date('i');
-			$data['Stats']['created']['sec'] = date('s');
-		} else { //add jsut the time of entry
-			$data['Stats']['created']['hour'] = date('H');
-			$data['Stats']['created']['min'] = date('i');
-			$data['Stats']['created']['sec'] = date('s');
-		}
+			if (is_null($date)) {
+				$data['Stats']['created']['year'] = date('Y');
+				$data['Stats']['created']['month'] = date('m');
+				$data['Stats']['created']['day'] = date('d');
+				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+			} else { 
+				$matchedDate = NULL;
+				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+				preg_match($what, $date, $matchedDate);
+				$data['Stats']['created']['year'] = $matchedDate[1];
+				$data['Stats']['created']['month'] = $matchedDate[2];
+				$data['Stats']['created']['day'] = $matchedDate[3];
+				//timestamp is also needed
+ 				$data['Stats']['created']['hour'] = date('H');
+				$data['Stats']['created']['min'] = date('i');
+				$data['Stats']['created']['sec'] = date('s');
+				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
 			
 		$this->loadModel('Stats');
 		$currentFacilityPatient = $this->getUnitCurrentFacility($unit['Units']['id']);
@@ -245,10 +262,19 @@ class ApisController extends AppController {
 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
-			} else { //add jsut the time of entry
-				$data['Stats']['created']['hour'] = date('H');
+			} else { 
+				$matchedDate = NULL;
+				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+				preg_match($what, $date, $matchedDate);
+				$data['Stats']['created']['year'] = $matchedDate[1];
+				$data['Stats']['created']['month'] = $matchedDate[2];
+				$data['Stats']['created']['day'] = $matchedDate[3];
+				//timestamp is also needed
+ 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
+				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//adjust the quantity
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
@@ -346,10 +372,19 @@ class ApisController extends AppController {
 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
-			} else { //add jsut the time of entry
-				$data['Stats']['created']['hour'] = date('H');
+			} else { 
+				$matchedDate = NULL;
+				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+				preg_match($what, $date, $matchedDate);
+				$data['Stats']['created']['year'] = $matchedDate[1];
+				$data['Stats']['created']['month'] = $matchedDate[2];
+				$data['Stats']['created']['day'] = $matchedDate[3];
+				//timestamp is also needed
+ 				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
+				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//adjust the quantity
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
@@ -437,21 +472,24 @@ class ApisController extends AppController {
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
 			} else { 
-				$data['Stats']['created'] = date_parse($date) ;
+				$matchedDate = NULL;
+				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+				preg_match($what, $date, $matchedDate);
+				$data['Stats']['created']['year'] = $matchedDate[1];
+				$data['Stats']['created']['month'] = $matchedDate[2];
+				$data['Stats']['created']['day'] = $matchedDate[3];
+				//timestamp is also needed
  				$data['Stats']['created']['hour'] = date('H');
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
-				/*TODO finihs this up as well as provding date regexp 
-				 *  if ($data['Stats']['created']['error_count'] != 0) //date format unrecognized
-				$this->Rest->error(__('The date you supplied is not recognized. Please provide date yyyy-mm-dd', true));
-				$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
-				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId); */
+				$this->checkValidDate($data['Stats']['created']);
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 
 			
 			//prepare the stats data
 			$data = array('Stats' => array(
-					'created' => $date,
+					'created' => $data['Stats']['created'],
 					'phone_id' => $phone['Phones']['id'],
 					'location_id' => $facility['Locations']['id'],
 					'unit_id' => $newUnitId,
@@ -760,6 +798,26 @@ class ApisController extends AppController {
 		$phone = $this->Phones->find('first', array('conditions' => $conditions, 'callbacks' => false));
 		$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 		$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+	}
+	
+	/*
+	 * Only valid dates accepted
+	 */
+	private function checkValidDate($date, $unitId = null) {
+		if ($this->Rest->isActive()) {
+			if (!checkdate( $date['month'], $date['day'], $date['year'] )) {
+				$this->Rest->error(__('Invalid date please use yyyy-mm-dd ' , true) );
+			} else if ($this->dateArrayToString($date) > date("Y-m-d H:i:s") ) {
+				$this->Rest->error(__('Date cannot be in the future.' , true) );
+			} else if (!is_null($unitId)){
+				$earlyDate = NULL;
+				$earlyDate = $this->getUnitFirstDate($unitId);
+				if ($earlyDate != -1 && $earlyDate > $this->dateArrayToString($date) )
+					$isEarlyCreated = TRUE;
+				if ($isEarlyCreated)
+					$this->Rest->error(__('Date is prior to kit creation.' , true));
+			}
+		}
 	}
 }
 ?>
