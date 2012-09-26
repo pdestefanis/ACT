@@ -74,6 +74,7 @@ class LocationsController extends AppController {
 	function add() {
 		if (!empty($this->data)) {
 			$this->Location->create();
+			$this->data['Location']['shortname'] = strtoupper($this->data['Location']['shortname']);
 			if ($this->Location->save($this->data)) {
 				//add location to session
 				$newLocations = $this->Session->read("userLocations");
@@ -100,6 +101,7 @@ class LocationsController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->data)) {
+			$this->data['Location']['shortname'] = strtoupper($this->data['Location']['shortname']);
 			if ($this->Location->save($this->data)) {
 				$this->Session->setFlash('The location has been saved', 'flash_success');
 				$this->redirect(array('action' => 'index'));

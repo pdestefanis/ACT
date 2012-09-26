@@ -1,4 +1,5 @@
 <?php 
+if (isset($menus)) {
 	//loop thourgh menu and remove unauthorized
 	foreach ($menus as $key => $value) {
 		foreach ($value as $k => $v) {
@@ -162,6 +163,7 @@
 		echo "</li>";
 		echo $access->checkHtml('Stats/index', 'html', '</ul></div>','' );
 	}  */
-?> 
+}
+	?> 
 
 

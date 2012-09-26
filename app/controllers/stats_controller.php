@@ -130,12 +130,18 @@ class StatsController extends AppController {
 			} else if ($isEarlyCreated) {
 				$this->Stat->invalidate('created', __('Assignment date is prior to unit creation.' , true));
 				$this->Session->setFlash(__('Please select a date greater than: ' . $earlyDate, true));
-			} else if ($this->dateArrayToString($this->data['Stat']['created']) > date("Y-m-d H:i:s")) {
-					$this->Stat->invalidate('created', __('Assignment date is in the future.' , true));
-					$this->Session->setFlash(__('Please select a date that is in the present.', true));
+			/* TODO needs more work as this is always true 			
+ 			} else if ($this->dateArrayToString($this->data['Stat']['created']) > date("Y-m-d H:i:s")) {
+					$this->Stat->invalidate('created', __('Assignment date is in the future.' . $this->dateArrayToString($this->data['Stat']['created']) . " " .date("Y-m-d H:i:s") , true));
+					$this->Session->setFlash(__('Please select a date that is in the present.', true)); */
 			} else if (count($this->data['Stat']['Unit'])>1 &&  !empty($this->data['Stat']['patient_id'])) {
 				$this->Stat->invalidate('Unit', __('Please select only one unit' , true));
 				$this->Session->setFlash(__('You can only select one unit when assigning to patient', true));
+			} else if (!empty($this->data['Stat']['patient_id']) && $this->isPatientWithKit($this->data['Stat']['patient_id'], 
+														$this->dateArrayToString($this->data['Stat']['created']))) {
+					//check to see that patient is not already with a unit in selected timespan
+					$this->Stat->invalidate('Patient', __('This patient is not available' , true));
+					$this->Session->setFlash(__('This patient already has a kit during the selected date', true));
 			} else if (empty($this->data['Stat']['patient_id']) && empty($this->data['Stat']['location_id'])) {
 				$this->Stat->invalidate('assignSelect', __('Please select facility or patient' , true));
 				$this->Session->setFlash(__('Please select facility or patient', true));
@@ -719,9 +725,9 @@ class StatsController extends AppController {
 					//and location_id in (' . implode(",", $this->Session->read("userLocations")) .')
 		$open = $this->Stat->query('select unit_id, patient_id, created 
 					from stats s 
-					where status_id = 3 
-					
+					where (status_id = 1) 
 					order by created asc'); //and location_id in (' . implode(",", $this->Session->read("userLocations")) .') 
+		//TODO remove kits that are discarded but not reported returned
 		$popped = false;
 		//loop trhough opened units and remove all patient ids which unit was open
 		//patients with more than one assigned will remain only one send will be removed

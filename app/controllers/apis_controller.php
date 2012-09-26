@@ -23,6 +23,7 @@ class ApisController extends AppController {
 	*/
 	function discardUnit($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
 		if ($this->Rest->isActive()) {
+			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber))
 				$this->rejectMessage("lessParams");
 				
@@ -43,13 +44,15 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//if facility is not set use the phone's assigned facility
-			if (is_null($facilityShortname)){
+			if (is_null($facilityShortname) || $facilityShortname == '_'){
 				$facility['Locations']['id'] = $phone['Phones']['location_id'];
 			} else {
 				$facility = $this->findFacility($facilityShortname);
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
+			$this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id']);
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//set the date
 			if (is_null($date)) {
 				$data['Stats']['created']['year'] = date('Y');
@@ -120,6 +123,7 @@ class ApisController extends AppController {
 	*/
 	function receiveUnit($phoneNumber = null, $unitNumber = null, $facilityShortname = null,$date = null) {
 		if ($this->Rest->isActive()) {
+			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber))
 				$this->rejectMessage("lessParams");
 				
@@ -133,7 +137,7 @@ class ApisController extends AppController {
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//if facility is not set use the phone's assigned facility
-			if (is_null($facilityShortname))
+			if (is_null($facilityShortname) || $facilityShortname == '_')
 				$facility['Locations']['id'] = $phone['Phones']['location_id'];
 			else
 				$facility = $this->findFacility($facilityShortname);
@@ -194,7 +198,7 @@ class ApisController extends AppController {
 			);
 		//prepare the stats data
 		$data = array('Stats' => array(
-				'created' => $date,
+				'created' => $data['Stats']['created'],
 				'phone_id' => $phone['Phones']['id'],
 				'location_id' => $facility['Locations']['id'],
 				'patient_id' => $patientId,
@@ -221,7 +225,8 @@ class ApisController extends AppController {
 	/* Assign unit to patient
 	 * Required $phoneNumber, $unitNumber, $patientNumber,
 	*/
-	function assignToPatient($phoneNumber = null, $unitNumber = null, $patientNumber = null, $date = null) {
+	function assignToPatient($phoneNumber = null, $unitNumber = null, $patientNumber = null, $givenDate = null) {
+		$this->disableCache();
 		if ($this->Rest->isActive()) {
 			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($patientNumber))
 				$this->rejectMessage("lessParams");
@@ -254,8 +259,9 @@ class ApisController extends AppController {
 			//compare the user facility and children thereof to the kit current facility
 			$this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id']);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			$data = NULL;
 			//set the date
-			if (is_null($date)) {
+			if (is_null($givenDate)) {
 				$data['Stats']['created']['year'] = date('Y');
 				$data['Stats']['created']['month'] = date('m');
 				$data['Stats']['created']['day'] = date('d');
@@ -263,9 +269,8 @@ class ApisController extends AppController {
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
 			} else { 
-				$matchedDate = NULL;
 				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
-				preg_match($what, $date, $matchedDate);
+				preg_match($what, $givenDate, $matchedDate);
 				$data['Stats']['created']['year'] = $matchedDate[1];
 				$data['Stats']['created']['month'] = $matchedDate[2];
 				$data['Stats']['created']['day'] = $matchedDate[3];
@@ -274,6 +279,11 @@ class ApisController extends AppController {
 				$data['Stats']['created']['min'] = date('i');
 				$data['Stats']['created']['sec'] = date('s');
 				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
+			//datetime is needed for patient check
+			if ($this->isPatientWithKit($patient['Patients']['id'], $this->dateArrayToString($data['Stats']['created']))) {
+				$this->Rest->error(__('Patient already with kit. Not processed: 10115', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//adjust the quantity
@@ -340,6 +350,7 @@ class ApisController extends AppController {
 	*/
 	function assignToFacility($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
 		if ($this->Rest->isActive()) {
+			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($facilityShortname)) {
 				$this->rejectMessage("lessParams");
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
@@ -356,7 +367,7 @@ class ApisController extends AppController {
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$isUnused = $this->isUnusedUnit($unit['Units']['id']);
 			if (!$isUnused) {
-				$this->Rest->error(__('This kit is open and cannot be assigne to facility', true));
+				$this->Rest->error(__('This kit is open and cannot be assigned to facility', true));
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
@@ -364,6 +375,9 @@ class ApisController extends AppController {
 			$facility = $this->findFacility($facilityShortname);
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			/* TODO not sure if this is necessary as kits may travel cross facility tree
+			 * $this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id']);
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId); */
 			//set the date
 			if (is_null($date)) {
 				$data['Stats']['created']['year'] = date('Y');
@@ -405,7 +419,7 @@ class ApisController extends AppController {
 				);
 			//prepare the stats data
 			$data = array('Stats' => array(
-					'created' => $date,
+					'created' => $data['Stats']['created'],
 					'phone_id' => $phone['Phones']['id'],
 					'location_id' => $facility['Locations']['id'],
 					'unit_id' => $unit['Units']['id'],
@@ -434,6 +448,7 @@ class ApisController extends AppController {
 	*/
 	function createUnit($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
 		if ($this->Rest->isActive()) {
+			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($facilityShortname))
 				$this->rejectMessage("lessParams");
 			
@@ -463,6 +478,13 @@ class ApisController extends AppController {
 			}
 			$newUnitId = $this->Units->id;
 			
+			$this->loadModel('UnitsItem');
+			$unitItems = array('UnitsItem' => array('unit_id'=> $newUnitId, 'item_id' => 1 )); //TODO this should be changed if items chagnes
+			$this->UnitsItem->create();
+			if (!$this->UnitsItem->save($unitItems)) {
+				$this->Rest->error(__('Record could not be saved: 10302', true));
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
 			//set the date
 			if (is_null($date)) {
 				$data['Stats']['created']['year'] = date('Y');
@@ -519,6 +541,7 @@ class ApisController extends AppController {
 	* also receive if the same conditions above are valid
 	*/
 	function assign($phoneNumber, $unitNumber, $created = null){
+		$this->disableCache();
 		//see if kit is opened or closed
 		$unit = $this->findUnit($unitNumber);
 		if ($this->isUnusedUnit($unit['Units']['id'])){
@@ -565,15 +588,15 @@ class ApisController extends AppController {
 				}
 				$phone = $this->Phones->findById($this->Phones->id);
 				$this->Rest->error(__('Phone number not found. It will be added but you will not be able to report until it is activated.', true));
-			}
+			} else 
 			//don't allow inactive phones to report
 			if (isset($phone['Phones']['active']) && $phone['Phones']['active'] == 0) {
 				$this->Rest->error(__('This phone has not been activated. Please request activation.', true));
-			}
+			} else
 			//don't allow deleted phones to report
 			if (isset($phone['Phones']['deleted']) && $phone['Phones']['deleted'] == 1) {
 				$this->Rest->error(__('This phone has been removed from the system and cannot report.', true));
-			}
+			} else
 			//check that phone is assigned to a facility
 			if (!isset($phone['Phones']['location_id']) ) {
 				$this->Rest->error(__('This phone has not been assigned to a facility. Please request assignment.', true));
@@ -646,8 +669,8 @@ class ApisController extends AppController {
 	}
 
 	/*
-	 * Check if the user is authorised to dispanse this kit in terms the location
-	* on hi phone number assignment
+	 * Check if the user is authorised to dispanse this kit in terms of the location
+	* on the phone number assignment
 	*/
 	private function checkKitFacility($kitId, $facilityId){
 		$lastFacilityPatient = $this->getUnitCurrentFacility($kitId);
@@ -784,8 +807,12 @@ class ApisController extends AppController {
 			$this->Rest->error(__('Too many keywords were supplied. Message not processed: 10108', true));
 		} else if ($what == 'lessParams') {
 			$this->Rest->error(__('Missing parameter. Message not processed: 10109', true));
+		} else if ($what == 'msgUnrecognized') {
+			$this->Rest->error(__('We couldn not interprete your message. Plese check and resend: 10112', true));
 		} else if ($what == 'lessMissParams') {
 			$this->Rest->error(__('Missing or incorrect parameter. Message not processed: 10111', true));
+		} else if ($what == 'noUnit') {
+			$this->Rest->error(__('Missing unit. Message not processed: 10113', true));
 		} else {
 			$this->Rest->error(__('Something went wrong. Your message was not processed: 10999', true));
 		}
@@ -803,16 +830,18 @@ class ApisController extends AppController {
 	/*
 	 * Only valid dates accepted
 	 */
-	private function checkValidDate($date, $unitId = null) {
+	private function checkValidDate($currDate, $unitId = null) {
 		if ($this->Rest->isActive()) {
-			if (!checkdate( $date['month'], $date['day'], $date['year'] )) {
+			$this->disableCache();
+			if (!checkdate( $currDate['month'], $currDate['day'], $currDate['year'] )) {
 				$this->Rest->error(__('Invalid date please use yyyy-mm-dd ' , true) );
-			} else if ($this->dateArrayToString($date) > date("Y-m-d H:i:s") ) {
-				$this->Rest->error(__('Date cannot be in the future.' , true) );
+			/* } else if ($this->dateArrayToString($currDate) > date("Y-m-d H:i:s") ) {
+				$this->Rest->error(__('Date cannot be in the future.' , true) ); */
 			} else if (!is_null($unitId)){
 				$earlyDate = NULL;
+				$isEarlyCreated = FALSE;
 				$earlyDate = $this->getUnitFirstDate($unitId);
-				if ($earlyDate != -1 && $earlyDate > $this->dateArrayToString($date) )
+				if ($earlyDate != -1 && $earlyDate > $this->dateArrayToString($currDate) )
 					$isEarlyCreated = TRUE;
 				if ($isEarlyCreated)
 					$this->Rest->error(__('Date is prior to kit creation.' , true));

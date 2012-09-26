@@ -35,6 +35,7 @@ class AppController extends Controller {
 
 	function beforeFilter() {
 		//$this->AuthExt->allow('*');
+		$this->disableCache();
 		$this->AuthExt->userScope = array('User.active' => 1);
 		$this->AuthExt->autoRedirect = false;
 		 $this->AuthExt->actionPath = 'controllers/';
@@ -275,7 +276,8 @@ class AppController extends Controller {
 				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
 				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
 			} 
-			$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")";//remove deleted units
+			if (!empty($deletedUnits))
+				$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")";//remove deleted units
 			$assigned = $this->Stat->query($query);
 			
 			//sum up expired/discarded
@@ -287,7 +289,8 @@ class AppController extends Controller {
 				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
 				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
 			} 
-			$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")"; //remove deleted units
+			if (!empty($deletedUnits))
+				$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")"; //remove deleted units
 			$expired = $this->Stat->query($query);
 			foreach ($expired as $key=>$e) { //find latest location for units where it is not specified
 				if (is_null($e['s']['location_id']) ) {
@@ -311,8 +314,9 @@ class AppController extends Controller {
 				$timestamp = $this->getFirstLastDates($created);
 				$query .= " AND created <= '"  . $timestamp['last'] . "' ";
 				$query .= " AND created >= '"  . $timestamp['first'] . "' ";
-			} 
-			$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")";//remove deleted units
+			}
+			if (!empty($deletedUnits))
+				$query .= " AND unit_id NOT IN (" . implode(',', $deletedUnits) . ")";//remove deleted units
 			$patientSent = $this->Stat->query($query); 
 			$atPatient['sum'] =  (!isset($patientSent[0][0]['sum'])?0:-$patientSent[0][0]['sum']);
 			
@@ -588,6 +592,7 @@ class AppController extends Controller {
 						. ((round($l['scaleMin']/4) == $l['scaleMin'] || round($l['scaleMin']/4) == 3*$l['scaleMin']/4 || round($l['scaleMin']/4) == $l['scaleMin']/2)? "":round($l['scaleMin']/4). "|")   
 			: "" ) //isset scaleMin 
 						. $l['min']    . "|"
+						//TODO
 						//after some playing a around for a few hours: there is always a problem with small numbers and the axis
 						//giving up by just dividing the region into two
 						. ((round($l['max']/2) == $l['max'])? "":round($l['max']/2,2). "|")
@@ -1246,10 +1251,12 @@ class AppController extends Controller {
 		return -1;
 	}
 	
-	protected function dateArrayToString($date){
-		return $date['year'] . "-" . $date['month'] ."-" . $date['day'] 
-					. " " . (!isset($date['hour'])?"00":$date['hour']) . ":" . (!isset($date['min'])?"00":$date['min']) 
-								 . ":" . (!isset($date['min'])?"01":$date['min']) ;
+	protected function dateArrayToString($currDate){
+		$value =  $currDate['year'] . "-" . $currDate['month'] ."-" . $currDate['day']
+		. " " . (!isset($currDate['hour'])?"00":$currDate['hour']) .
+		":" . (!isset($currDate['min'])?"00":$currDate['min'])
+		. ":" . (!isset($currDate['sec'])?"01":$currDate['sec']) ;
+		return $value;
 	}
 	
 	//get the current facility or patient of a unit
@@ -1388,6 +1395,27 @@ class AppController extends Controller {
 			if (!$isDiscarded)
 				return true;
 		}
+		return false;
+	}
+	
+	/*
+	 * See if patient already has a kit in  
+	 */
+	function isPatientWithKit($patientId, $created){
+		$this->loadModel('Stat');
+		$stats = $this->Stat->find('list', array('callbacks' => 'false', 'fields' => array('Stat.id', 'Stat.status_id'),
+													'conditions' => array('patient_id ='.$patientId ,
+																		'Stat.created <= \''. $created . '\'',
+																		)));
+		$received = 0;
+		$sent = 0;
+		foreach ($stats as $stat){
+			$received += ($stat == 1?1:0);
+			$sent += ($stat == 2?1:0);;
+		}
+			
+		if ($sent > $received)
+			return true;
 		return false;
 	}
 }
