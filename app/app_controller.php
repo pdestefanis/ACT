@@ -1120,7 +1120,7 @@ class AppController extends Controller {
 	
 	protected function isDiscardedUnit($unitId, $date=null) {
 		$this->loadModel('Stats');
-		$conditions = array('unit_id' => $unitId, 'status_id =3', (!is_null(' created <= \''.$date.'\'')?$date:'') );
+		$conditions = array('unit_id' => $unitId, 'status_id =3', (!is_null($date)?' created <= \''.$date.'\'':'') );
 		$statUnit = $this->Stats->find('list', array('conditions' => $conditions));
 		if (empty($statUnit))
 			return true;
@@ -1203,7 +1203,6 @@ class AppController extends Controller {
 			$data['Stats']['location_id'] =  $locationId;
 			//$data['Stats']['created'] = $created;
 			$this->Stats->save($data);
-			echo "ID: " . $maxCreatedId . " date: " . $maxCreated . " loc: " . $maxFacilityId . "</br>";
 		//	return FALSE;
 		}
 		//return TRUE;

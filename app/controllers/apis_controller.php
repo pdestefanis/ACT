@@ -6,13 +6,13 @@ class ApisController extends AppController {
 	//var $helpers = array('Html', 'Form');
 	var $components = array('RequestHandler', 'Access', 'Rest.Rest' => array(
 			'catchredir' => true, // Recommended unless you implement something yourself
-			'debug' => 0,
+			'debug' => 2,
 			'actions' => array( //expose these actions and those variable to rest
-					'discardUnit' => array('extract' => array('stat'),),
-					'receiveUnit' => array('extract' => array('stat'),),
-					'assignToFacility' => array('extract' => array('stat'),),
-					'assignToPatient' => array('extract' => array('stat'),),
-					'createUnit' => array('extract' => array('unit'),),
+					//'discardUnit' => array('extract' => array('stat'),),
+				//	'receiveUnit' => array('extract' => array('stat'),),
+				//	'assignToFacility' => array('extract' => array('stat'),),
+				//	'assignToPatient' => array('extract' => array('stat'),),
+				//	'createUnit' => array('extract' => array('unit'),),
 			),
 	),);
 
@@ -23,10 +23,8 @@ class ApisController extends AppController {
 	*/
 	function discardUnit($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
 		if ($this->Rest->isActive()) {
-			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber))
 				$this->rejectMessage("lessParams");
-				
 			$phone = $this->findPhone($phoneNumber);
 			$argsList = func_get_args();
 			//TODO
@@ -37,45 +35,38 @@ class ApisController extends AppController {
 			$unit = $this->findUnit($unitNumber);
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id']);
+			//if facility is not set use the phone's assigned facility
+			if (is_null($facilityShortname) || $facilityShortname == '_'){
+				$facility['Locations']['id'] = $phone['Phones']['location_id'];
+			} else {
+				$facility = $this->findFacility($facilityShortname)	;
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
+			//set the date
+			$matchedDate = NULL;
+			$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+			preg_match($what, $date, $matchedDate);
+			$data['Stats']['created']['year'] = $matchedDate[1];
+			$data['Stats']['created']['month'] = $matchedDate[2];
+			$data['Stats']['created']['day'] = $matchedDate[3];
+			//timestamp is also needed
+ 			$data['Stats']['created']['hour'] = date('H');
+			$data['Stats']['created']['min'] = date('i');
+			$data['Stats']['created']['sec'] = date('s');
+			
+			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isDiscarded) {
 				$this->Rest->error(__('This kit is already discarded', true));
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
-			//if facility is not set use the phone's assigned facility
-			if (is_null($facilityShortname) || $facilityShortname == '_'){
-				$facility['Locations']['id'] = $phone['Phones']['location_id'];
-			} else {
-				$facility = $this->findFacility($facilityShortname);
-				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
-				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			}
-			$this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id']);
+			
+			$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			//set the date
-			if (is_null($date)) {
-				$data['Stats']['created']['year'] = date('Y');
-				$data['Stats']['created']['month'] = date('m');
-				$data['Stats']['created']['day'] = date('d');
-				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-			} else { 
-				$matchedDate = NULL;
-				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
-				preg_match($what, $date, $matchedDate);
-				$data['Stats']['created']['year'] = $matchedDate[1];
-				$data['Stats']['created']['month'] = $matchedDate[2];
-				$data['Stats']['created']['day'] = $matchedDate[3];
-				//timestamp is also needed
- 				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
-				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			}
-				
+
+			$this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id'], $this->dateArrayToString($data['Stats']['created']));
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			//if assiging the same unit to the same facility don't increment quantity
 			
@@ -96,7 +87,7 @@ class ApisController extends AppController {
 			$data['Stats']['quantity'] = -1;
 			//prepare the stats data
 			$data = array('Stats' => array(
-					'created' => $date,
+					'created' => $data['Stats']['created'],
 					'phone_id' => $phone['Phones']['id'],
 					'location_id' => $facility['Locations']['id'],
 					'unit_id' => $unit['Units']['id'],
@@ -109,11 +100,11 @@ class ApisController extends AppController {
 				$this->Rest->error(__('Record could not be saved: 10101', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
-			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$stat = $this->Stats->findById($this->Stats->id);
-			$this->set(compact('stat'));
+			//$this->set(compact('stat'));
 		}
 	}
 
@@ -142,84 +133,81 @@ class ApisController extends AppController {
 			else
 				$facility = $this->findFacility($facilityShortname);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-		}
-		//set the date
-			if (is_null($date)) {
-				$data['Stats']['created']['year'] = date('Y');
-				$data['Stats']['created']['month'] = date('m');
-				$data['Stats']['created']['day'] = date('d');
-				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-			} else { 
-				$matchedDate = NULL;
-				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
-				preg_match($what, $date, $matchedDate);
-				$data['Stats']['created']['year'] = $matchedDate[1];
-				$data['Stats']['created']['month'] = $matchedDate[2];
-				$data['Stats']['created']['day'] = $matchedDate[3];
-				//timestamp is also needed
- 				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+		
+			//set the date
+			$matchedDate = NULL;
+			$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+			preg_match($what, $date, $matchedDate);
+			$data['Stats']['created']['year'] = $matchedDate[1];
+			$data['Stats']['created']['month'] = $matchedDate[2];
+			$data['Stats']['created']['day'] = $matchedDate[3];
+			//timestamp is also needed
+	 		$data['Stats']['created']['hour'] = date('H');
+			$data['Stats']['created']['min'] = date('i');
+			$data['Stats']['created']['sec'] = date('s');
+			$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			
+			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			if (!$isDiscarded) {
+				$this->Rest->error(__('This kit is already discarded', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
-			
-		$this->loadModel('Stats');
-		$currentFacilityPatient = $this->getUnitCurrentFacility($unit['Units']['id']);
-		$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
-			
-		$wasWithPatient = $this->Stats->find('list',  array ('conditions' => array('patient_id is not null',
-				'unit_id' => $unit['Units']['id']
-		),
-				'fields' => array('unit_id'), 'callbacks' => false) );
-
-		//$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id']  || !empty($wasWithPatient))?0:1);
-		//set patient number
-		$patientId = null;
-		if (empty($wasWithPatient)){
+			$this->loadModel('Stats');
+			$currentFacilityPatient = $this->getUnitCurrentFacility($unit['Units']['id'],true, $this->dateArrayToString($data['Stats']['created']));
+			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+				
+			$wasWithPatient = $this->Stats->find('list',  array ('conditions' => array('patient_id is not null',
+					'unit_id' => $unit['Units']['id']
+			),
+					'fields' => array('unit_id'), 'callbacks' => false) );
+	
+			//$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id']  || !empty($wasWithPatient))?0:1);
+			//set patient number
 			$patientId = null;
-		} else if (isset($currentFacilityPatient[1])) { //patient id suppplied
-			$patientId = $currentFacilityPatient[1];
-		} 
-		//adjust the quantities only one quantity at a time
-		if ($lastFacilityWithKit != $facility['Locations']['id'] && $lastFacilityWithKit != -1 && empty($wasWithPatient))
-			$this->adjustQuantities(
-					$data['Stats']['created'],
-					$unit['Units']['id'],
-					'R',
-					(( empty($wasWithPatient))?0:1), //no need for qty when receiving from patient
-					$lastFacilityWithKit,
-					$patientId,
-					$phone['Phones']['id'],
-					NULL,
-					$messagereceivedId
-			);
-		//prepare the stats data
-		$data = array('Stats' => array(
-				'created' => $data['Stats']['created'],
-				'phone_id' => $phone['Phones']['id'],
-				'location_id' => $facility['Locations']['id'],
-				'patient_id' => $patientId,
-				'unit_id' => $unit['Units']['id'],
-				'messagereceived_id' => $messagereceivedId,
-				'status_id' => 1, //1 is receive
-		) );
-		//if receiving the same unit from the same facility don't increment quantity
-		$data['Stats']['quantity'] = ((!empty($wasWithPatient) || ($lastFacilityWithKit === $facility['Locations']['id']))?0:1);//;(($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
-			
-		$this->Stats->create();
-		if (!$this->Stats->save($data)) {
-			$this->Rest->error(__('Record could not be saved: 10102', true));
+			if (empty($wasWithPatient)){
+				$patientId = null;
+			} else if (isset($currentFacilityPatient[1])) { //patient id suppplied
+				$patientId = $currentFacilityPatient[1];
+			} 
+			//adjust the quantities only one quantity at a time
+			if ($lastFacilityWithKit != $facility['Locations']['id'] && $lastFacilityWithKit != -1 && empty($wasWithPatient))
+				$this->adjustQuantities(
+						$data['Stats']['created'],
+						$unit['Units']['id'],
+						'R',
+						(( empty($wasWithPatient))?0:1), //no need for qty when receiving from patient
+						$lastFacilityWithKit,
+						$patientId,
+						$phone['Phones']['id'],
+						NULL,
+						$messagereceivedId
+				);
+			//prepare the stats data
+			$data = array('Stats' => array(
+					'created' => $data['Stats']['created'],
+					'phone_id' => $phone['Phones']['id'],
+					'location_id' => $facility['Locations']['id'],
+					'patient_id' => $patientId,
+					'unit_id' => $unit['Units']['id'],
+					'messagereceived_id' => $messagereceivedId,
+					'status_id' => 1, //1 is receive
+			) );
+			//if receiving the same unit from the same facility don't increment quantity
+			$data['Stats']['quantity'] = ((!empty($wasWithPatient) || ($lastFacilityWithKit === $facility['Locations']['id']))?0:1);//;(($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
+				
+			$this->Stats->create();
+			if (!$this->Stats->save($data)) {
+				$this->Rest->error(__('Record could not be saved: 10102', true));
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
+			//$stat = $this->Stats->findById($this->Stats->id);
+			//$this->set(compact('stat'));
+				
+			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
+			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 		}
-		$stat = $this->Stats->findById($this->Stats->id);
-		$this->set(compact('stat'));
-			
-		$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
-		//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
-		$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 	}
 
 	/* Assign unit to patient
@@ -256,31 +244,29 @@ class ApisController extends AppController {
 			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			} */
-			//compare the user facility and children thereof to the kit current facility
-			$this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id']);
-			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+		
 			$data = NULL;
 			//set the date
-			if (is_null($givenDate)) {
-				$data['Stats']['created']['year'] = date('Y');
-				$data['Stats']['created']['month'] = date('m');
-				$data['Stats']['created']['day'] = date('d');
-				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-			} else { 
-				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
-				preg_match($what, $givenDate, $matchedDate);
-				$data['Stats']['created']['year'] = $matchedDate[1];
-				$data['Stats']['created']['month'] = $matchedDate[2];
-				$data['Stats']['created']['day'] = $matchedDate[3];
-				//timestamp is also needed
- 				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+			$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+			preg_match($what, $givenDate, $matchedDate);
+			$data['Stats']['created']['year'] = $matchedDate[1];
+			$data['Stats']['created']['month'] = $matchedDate[2];
+			$data['Stats']['created']['day'] = $matchedDate[3];
+			//timestamp is also needed
+ 			$data['Stats']['created']['hour'] = date('H');
+			$data['Stats']['created']['min'] = date('i');
+			$data['Stats']['created']['sec'] = date('s');
+			$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			
+			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			if (!$isDiscarded) {
+				$this->Rest->error(__('This kit is already discarded', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
+			//compare the user facility and children thereof to the kit current facility
+			$this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id'], $this->dateArrayToString($data['Stats']['created']));
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//datetime is needed for patient check
 			if ($this->isPatientWithKit($patient['Patients']['id'], $this->dateArrayToString($data['Stats']['created']))) {
 				$this->Rest->error(__('Patient already with kit. Not processed: 10115', true));
@@ -336,11 +322,11 @@ class ApisController extends AppController {
 						NULL,
 						NULL
 				);
-			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 
-			$this->set(compact('stat'));
+			//$this->set(compact('stat'));
 		}
 	}
 
@@ -379,28 +365,24 @@ class ApisController extends AppController {
 			 * $this->checkKitFacility($unit['Units']['id'], $facility['Locations']['id']);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId); */
 			//set the date
-			if (is_null($date)) {
-				$data['Stats']['created']['year'] = date('Y');
-				$data['Stats']['created']['month'] = date('m');
-				$data['Stats']['created']['day'] = date('d');
-				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-			} else { 
-				$matchedDate = NULL;
-				$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
-				preg_match($what, $date, $matchedDate);
-				$data['Stats']['created']['year'] = $matchedDate[1];
-				$data['Stats']['created']['month'] = $matchedDate[2];
-				$data['Stats']['created']['day'] = $matchedDate[3];
-				//timestamp is also needed
- 				$data['Stats']['created']['hour'] = date('H');
-				$data['Stats']['created']['min'] = date('i');
-				$data['Stats']['created']['sec'] = date('s');
-				$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+			$matchedDate = NULL;
+			$what = "/\b([0-9]{2}|[0-9]{4})[\D]([0-9]{1,2})[\D]([0-9]{1,2})\b/";
+			preg_match($what, $date, $matchedDate);
+			$data['Stats']['created']['year'] = $matchedDate[1];
+			$data['Stats']['created']['month'] = $matchedDate[2];
+			$data['Stats']['created']['day'] = $matchedDate[3];
+			//timestamp is also needed
+ 			$data['Stats']['created']['hour'] = date('H');
+			$data['Stats']['created']['min'] = date('i');
+			$data['Stats']['created']['sec'] = date('s');
+			$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
+			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			
+			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			if (!$isDiscarded) {
+				$this->Rest->error(__('This kit is already discarded', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
-			//adjust the quantity
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			//if assiging the same unit to the same facility don't increment quantity
 			
@@ -434,11 +416,11 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 				
-			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			$stat = $this->Stats->findById($this->Stats->id);
-			$this->set(compact('stat'));
+			//$stat = $this->Stats->findById($this->Stats->id);
+			//$this->set(compact('stat'));
 		}
 	}
 
@@ -528,11 +510,11 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			
-			$this->Rest->info(__('Thank you. Your report was successfuly submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$stat = $this->Stats->findById($this->Stats->id);
-			$this->set(compact('stat'));
+			//$this->set(compact('stat'));
 		}
 	}
 	
@@ -602,7 +584,7 @@ class ApisController extends AppController {
 				$this->Rest->error(__('This phone has not been assigned to a facility. Please request assignment.', true));
 				//$this->Rest->abort();
 			}
-			$this->set(compact('phone'));
+			//$this->set(compact('phone'));
 			return $phone;
 		}
 	}
@@ -672,8 +654,8 @@ class ApisController extends AppController {
 	 * Check if the user is authorised to dispanse this kit in terms of the location
 	* on the phone number assignment
 	*/
-	private function checkKitFacility($kitId, $facilityId){
-		$lastFacilityPatient = $this->getUnitCurrentFacility($kitId);
+	private function checkKitFacility($kitId, $facilityId, $date = null){
+		$lastFacilityPatient = $this->getUnitCurrentFacility($kitId, true, $date);
 		if ($lastFacilityPatient[0] != $facilityId){ //different location see if it is child facility
 			$children = array();
 			$this->findLocationChildren($facilityId, $children);
@@ -704,7 +686,7 @@ class ApisController extends AppController {
 				$this->Rest->error(__('Patient consent missing: ' , true) . $patientNumber);
 				//$this->Rest->abort();
 			}
-			$this->set(compact('patient'));
+			//$this->set(compact('patient'));
 			return $patient;
 		}
 	}
@@ -755,7 +737,7 @@ class ApisController extends AppController {
 				}
 				
 			}
-			$this->set(compact('patient'));
+			//$this->set(compact('patient'));
 		}
 	}
 	
@@ -779,7 +761,7 @@ class ApisController extends AppController {
 			if (!isset($unit['Units']['id'])) {
 				$this->Rest->error(__('Unit does not exist: ' , true) . $unitNumber);
 			}
-			$this->set(compact('unit'));
+			//$this->set(compact('unit'));
 			return $unit;
 		}
 	}
@@ -795,7 +777,7 @@ class ApisController extends AppController {
 			if (!isset($facility['Locations']['id'])) {
 				$this->Rest->error(__('Facility does not exist: ' , true) . $facilityShortname);
 			}
-			$this->set(compact('facility'));
+			//$this->set(compact('facility'));
 			return $facility;
 		}
 	}
@@ -832,17 +814,20 @@ class ApisController extends AppController {
 	 */
 	private function checkValidDate($currDate, $unitId = null) {
 		if ($this->Rest->isActive()) {
-			$this->disableCache();
-			if (!checkdate( $currDate['month'], $currDate['day'], $currDate['year'] )) {
+			$currDate = date('Y-m-d H:i:s',strtotime($this->dateArrayToString($currDate)));
+			$isValidDate = checkdate( $currDate['month'], $currDate['day'], $currDate['year'] );
+			if (!$isValidDate) {
 				$this->Rest->error(__('Invalid date please use yyyy-mm-dd ' , true) );
 			/* } else if ($this->dateArrayToString($currDate) > date("Y-m-d H:i:s") ) {
 				$this->Rest->error(__('Date cannot be in the future.' , true) ); */
-			} else if (!is_null($unitId)){
+			} 
+			if (!is_null($unitId) && $isValidDate){
 				$earlyDate = NULL;
 				$isEarlyCreated = FALSE;
 				$earlyDate = $this->getUnitFirstDate($unitId);
-				if ($earlyDate != -1 && $earlyDate > $this->dateArrayToString($currDate) )
+				if ($earlyDate != -1 && $earlyDate > $currDate){
 					$isEarlyCreated = TRUE;
+				}
 				if ($isEarlyCreated)
 					$this->Rest->error(__('Date is prior to kit creation.' , true));
 			}

@@ -214,19 +214,22 @@ class StatsController extends AppController {
 		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
 										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
 		$userId = $this->Session->read('Auth.User.id');
-		$locations = $this->Stat->Location->find('list');
+		$locations = $this->Stat->Location->find('list');//, array('callbacks' => 'false'));
 		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
 		//attach current location to unit
 		$unitsFacility = array();
 		foreach ($units as $unitId => $unit){
-			$latestPatFac = $this->getUnitCurrentFacility($unitId);
-			if (!is_null($latestPatFac[0]) && $latestPatFac != -1)
-				$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
-			else if (!is_null($latestPatFac[1]) && $latestPatFac != -1)
+			$latestPatFac = $this->getUnitCurrentFacility($unitId, true);
+			if (!is_null($latestPatFac[0]) && $latestPatFac != -1) {
+				if (isset($locations[$latestPatFac[0]] ))
+					$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
+				else 
+					unset($unitsFacility[$unitId]); //remove units that are currently in unauth location
+			} else if (!is_null($latestPatFac[1]) && $latestPatFac != -1) {
 				$unitsFacility[$unitId] = $unit . "(" . $patients[$latestPatFac[1]] .")";
-			else 
+			} else {
 				$unitsFacility[$unitId] = $unit;
-			
+			}
 		}
 		$units = $unitsFacility;
 		
@@ -343,15 +346,20 @@ class StatsController extends AppController {
 		//attach current location to unit
 		$unitsFacility = array();
 		foreach ($units as $unitId => $unit){
-			$latestPatFac = $this->getUnitCurrentFacility($unitId);
-			if (!is_null($latestPatFac[0]) && $latestPatFac != -1)
-				$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
-			else if (!is_null($latestPatFac[1]) && $latestPatFac != -1)
+			$latestPatFac = $this->getUnitCurrentFacility($unitId, true);
+			if (!is_null($latestPatFac[0]) && $latestPatFac != -1) {
+				if (isset($locations[$latestPatFac[0]] ))
+					$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
+				else 
+					unset($unitsFacility[$unitId]); //remove units that are currently in unauth location
+			} else if (!is_null($latestPatFac[1]) && $latestPatFac != -1) {
 				$unitsFacility[$unitId] = $unit . "(" . $patients[$latestPatFac[1]] .")";
-			else
+			} else {
 				$unitsFacility[$unitId] = $unit;
+			}
 				
 		}
+		
 		$units = $unitsFacility;
 		
 		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));

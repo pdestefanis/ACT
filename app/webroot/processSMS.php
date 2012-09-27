@@ -90,18 +90,17 @@ class Action{
 
 		//check if date is supplied //removed for now |20[0-9]{2}
 		//to avoid matching kit number for year \d{4} avoid matching if 1 or 2 digits follow
-		$what = "/(\b([0-9]{2,4})\D([0-9]{1,2})\D([0-9]{1,2})\b)(?!\b\s\d{1,2}\b)/";
+		$what = "/(\b([0-9]{2}|[0-9]{4})\D([0-9]{1,2})\D([0-9]{1,2})\b)(?!\b\s\d{1,2}\b)/";
 		preg_match($what, $msg, $matchedDate);
 		//we have backentry
 		if (isset($matchedDate[0])) {
-			$suppDate = $matchedDate[1] . "-" . $matchedDate[2] . "-" .$matchedDate[3];
-			$msg = preg_replace("[" . $matchedDate[0] . "]", '', $msg);
 			//dont know why match fills first two array elements with same data remove one
 			array_shift($matchedDate);
+			$suppDate = $matchedDate[1] . "-" . $matchedDate[2] . "-" .$matchedDate[3];
+			$msg = preg_replace("[" . $matchedDate[0] . "]", '', $msg);
 		} else {
 			$suppDate = date("Y") ."-" . date("m") ."-" . date("d");
 		}
-		
 		//check for presence of patient
 		//Patient starts with a P and contains 5-6 digits
 		$what = "/\b[P|7][0-9]{5,6}\b/";
@@ -150,7 +149,7 @@ class Action{
 		$msg = trim($msg);
 
 //echo $msg  . "\n" . print_r($matchedDate, true) . "\n" . print_r($matchedPatient, true) ."\n" .  
-			print_r($matchedFacility, true) . "\n"  . print_r($matchedUnits, true) . "\n";
+			print_r($matchedFacility, true) . "\n"  . print_r($matchedUnits, true) . "\n"  . print_r($matchedAction, true) . "\n";
 		if (strlen($msg) != 0 || strlen($origMsg) ==0) { // we coudn't recognize everything in the string reject message
 			//TODO send back what wasnt recognized
 			$thing = $pest->get('/apis/rejectMessage/' . $caller . '/msgUnrecognized.xml', $headers);
@@ -179,7 +178,7 @@ class Action{
 					} else if ($matchedAction[0]  == 'RECEIVE') {
 						if (isset($matchedFacility[0]) && !isset($matchedPatient[0])) {
 							$thing = $pest->get('/apis/receiveUnit/' . $caller .  "/" . 
-									$matchedUnits[0] . "/" . $matchedFacility[0] .   ".xml", $headers);
+									$matchedUnits[0] . "/" . $matchedFacility[0]. '/'. $suppDate .   ".xml", $headers);
 						} else if (!isset($matchedFacility[0]) && !isset($matchedPatient[0]) ){
 							$thing = $pest->get('/apis/receiveUnit/' . $caller .  "/" . $matchedUnits[0] . '/_/'. $suppDate .  ".xml", $headers);
 						} else {
@@ -191,10 +190,9 @@ class Action{
 									$matchedUnits[0] . "/" . $matchedFacility[0] . '/'. $suppDate .  ".xml", $headers);
 						 } else if (!isset($matchedFacility[0])){
 							$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" .
-									$matchedUnits[0] .  ".xml", $headers); 
+									$matchedUnits[0] . '/_/'. $suppDate .  ".xml", $headers); 
 						} else {
-							$thing = $pest->get('/apis/discardUnit/' . $caller .  "/" .
-									$matchedUnits[0]. '/'. $suppDate .  ".xml", $headers);
+							$thing = $pest->get('/apis/rejectMessage/' . $caller . '/lessMissParams.xml', $headers);
 						}
 					} else if ($matchedAction[0]  == 'CREATE') {
 						if (isset($matchedFacility[0])) {
@@ -237,7 +235,7 @@ class Action{
 	/*
 	 * Return the message part of the XML
 	 */
-	function getResult(&$thing) {
+	function getResult($thing) {
 		$util = new Utils();
 		//TODO direct XML processing could replace this
 		$array = $util->xmlToArray($thing); //convert xml to array
@@ -246,7 +244,10 @@ class Action{
 		$find = 'message'; 
 		$result = array();
 		$util->findArrayElement($array, $find, $result);
-		return $result['_v'];
+		if (isset($result['_v']))
+			return $result['_v'];
+		else 
+			return $thing;
 	}
 ?>
 
