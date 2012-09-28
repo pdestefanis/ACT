@@ -247,7 +247,7 @@ class Action{
 		if (isset($result['_v']))
 			return $result['_v'];
 		else 
-			return $thing;
+			return "Unexpected error";
 	}
 ?>
 

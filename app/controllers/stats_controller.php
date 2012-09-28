@@ -157,20 +157,23 @@ class StatsController extends AppController {
 					$this->data['Stat'][$i] = $old['Stat'];
 					$this->data['Stat'][$i]['unit_id'] = $unit_id;
 					$this->data['Stat'][$i]['patient_id'] = $patientId;
-					$this->data['Stat'][$i]['location_id'] = $locationId;
+					$this->data['Stat'][$i]['location_id'] = (!empty($locationId)?$locationId:$this->Session->read('Auth.User.location_id'));
 					$this->data['Stat'][$i]['user_id'] = $userId;
-					
+				
 					$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat'][$i]['created']));
 					//if assiging the same unit to the same facility don't increment quantity
-					$this->data['Stat'][$i]['quantity'] = (($lastFacilityWithKit === $locationId)?0:1);
+					if (!empty($patientId))
+						$this->data['Stat'][$i]['quantity'] = (($lastFacilityWithKit === $this->data['Stat'][$i]['location_id'])?-1:0);
+					else 
+						$this->data['Stat'][$i]['quantity'] = (($lastFacilityWithKit === $this->data['Stat'][$i]['location_id'])?0:1);
 					//adjust the quantities only one quantity at a time
-					if ($this->data['Stat'][$i]['quantity'] != 0 && $lastFacilityWithKit != -1)
+					if ($lastFacilityWithKit != $this->data['Stat'][$i]['location_id'] && $lastFacilityWithKit != -1)
 						$this->adjustQuantities(
 											$this->data['Stat'][$i]['created'],
 											$unit_id,
 											'A', 
-											(isset($patientId)?0:1), //no need for qty when assigning to patient
-											$locationId, 
+											(!empty($patientId)?0:1),
+											$this->data['Stat'][$i]['location_id'], 
 											$patientId,
 											(isset($this->data['Stat'][$i]['phone_id'])?$this->data['Stat'][$i]['phone_id']:NULL),
 											$userId,
@@ -269,7 +272,8 @@ class StatsController extends AppController {
 					$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat'][$i]['created']));
 					
 					$wasWithPatient = $this->Stat->find('list',  array ('conditions' => array('patient_id is not null',
-																						'unit_id' => $unit_id
+																			'unit_id' => $unit_id,
+																			'created <\'' . $this->dateArrayToString($this->data['Stat'][$i]['created']) . '\''
 													), 
 										'fields' => array('unit_id'), 'callbacks' => false) );
 					if (empty($this->data['Stat'][$i]['location_id']))

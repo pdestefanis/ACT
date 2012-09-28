@@ -22,14 +22,15 @@ class ApisController extends AppController {
 	* a nice message if not supplied instead of breaking the app
 	*/
 	function discardUnit($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
+		$argsList = func_get_args();
+		$this->log("E " . implode(", ",$argsList), 'api');
 		if ($this->Rest->isActive()) {
 			if (is_null($phoneNumber) || is_null($unitNumber))
 				$this->rejectMessage("lessParams");
 			$phone = $this->findPhone($phoneNumber);
-			$argsList = func_get_args();
 			//TODO
 			//figure out why setReceived doesn't work when call is nested from checkFeedback
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'], __('Discard', true))	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
@@ -113,15 +114,16 @@ class ApisController extends AppController {
 	* required $phoneNumber , $unitNumber
 	*/
 	function receiveUnit($phoneNumber = null, $unitNumber = null, $facilityShortname = null,$date = null) {
+		$argsList = func_get_args();
+		$this->log("R " . implode(", ",$argsList), 'api');
 		if ($this->Rest->isActive()) {
 			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber))
 				$this->rejectMessage("lessParams");
 				
 			$phone = $this->findPhone($phoneNumber);
-			$argsList = func_get_args();
 
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'], __('Receive', true))	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
@@ -154,11 +156,13 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$this->loadModel('Stats');
+			//TODO arent this two call identical?
 			$currentFacilityPatient = $this->getUnitCurrentFacility($unit['Units']['id'],true, $this->dateArrayToString($data['Stats']['created']));
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 				
 			$wasWithPatient = $this->Stats->find('list',  array ('conditions' => array('patient_id is not null',
-					'unit_id' => $unit['Units']['id']
+																	'unit_id' => $unit['Units']['id'],
+																	'created <\'' . $this->dateArrayToString($data['Stats']['created']) . '\''
 			),
 					'fields' => array('unit_id'), 'callbacks' => false) );
 	
@@ -181,7 +185,8 @@ class ApisController extends AppController {
 						$patientId,
 						$phone['Phones']['id'],
 						NULL,
-						$messagereceivedId
+						$messagereceivedId,
+						$facility['Locations']['id']
 				);
 			//prepare the stats data
 			$data = array('Stats' => array(
@@ -214,14 +219,15 @@ class ApisController extends AppController {
 	 * Required $phoneNumber, $unitNumber, $patientNumber,
 	*/
 	function assignToPatient($phoneNumber = null, $unitNumber = null, $patientNumber = null, $givenDate = null) {
-		$this->disableCache();
+		$argsList = func_get_args();
+		$this->log("A " . implode(", ",$argsList), 'api');
 		if ($this->Rest->isActive()) {
 			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($patientNumber))
 				$this->rejectMessage("lessParams");
 
 			$phone = $this->findPhone($phoneNumber);
-			$argsList = func_get_args();
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			
+			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'], __('Assign', true))	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
@@ -306,7 +312,9 @@ class ApisController extends AppController {
 				$this->Rest->error(__('Record could not be saved: 10103', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
-			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			/* 
+			 * TODO Why was this here
+			 * $lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			//if assiging the same unit to the same facility don't increment quantity
 			$data['Stats']['quantity'] = (($lastFacilityWithKit === $facility['Locations']['id'])?0:1);
 			//adjust the quantities only one quantity at a time
@@ -321,7 +329,7 @@ class ApisController extends AppController {
 						$phone['Phones']['id'],
 						NULL,
 						NULL
-				);
+				); */
 			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
@@ -335,6 +343,8 @@ class ApisController extends AppController {
 	* Required $phoneNumber, $unitNumber, $facilityShortname
 	*/
 	function assignToFacility($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
+		$argsList = func_get_args();
+		$this->log("A " . implode(", ",$argsList), 'api');
 		if ($this->Rest->isActive()) {
 			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($facilityShortname)) {
@@ -344,8 +354,7 @@ class ApisController extends AppController {
 			}
 				
 			$phone = $this->findPhone($phoneNumber);
-			$argsList = func_get_args();
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'], __('Assign', true))	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//find the unit
 			$unit = $this->findUnit($unitNumber);
@@ -429,14 +438,15 @@ class ApisController extends AppController {
 	 * required $phoneNumber, $unitNumber, $facilityShortname
 	*/
 	function createUnit($phoneNumber = null, $unitNumber = null, $facilityShortname = null, $date = null) {
+		$argsList = func_get_args();
+		$this->log("CR " . implode(", ",$argsList), 'api');
 		if ($this->Rest->isActive()) {
 			$this->disableCache();
 			if (is_null($phoneNumber) || is_null($unitNumber) || is_null($facilityShortname))
 				$this->rejectMessage("lessParams");
 			
 			$phone = $this->findPhone($phoneNumber);
-			$argsList = func_get_args();
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'], __('Create', true))	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			
 			//find facility
@@ -592,14 +602,14 @@ class ApisController extends AppController {
 	/*
 	 * Insert the received message
 	 */
-	private function setReceived($argsList, $phoneId){
+	private function setReceived($argsList, $phoneId, $action = null){
 		if ($this->Rest->isActive()) {
 			$this->loadModel('Messagereceiveds');
 			$date = date("Y-m-d H:i:s");
 			$data = array('Messagereceiveds' => array(
 					'phone_id' => $phoneId,
 					'created' => $date,
-					'rawmessage' => implode(",", $argsList),
+					'rawmessage' => $action .implode(",", $argsList),
 			) );
 			$this->Messagereceiveds->create();
 			if (!$this->Messagereceiveds->save($data)) {
@@ -695,13 +705,14 @@ class ApisController extends AppController {
 	 * Is patient consent
 	*/
 	function patientConsent($phoneNumber = null, $patientNumber = null) {
+		$argsList = func_get_args();
+		$this->log("C " . implode(", ",$argsList), 'api');
 		if ($this->Rest->isActive()) {
 			if (is_null($phoneNumber) || is_null($patientNumber))
 				$this->rejectMessage("lessParams");
 				
 			$phone = $this->findPhone($phoneNumber);
-			$argsList = func_get_args();
-			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+			$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'] , __('Consent', true))	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			
 			$this->loadModel('Patients');
@@ -731,9 +742,10 @@ class ApisController extends AppController {
 				$this->Patients->create();
 				if (!$this->Patients->save($data)) {
 					$this->Rest->error(__('Record could not be saved: 10110', true));
-					$this->Rest->abort();
+					$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 				} else {
 					$this->Rest->info(__('Patient has been created', true));
+					$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 				}
 				
 			}
@@ -744,12 +756,13 @@ class ApisController extends AppController {
 	/*
 	 * Find unit
 	 */
-	private function findUnit($unitNumber) {
+	private function findUnit($unitNumber, $date=null) {
 		if ($this->Rest->isActive()) {
 			$this->loadModel('Units');
 			$this->loadModel('Stats');
 			//discarded
-			$discarded = $this->Stats->find('list',  array ('conditions' => array('Stats.status_id = 3'
+			$discarded = $this->Stats->find('list',  array ('conditions' => array('Stats.status_id = 3',
+																				'Stats.created <\'' . $date . '\''
 			),
 					'fields' => array('unit_id'), 'callbacks' => false) );
 			
@@ -784,7 +797,9 @@ class ApisController extends AppController {
 	/*
 	 * Errors not caught come here and messages get rejected
 	 */
-	function rejectMessage($phoneNum, $what = null){
+	function rejectMessage($phoneNum, $what = null, $msg = null){
+		$argsList = func_get_args();
+		$this->log("rejectMessage " . $msg ." " . $phoneNum, 'api');
 		if ($what == 'moreActions') {
 			$this->Rest->error(__('Too many keywords were supplied. Message not processed: 10108', true));
 		} else if ($what == 'lessParams') {
@@ -814,8 +829,8 @@ class ApisController extends AppController {
 	 */
 	private function checkValidDate($currDate, $unitId = null) {
 		if ($this->Rest->isActive()) {
-			$currDate = date('Y-m-d H:i:s',strtotime($this->dateArrayToString($currDate)));
 			$isValidDate = checkdate( $currDate['month'], $currDate['day'], $currDate['year'] );
+			$currDate = date('Y-m-d H:i:s',strtotime($this->dateArrayToString($currDate)));
 			if (!$isValidDate) {
 				$this->Rest->error(__('Invalid date please use yyyy-mm-dd ' , true) );
 			/* } else if ($this->dateArrayToString($currDate) > date("Y-m-d H:i:s") ) {

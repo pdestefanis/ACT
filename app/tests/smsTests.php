@@ -1,33 +1,39 @@
 <?php
 	require_once("..\webroot\processSMS.php");
+	//configure these
 	$activePhoneFac0 =  "+15559934234";
 	$activePhoneFac1 =  "+15553993131";
 	$activePhoneFac2 =  "+19194382549";
-	$newPhone = "+34988441277";
-	$inactivePhone = "+34988441277";
 	$notAssignePhoned = "+15558873342";
-	$realUnit = "1004";
 	$notExistingUnit = "0400";
-	$newUnit = "6500";
-	$newUnit1 = "6511";
-	$newUnit2 = "6515";
-	$newUnit3 = "6525";
 	$facility0 = "s001"; //assigned to phone0 and child of $facility1
 	$facility1 = "m001"; //assigned to phone1
 	$facility2 = "s002"; //assigned to phone2 not child or parent of above
 	$notExistantFacility = "o001";
-	$realPatient = "P000012"; 
+	$realPatient = "P000012";
 	$realPatient1 = "P123452";
-	$notExistantPatient = "P000099";
-	$notExistantPatient1 = "P000199";
 	$patientNoConsent = "7000012";
 	$assignAction = 'a';
 	$receiveAction = 'r';
 	$discardAction = 'e';
 	$consentAction = 'c';
 	$createAction = 'cr';
-	$sleep = 1;
+	//configure end
+	//the lower part is also configurable but not necessary
 	
+	$newPhone = "+34988441277";
+	$inactivePhone = "+34988441277";
+
+	$newUnit = "6500";
+	$newUnit1 = "6511";
+	$newUnit2 = "6515";
+	$newUnit3 = "6525";
+	
+	$notExistantPatient = "P000098";
+	$notExistantPatient1 = "P000199";
+	
+	$sleep = 1;
+	$realUnit = "1004";
 	$dateInvalid0 = '2012-18-12';
 	$dateInvalid1 = '012-8-12';
 	$dateInvalid2 = '2012-8-32';
@@ -44,7 +50,6 @@
 	$date90 = '12-09-20';
 	
 	
-
 	echo "Empty message \n";
 	$msg = "";
 	echo "sms: " . $msg . "\t\t\t\t" . init($msg, $activePhoneFac0) . "\n"; //active phone
@@ -53,7 +58,7 @@
 	echo "sms: " . $msg . "\t\t\t\t" . init($msg, $activePhoneFac0) . "\n"; //active phone
 	echo "\n\nNew phones \n";
 	echo "\n\nCreate  \n";
-	$msg = "$newUnit $createAction $facility0";
+	$msg = "$realUnit $createAction $facility0";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
 	sleep($sleep);
 	$msg = "$realUnit $facility0";
@@ -241,34 +246,34 @@
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac2) . "\n";
 	sleep($sleep);
 	
-	
 	echo "\n\n Normal in order back entry \n";
 	++$newUnit3;
 	$msg = "$createAction $newUnit3 $facility0 $date00";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
 	$msg = "$assignAction $newUnit3 $facility1 $date10";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
 	$msg = "$receiveAction $newUnit3 $facility1 $date20";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
 	++$patientNoConsent;
 	$msg = "$consentAction $patientNoConsent $facility1";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
 	$msg = "$assignAction $newUnit3 $patientNoConsent $date30";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
 	$msg = "$receiveAction $newUnit3 $date40";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
 	$msg = "$receiveAction $newUnit3 $date50";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
 	$msg = "$discardAction $newUnit3 $date50";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
-	//sleep($sleep);
+	sleep($sleep);
+	
 	
 	echo "\n\n Out of order back entry R before A \n";
 	++$newUnit3;
@@ -297,6 +302,7 @@
 	//sleep($sleep);
 	$msg = "$discardAction $newUnit3 $date50";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
 	
 	echo "\n\n Out of order back entry R before A diff facility \n";
 	++$newUnit3;
@@ -310,7 +316,6 @@
 	$msg = "$assignAction $newUnit3 $facility2 $date10";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
 	//sleep($sleep);
-	
 	$msg = "$consentAction $patientNoConsent $facility1";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
 	//sleep($sleep);
@@ -326,6 +331,112 @@
 	$msg = "$discardAction $newUnit3 $date50";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
 	
+	echo "\n\n Out of order back entry R  after E\n";
+	++$newUnit3;
+	++$patientNoConsent;
+	$msg = "$createAction $newUnit3 $facility0 $date00";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $facility2 $date10";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$consentAction $patientNoConsent $facility1";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $patientNoConsent $date30";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac2) . "\n";
+	//sleep($sleep);
+	$msg = "$receiveAction $newUnit3 $date40";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep);
+	$msg = "$receiveAction $newUnit3 $date50";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$discardAction $newUnit3 $date50";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$receiveAction $newUnit3 $facility1 $date20";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+
+	
+	echo "\n\n Out of order back entry R after A patient\n";
+	++$newUnit3;
+	++$patientNoConsent;
+	$msg = "$createAction $newUnit3 $facility0 $date00";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $facility2 $date10";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$consentAction $patientNoConsent $facility1";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $patientNoConsent $date30";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac2) . "\n";
+	//sleep($sleep);
+	$msg = "$receiveAction $newUnit3 $facility1 $date20";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	$msg = "$receiveAction $newUnit3 $date40";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep);
+	$msg = "$receiveAction $newUnit3 $date50";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$discardAction $newUnit3 $date60";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	
+	
+	
+	
+	echo "\n\n Out of order back entry R before R (No assignment) \n";
+	echo "Operation fails as unit has yet to be R or A at facility \n";
+	++$newUnit3;
+	++$patientNoConsent;
+	$msg = "$createAction $newUnit3 $facility0 $date00";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $facility1 $date10";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	//$msg = "$assignAction $newUnit3 $facility2 $date30";
+	//echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep); 
+	$msg = "$receiveAction $newUnit3 $facility2 $date40";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac2) . "\n";
+	//sleep($sleep);
+	$msg = "$consentAction $patientNoConsent $facility1";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $patientNoConsent $date50";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep);
+	$msg = "$receiveAction $newUnit3 $facility1 $date20";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	
+	echo "\n\n Out of order back entry R before R (No assignment) \n";
+	++$newUnit3;
+	++$patientNoConsent;
+	$msg = "$createAction $newUnit3 $facility0 $date00";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $facility1 $date10";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac0) . "\n";
+	//sleep($sleep);
+	// $msg = "$assignAction $newUnit3 $facility2 $date30";
+	// echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep); 
+	$msg = "$receiveAction $newUnit3 $facility2 $date40";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac2) . "\n";
+	//sleep($sleep);
+	$msg = "$consentAction $patientNoConsent $facility1";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
+	//sleep($sleep);
+	$msg = "$assignAction $newUnit3 $patientNoConsent $date50";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac2) . "\n";
+	//sleep($sleep);
+	$msg = "$receiveAction $newUnit3 $facility1 $date20";
+	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
 	
 	
 	
@@ -335,14 +446,7 @@
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	

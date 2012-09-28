@@ -81,7 +81,7 @@ class Phone extends AppModel {
 			'className' => 'Stat',
 			'foreignKey' => 'phone_id',
 			'dependent' => false,
-			'conditions' => '',
+			'conditions' => 'status_id !=6',
 			'fields' => '',
 			'order' => '',
 			'limit' => '',

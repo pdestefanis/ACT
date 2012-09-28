@@ -26,7 +26,7 @@
 		<tr<?php echo $class;?>>
 
 			<td><?php 
-				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'], '/stats/view/' . $stat['id'] );
+				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'] . " ", '/stats/view/' . $stat['id'] );
 				?></td>
 			<td><?php if (!empty($locations[$stat['location_id']])) 
 					echo $access->checkHtml('Locations/view', 'text', $locations[$stat['location_id']], '/locations/view/' . $stat['location_id'] );
@@ -59,7 +59,7 @@
 		<tr<?php echo $class;?>>
 
 			<td><?php 
-				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'], '/stats/view/' . $stat['id'] );
+				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'] . " ", '/stats/view/' . $stat['id'] );
 				?></td>
 			<td><?php if (!empty($locations[$stat['location_id']])) 
 					echo $access->checkHtml('Locations/view', 'text', $locations[$stat['location_id']], '/locations/view/' . $stat['location_id'] );
@@ -94,7 +94,7 @@
 		<tr<?php echo $class;?>>
 
 			<td><?php 
-				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'], '/stats/view/' . $stat['id'] );
+				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'] . " ", '/stats/view/' . $stat['id'] );
 				?></td>
 			<td><?php if (!empty($locations[$stat['location_id']])) 
 					echo $access->checkHtml('Locations/view', 'text', $locations[$stat['location_id']], '/locations/view/' . $stat['location_id'] );
@@ -130,7 +130,7 @@
 		<tr<?php echo $class;?>>
 
 			<td><?php 
-				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'], '/stats/view/' . $stat['id'] );
+				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'] . " ", '/stats/view/' . $stat['id'] );
 				?></td>
 			<td><?php if (!empty($locations[$stat['location_id']])) 
 					echo $access->checkHtml('Locations/view', 'text', $locations[$stat['location_id']], '/locations/view/' . $stat['location_id'] );

@@ -181,7 +181,8 @@ class AppController extends Controller {
 						 WHERE stat_items.unit_id = units.id 
 						 	AND stat_items.location_id = locations.id 
 						 	AND Item.id = ui.item_id 
-						 	AND units.id = ui.unit_id ";
+						 	AND units.id = ui.unit_id 
+							AND quantity	 !=0 ";
 						 	/*AND stat_items.created = (select max(sa.created) 
 						 								from stats sa, units u, items i, units_items as uis 
 						 								WHERE sa.unit_id = u.id 
@@ -361,7 +362,11 @@ class AppController extends Controller {
 			do {
 				while (($i < count($listd)) 
 								&& $old['stat_items']['location_id'] == $listd[$i]['stat_items']['location_id']
-								 && $old['stat_items']['created'] == $listd[$i]['stat_items']['created'] )	
+								 && strtotime($old['stat_items']['created'] == $listd[$i]['stat_items']['created'] )
+							//TODO this may not be necessary but it will sum up qty for the day 
+							//instead of showing up down movement for each submit if same day
+							//&& (date('Y-m-d', strtotime($old['stat_items']['created'])) == date('Y-m-d', strtotime($listd[$i]['stat_items']['created'])) )
+						)	
 				{
 					$sum += $listd[$i]['stat_items']['quantity'];
 					//only store the last submission for the same day
@@ -1175,8 +1180,8 @@ class AppController extends Controller {
 		$query .= ' WHERE unit_id=' . $unitId;
 		$query .= ' AND created >  \'' . $compDate . '\''
 								. ' AND quantity = -1 '
-								. ' AND status_id = 6 ';
-	
+								. ' AND (status_id = 6 OR status_id = 2)';
+		
 		$result = $this->Stats->query($query);
 		$maxCreated = NULL;
 		$maxCreatedId = NULL;
@@ -1224,7 +1229,6 @@ class AppController extends Controller {
 		$result = $this->Stats->query($query);
 		$maxCreated = NULL;
 		$maxFacilityId = NULL;
-		
 		foreach ($result as $key => $value) {
 			if (is_null($maxCreated)) { //initial, set the both
 				$maxCreated = $value['st']['created'];
