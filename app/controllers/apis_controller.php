@@ -55,6 +55,12 @@ class ApisController extends AppController {
 			$data['Stats']['created']['min'] = date('i');
 			$data['Stats']['created']['sec'] = date('s');
 			
+			$isUnused = $this->isUnusedUnit($unit['Units']['id']);
+			if (!$isUnused) {
+				$this->Rest->error(__('This kit is already open.', true));
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
+					
 			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isDiscarded) {
 				$this->Rest->error(__('This kit is already discarded', true));
@@ -71,7 +77,7 @@ class ApisController extends AppController {
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			//if assiging the same unit to the same facility don't increment quantity
 			
-			if ( $lastFacilityWithKit != -1 && $this->isUnusedUnit($unit['Units']['id'])) {
+			if ( $lastFacilityWithKit != -1 && $this->isUnusedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']))) {
 				$this->adjustQuantities(
 						$data['Stats']['created'],
 						$unit['Units']['id'],
@@ -233,12 +239,7 @@ class ApisController extends AppController {
 			$unit = $this->findUnit($unitNumber);
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			$isUnused = $this->isUnusedUnit($unit['Units']['id']);
-			if (!$isUnused) {
-				$this->Rest->error(__('This kit is open cannot be assigned to patient', true));
-				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
-				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			}
+			
 			//find patient
 			$patient = $this->findPatient($patientNumber);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
@@ -265,7 +266,13 @@ class ApisController extends AppController {
 			$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			
-			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			$isUnused = $this->isUnusedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			if (!$isUnused) {
+				$this->Rest->error(__('This kit is open cannot be assigned to patient', true));
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
+			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id']);
 			if (!$isDiscarded) {
 				$this->Rest->error(__('This kit is already discarded', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
@@ -281,8 +288,9 @@ class ApisController extends AppController {
 			//adjust the quantity
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 
+			$this->log($lastFacilityWithKit . " " . $patientNumber . " " . $facility['Locations']['id'] );
 			//adjust the quantities
-			if ($lastFacilityWithKit != $facility['Locations']['id'] && $lastFacilityWithKit != -1)
+			if ($lastFacilityWithKit != $facility['Locations']['id'] && $lastFacilityWithKit != -1) {
 				$this->adjustQuantities(
 						$data['Stats']['created'],
 						$unit['Units']['id'],
@@ -294,6 +302,10 @@ class ApisController extends AppController {
 						NULL,
 						$messagereceivedId
 				);
+			} else if ($lastFacilityWithKit == $facility['Locations']['id']){
+				//this is valid only for back patietn assignment from same facility
+				$this->updateBackEntry($data['Stats']['created'], $unit['Units']['id'], $facility['Locations']['id'], $patientNumber );
+			}
 			//prepare the stats data
 			$data = array('Stats' => array(
 					'created' => $data['Stats']['created'],
@@ -360,12 +372,6 @@ class ApisController extends AppController {
 			$unit = $this->findUnit($unitNumber);
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			$isUnused = $this->isUnusedUnit($unit['Units']['id']);
-			if (!$isUnused) {
-				$this->Rest->error(__('This kit is open and cannot be assigned to facility', true));
-				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
-				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
-			}
 			//find facility
 			$facility = $this->findFacility($facilityShortname);
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
@@ -386,6 +392,13 @@ class ApisController extends AppController {
 			$data['Stats']['created']['sec'] = date('s');
 			$this->checkValidDate($data['Stats']['created'], $unit['Units']['id']);
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			
+			$isUnused = $this->isUnusedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
+			if (!$isUnused) {
+				$this->Rest->error(__('This kit is open and cannot be assigned to facility', true));
+				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
+				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
+			}
 			
 			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isDiscarded) {

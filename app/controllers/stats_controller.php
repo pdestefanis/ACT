@@ -420,17 +420,21 @@ class StatsController extends AppController {
 		$discarded = $this->Stat->find('list',  array ('conditions' => array('Stat.status_id = 3'
 													), 
 										'fields' => array('unit_id'), 'callbacks' => false) );
-		$discarded = array_unique($discarded);		
+		$discarded = array_unique($discarded);	
+		
+		$opened = $this->Stat->find('list',  array ('conditions' => array('Stat.patient_id IS NOT NULL '
+		),
+				'fields' => array('unit_id'), 'callbacks' => false) );
+		$opened = array_unique($opened);
 		$unitsArray = explode(",", $lastUnits);
 		$unitsArray = array_diff($unitsArray, $discarded);
 		$unitsArray = array_unique($unitsArray);
 		$lastUnits = implode(",", $unitsArray);									
 		$units = $this->Stat->Unit->find('list', array('conditions' => 
 										array(//'Unit.id not in (' . implode(",",$discarded) . ")",
-										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")
-										//((is_null($lastUnits) || empty($lastUnits))?'':'Unit.id not in (' . $lastUnits . ")") 
-										)
-										));	
+										((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")"),
+										((is_null($opened) || empty($opened))?'':'Unit.id not in (' . implode(",",$opened) . ")")
+										)));	
 		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
 										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
 		$userId = $this->Session->read('Auth.User.id');

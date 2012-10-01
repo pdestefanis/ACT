@@ -1115,7 +1115,7 @@ class AppController extends Controller {
 	
 	protected function isUnusedUnit($unitId, $date = null) {
 		$this->loadModel('Stats'); 
-		$conditions = array('unit_id' => $unitId, 'patient_id is not null', (!is_null(' created <= \''.$date.'\'')?$date:'') );
+		$conditions = array('unit_id' => $unitId, 'patient_id is not null', (!is_null($date)?' created <= \''.$date.'\'':'') );
 		
 		$statUnit = $this->Stats->find('list', array('conditions' => $conditions));
 		if (empty($statUnit))
@@ -1169,7 +1169,7 @@ class AppController extends Controller {
 	 * Updates the next record for backentry. 
 	 * I.e. updates the the location_id of the record de-asigning the unit after the current entry
 	 */
-	protected function updateBackEntry($created, $unitId,  $locationId){
+	protected function updateBackEntry($created, $unitId,  $locationId, $patientId = null){
 		//first see if this unit was already automatically dispensed id 6
 		// from a different facility
 		//if ti was insert the record 
@@ -1200,6 +1200,8 @@ class AppController extends Controller {
 				$maxFacilityId = $value['st']['location_id'];
 			}
 		}
+		if (!is_null($patientId) && $maxFacilityId == $locationId) //case only for patients
+			$locationId=0;
 		//now use the id to update this record with the newer location
 		if (!is_null($maxCreated)) {
 			$data = array();
