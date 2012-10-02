@@ -33,6 +33,10 @@ And replace the name of the default installation directory, if needed.
 
 8. Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
 
+9. Set permissions to files and directories, the easiest way is executing:
+
+$ ./fix_permissions.sh
+
 ==Update an existing installation: ==
 
 To be completed...
