@@ -13,7 +13,7 @@ LoadModule rewrite_module modules/mod_rewrite.so
 
 3. Edit tracker_apache.conf, replacing 'tracker' with the actual installation directory in your web server's DocumentRoot
 
-4. Copy the configuration file tracker_apache.conf to Apache's configuration dir (/etc/httpd/conf.d)
+4. Copy the configuration file tracker_apache.conf to Apache's configuration dir (/etc/httpd/conf.d), with a name that identifies your instance (e.g. my_tracker.conf)
 
 5. Get apache to reload its configuration:
 
