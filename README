@@ -1,7 +1,7 @@
-ACT
-===
+===ACT===
 
-New installation: 
+
+==New installation:== 
 
 1. Run the sql file database.sql:
 
@@ -33,6 +33,6 @@ And replace the name of the default installation directory, if needed.
 
 8. Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
 
-Update an existing installation: 
+==Update an existing installation: ==
 
 To be completed...
