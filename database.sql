@@ -21,6 +21,8 @@
 
 CREATE DATABASE IF NOT EXISTS `tracker`;
 
+USE `tracker`;
+
 DROP TABLE IF EXISTS `acos`;
 CREATE TABLE `acos` (
   `id` int(10) NOT NULL auto_increment,
