@@ -1,0 +1,38 @@
+ACT
+===
+
+New installation: 
+
+1. Run the sql file database.sql:
+
+$ mysql -p -u[user] < database.sql
+
+2. In Apache; enable rewrite_module (/etc/httpd/conf/httpd.conf) if it is not enabled yet:
+
+LoadModule rewrite_module modules/mod_rewrite.so
+
+3. Edit tracker_apache.conf, replacing 'tracker' with the actual installation directory in your web server's DocumentRoot
+
+4. Copy the configuration file tracker_apache.conf to Apache's configuration dir (/etc/httpd/conf.d)
+
+5. Get apache to reload its configuration:
+
+$ service httpd reload
+
+6. Edit [install_dir]/app/webroot/.htaccess and adjust the path on the RewriteBase command:
+
+RewriteBase /tracker
+
+7. Edit [install_dir]/app/webroot/index.php
+
+Find this line:
+
+define('CAKE_CORE_INCLUDE_PATH', DS . 'var' . DS . 'www' . DS . 'html' . DS . 'tracker');
+
+And replace the name of the default installation directory, if needed.
+
+8. Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
+
+Update an existing installation: 
+
+To be completed...

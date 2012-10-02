@@ -1,13 +1,13 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /track
+    RewriteBase /tracker
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
 	
-	# Adds AUTH support to Rest Plugin:
-	RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization},last]
+    # Adds AUTH support to Rest Plugin:
+    RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization},last]
 </IfModule>
 
 ## PROTECT FILES ###

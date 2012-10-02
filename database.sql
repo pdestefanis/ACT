@@ -19,6 +19,8 @@
 -- Table structure for table `acos`
 --
 
+CREATE DATABASE IF NOT EXISTS `tracker`;
+
 DROP TABLE IF EXISTS `acos`;
 CREATE TABLE `acos` (
   `id` int(10) NOT NULL auto_increment,
