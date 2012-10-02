@@ -1385,7 +1385,7 @@ class AppController extends Controller {
 	 * action can be A, R, or E
 	 * Not finihsed as I am not sure if we need so much restriction
 	 */
-	function isActionAllowed($unitId, $facility = null, $action = null, $date) {
+	protected function isActionAllowed($unitId, $facility = null, $action = null, $date) {
 		$unitStats = $this->getUnitCurrentFacility($unit);
 		//TODO is unused kit must be date sensitive
 		$isUnsed = $this->isUnusedUnit($unitId, $date);
@@ -1406,7 +1406,7 @@ class AppController extends Controller {
 	/*
 	 * See if patient already has a kit in  
 	 */
-	function isPatientWithKit($patientId, $created){
+	protected function isPatientWithKit($patientId, $created){
 		$this->loadModel('Stat');
 		$stats = $this->Stat->find('list', array('callbacks' => 'false', 'fields' => array('Stat.id', 'Stat.status_id'),
 													'conditions' => array('patient_id ='.$patientId ,

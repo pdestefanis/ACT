@@ -1,18 +1,18 @@
- --Store chagnes to database here
+ -- Store chagnes to database here
  alter table stats add column modified datetime;
- --generic patient
+ -- generic patient
  insert into patients (number, consent) values ('P999999', 1);
- --add comment field
+ -- add comment field
  alter table units add column comment varchar(255);
- --soft deleted for units
+ -- soft deleted for units
  alter table units add column deleted int(1) default 0;
   alter table units add column deleted_date datetime;
- --clean up
+ -- clean up
  drop table modifiers;
- --changes in deifinition of shortname
+ -- changes in deifinition of shortname
   alter table locations modify column shortname varchar(7) not null;
-  --enable inodb if not enabled in my.ini and convert all tables to inodb
-  ALTER TABLE user_roles ENGINE=InnoDB;
+ -- enable inodb if not enabled in my.ini and convert all tables to inodb
+ ALTER TABLE user_roles ENGINE=InnoDB;
 ALTER TABLE users ENGINE=InnoDB;
 ALTER TABLE units_items ENGINE=InnoDB;
 ALTER TABLE units ENGINE=InnoDB;
