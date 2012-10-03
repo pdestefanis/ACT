@@ -5,7 +5,7 @@
 
 1. Run the sql file database.sql:
 
-$ mysql -p -u[user] < database.sql
+$ mysql -p -u[user] < sql/database.sql
 
 2. In Apache; enable rewrite_module (/etc/httpd/conf/httpd.conf) if it is not enabled yet:
 
@@ -38,5 +38,13 @@ And replace the name of the default installation directory, if needed.
 $ ./fix_permissions.sh
 
 ==Update an existing installation: ==
+
+1. Find the schema version of your installation
+
+TO BE COMPLETED
+
+2. Run the sql update files from your current version to the latest version:
+
+$ mysql -p -u[user] < sql/dbupdate_v[current]_v[next].sql
 
 To be completed...
