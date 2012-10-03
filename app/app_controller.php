@@ -343,7 +343,7 @@ class AppController extends Controller {
 					stat_items.id as sid, stat_items.created 
 					FROM stats stat_items, units, items item,units_items as ui 
 					WHERE stat_items.unit_id = units.id 
-					and Item.id = ui.item_id 
+					and item.id = ui.item_id 
 					AND units.id = ui.unit_id ";
 			
 		$query .= " AND stat_items.location_id IN ( " . implode(",", $this->Session->read("userLocations")) . ") ";
