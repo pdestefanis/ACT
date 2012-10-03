@@ -180,7 +180,7 @@ class AppController extends Controller {
 						 FROM stats stat_items, units, items item, units_items as ui, locations 
 						 WHERE stat_items.unit_id = units.id 
 						 	AND stat_items.location_id = locations.id 
-						 	AND Item.id = ui.item_id 
+						 	AND item.id = ui.item_id 
 						 	AND units.id = ui.unit_id 
 							AND quantity	 !=0 ";
 						 	/*AND stat_items.created = (select max(sa.created) 
