@@ -1,4 +1,4 @@
 #!/bin/bash
-/bin/chgrp -R apache *
-/bin/chmod -R g+w app/tmp
+/usr/bin/setfacl -dR -m g:apache:rwx app/tmp
+/usr/bin/setfacl -R -m g:apache:rwx app/tmp
 
