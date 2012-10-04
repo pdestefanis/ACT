@@ -12,6 +12,7 @@ $ mysql -p -u[user] < sql/database.sql
 LoadModule rewrite_module modules/mod_rewrite.so
 
 3. Edit tracker_apache.conf, replacing 'tracker' with the actual installation directory in your web server's DocumentRoot
+   Optionally, edit the listener configuration to enable a remote SMS gateway to direct messages to this server
 
 4. Copy the configuration file tracker_apache.conf to Apache's configuration dir (/etc/httpd/conf.d), with a name that identifies your instance (e.g. my_tracker.conf)
 
@@ -37,6 +38,8 @@ And replace the name of the default installation directory, if needed.
 
 $ ./fix_permissions.sh
 
+10. Change passwords (see below for default passwords)
+
 ==Update an existing installation: ==
 
 1. Find the schema version of your installation
@@ -48,3 +51,9 @@ TO BE COMPLETED
 $ mysql -p -u[user] < sql/dbupdate_v[current]_v[next].sql
 
 To be completed...
+
+==Default accounts and passwords==
+
+admin: adminpass
+moderator: modpass
+user: userpass
