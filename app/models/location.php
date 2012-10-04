@@ -15,8 +15,8 @@ class Location extends AppModel {
 		),
 		'shortname' => array(
 			'notempty' => array(
-				'rule' => '/\b[A-JL-OQ-Z]{1}\d{3,6}\b/i',
-				'message' => 'Please enter location short name starting with a letter and 3 to 6 digits',
+				'rule' => '/\b[A-JL-OQ-Z]{1}[A-Z|0-9]{3,6}\b/i',
+				'message' => 'Please enter location short name starting with a letter (not P or K) and 3 to 6 alphanumeric digits',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule

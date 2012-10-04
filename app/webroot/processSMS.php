@@ -116,7 +116,7 @@ class Action{
 		//else if (isset($matchedAction[0]) && isset($matchedDate[0])) 
 		//	$what = "/\b[^" . $matchedAction[0] . "]\b" . "\b[^(" . $matchedDate[0] . ")]\b" . "\b[0-9|A-Z]{2,3}\b/"; //exclude actions from matching
 		//else 	
-		$what = "/\b[A-JL-OQ-Z]{1}\d{3,6}\b/";
+		$what = "/\b[A-JL-OQ-Z]{1}[A-Z|0-9]{3,6}\b/";
 		if (preg_match($what, $msg, $matchedFacility) ) {
 			$matchedFacility[0] = trim($matchedFacility[0]);
 			$msg = preg_replace("[" . $matchedFacility[0] . "]", '', $msg);
