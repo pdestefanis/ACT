@@ -879,11 +879,11 @@ class StatsController extends AppController {
 			$this->data['Facility']['level4'] = $level4;
 
 		} else {
-			if (($this->data['Stat']['ndigitsOld'] < $this->data['Stat']['ndigits']) 
+			if (($this->data['Stat']['ndigits'] > 11) 
 				|| $this->data['Stat']['ndigits'] == '' || $this->data['Stat']['ndigits'] <=6
 				|| !is_numeric($this->data['Stat']['ndigits'])){
 				$this->Session->setFlash(__('Last n digits cannot be empty  or less then the previous value.', true));
-				$this->Stat->invalidate('ndigits', 'Please enter numeric value > 6 and less than the previous value used: <= '. $this->data['Stat']['ndigitsOld']);
+				$this->Stat->invalidate('ndigits', 'Please enter numeric value > 6 and less than 11 ');
 			} else if ($this->data['Stat']['limit'] == ''  || !is_numeric($this->data['Stat']['limit']) 
 					|| $this->data['Stat']['limit'] <=0 || $this->data['Stat']['limit'] > 25){
 				$this->Session->setFlash(__('Number of months must be numeric', true));
