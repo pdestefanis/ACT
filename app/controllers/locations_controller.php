@@ -36,7 +36,7 @@ class LocationsController extends AppController {
 									));
 		} 
 		$this->set('locations', $this->paginate());
-		$locs = $this->Location->find('list', array ('callbacks' => false));
+		$locs = $this->Location->find('list');//, array ('callbacks' => false));
 		$this->set('parents', $locs);
 		foreach (array_keys($locs) as $l) {
 			$level =0;
