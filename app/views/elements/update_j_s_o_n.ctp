@@ -8,7 +8,7 @@
 		$alarm = false;
 		$globalAlarm = false;
 		$empty = true;
-		
+		$parent = '';
 		foreach ($allLocations as $aLoc){
 			if ($loc['locations']['parent_id'] == $aLoc['locations']['id']) {
 				$parent = $aLoc;
