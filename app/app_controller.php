@@ -146,32 +146,6 @@ class AppController extends Controller {
 		//return $children;
 	 }
 	
-	protected function getReport(&$listitems, $strFilter = null) {
-		$query = "SELECT quantity_after, units.code as icode, units.code as dname, units.id as did, created, phone_id as pid, stat_items.location_id, stat_items.id as sid, stat_items.created as screated, locations.id as lid, locations.name as lname, locations.parent_id parent ";
-		$query .= "FROM stats stat_items, units, locations ";
-		$query .= "WHERE stat_items.unit_id = units.id ";
-		//$query .= "AND stat_items.phone_id = phones.id "; //not needed
-		
-		$query .= "AND stat_items.location_id = locations.id ";
-		$query .= "AND stat_items.created = (select max(sa.created) from stats sa where sa.unit_id = stat_items.unit_id  ";
-		$query .= "AND location_id = stat_items.location_id) ";
-		
-		if (isset($strFilter) && !is_numeric($strFilter) ) {
-			$query .= "AND (locations.name LIKE '%"  . $strFilter . "%' ";
-			//$query .= "OR units.name LIKE '%"  . $strFilter . "%' ";
-			$query .= "OR units.code LIKE '%"  . $strFilter . "%') ";
-		}  
-		$query .= "AND stat_items.location_id IN ( " . implode(",", $this->Session->read("userLocations")) . ") ";
-		$query .= "ORDER by locations.parent_id ";
-		
-		$listd = $this->Stat->query($query);
-
-		foreach ($listd as $ld){
-			$listitems[$ld['locations']['lid']][] = $ld;
-			$listitems[$ld['locations']['lid']]['Parent'] = $ld['locations']['parent'];
-		}
-	}
-	
 	protected function getKitReport(&$listitems, $strFilter = null, $created = null) {
 		$query = "select quantity, item.code as icode, item.name as dname, item.id as did,
 						 created, phone_id as pid, stat_items.location_id, stat_items.id as sid, 
@@ -181,8 +155,7 @@ class AppController extends Controller {
 						 WHERE stat_items.unit_id = units.id 
 						 	AND stat_items.location_id = locations.id 
 						 	AND item.id = ui.item_id 
-						 	AND units.id = ui.unit_id 
-							AND quantity	 !=0 ";
+						 	AND units.id = ui.unit_id";
 						 	/*AND stat_items.created = (select max(sa.created) 
 						 								from stats sa, units u, items i, units_items as uis 
 						 								WHERE sa.unit_id = u.id 
