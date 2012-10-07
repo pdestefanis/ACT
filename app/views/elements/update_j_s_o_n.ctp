@@ -4,7 +4,7 @@
 
 	$i = 0;
 
-	foreach ($locations as $loc) :
+	foreach ($locations as $loc) {
 		$alarm = false;
 		$globalAlarm = false;
 		$empty = true;
@@ -13,9 +13,10 @@
 			if ($loc['locations']['parent_id'] == $aLoc['locations']['id']) {
 				$parent = $aLoc;
 			}
-			if ($loc['locations']['parent_id'] === 0) {
-				$parent = $aLoc;
+			if ($loc['locations']['parent_id'] == 0) {
+				$parent = $loc;
 			}
+			
 		}
 			
 		
@@ -64,7 +65,7 @@
 		$i++;
 		?>
 	
-<?php endforeach; 
+<?php }
 	$fileData .= $this->UpdateFile->addFileFooter();
 ?>
 
