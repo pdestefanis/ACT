@@ -42,7 +42,7 @@
 		//echo "</td>";
 		
 		//echo "<td>";
-		echo $this->Form->input('location_id', array('label' => __('Facility', true), 'empty' => '---Select---',
+		echo $this->Form->input('location_id', array('label' => __('Facility receiving the kit', true), 'empty' => '---Select---',
 								'div' => array ('id' => 'location_div', 
 										'style' => 'display:none;', 
 										'class' => 'input select required')

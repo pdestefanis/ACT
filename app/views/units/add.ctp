@@ -9,7 +9,7 @@ echo '<br /><br />' ;
 	<fieldset>
 		<legend><?php __('Add Kit'); ?></legend>
 	<?php
-		echo $this->Form->input('code');
+		echo $this->Form->input('code', array('after' => '<p class="help">' . __('Should be four digits.', true) . '</p>'));
 		
 		?><div id="batchList"><?php echo $this->Form->input('batch_id', array('empty' => true) ); ?></div> <div id="addbatch">
 		<?php echo $ajax->link(__('Click here to create a new batch', true), array('controller' => 'batches', 

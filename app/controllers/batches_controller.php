@@ -36,13 +36,14 @@ class BatchesController extends AppController {
 			$this->Batch->create();
 			if ($this->Batch->save($this->data)) {
 				$this->Session->setFlash(__('The batch has been saved', true), 'flash_success');
-				//$this->redirect(array('action' => 'index'));
+				$this->data = null;
 			} else {
 				//$this->Session->setFlash(__('The batch could not be saved. Please, try again.', true));
 			}
 		}
 		$batches = $this->Batch->find('list');
 		$this->set(compact('batches'));
+		
 	}
 
 	function edit($id = null) {

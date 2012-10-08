@@ -44,7 +44,7 @@ class UsersController extends AppController {
 			$locs[] = $u['User']['location_id']; //add current location
 			
 			if ($u['User']['role_id'] == 1)// (in_array(1,$g)) only primay admins have all locations
-				$locs = array_keys($this->User->Location->find('list', array('callbacks' => 'false')));
+				$locs = array_keys($this->User->Location->find('list', array('callbacks' => 'false', array('conditions' => array('deleted =0')))));
 			else
 				$locs = array_values($children);
 			

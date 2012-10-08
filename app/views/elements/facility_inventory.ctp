@@ -40,7 +40,7 @@ continue;
 echo $access->checkHtml('Locations/view', 'text', $r['lname'], '/locations/view/' . $loc );
 //echo $this->Html->link($r['lname'], array('controller' => 'locations', 'action' => 'view', $loc)); ?>&nbsp;</td>
 <td><?php
-if ($r['parent'] != 0)
+if ($r['parent'] != 0 && isset($allLocations[$r['parent']]))
 echo $access->checkHtml('Locations/view', 'text', $allLocations[$r['parent']], '/locations/view/' . $r['parent'] );
 //echo $this->Html->link($allLocations[$r['parent']], array('controller' => 'locations', 'action' => 'view', $r['parent'])); ?>&nbsp;</td>
 <td><table cellpadding="0" cellspacing="0" class="norow"><?php

@@ -49,7 +49,7 @@
 						echo $access->checkHtml('Locations/view', 'text', str_pad("", $r['level'], "-", STR_PAD_LEFT) . $r['lname'], '/locations/view/' . $loc);
 						?>&nbsp;</td>
 					<td><?php 
-						if ($r['level'] != 0)
+						if ($r['level'] != 0 && isset($allLocations[$r['parent']]))
 							echo $access->checkHtml('Locations/view', 'text',  $allLocations[$r['parent']], '/locations/view/' . $r['parent']);
 						
 						?>&nbsp;</td>

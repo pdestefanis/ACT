@@ -18,7 +18,10 @@ echo $javascript->link(array('jquery.min',
 	<?php
 		echo $this->Form->hidden('status_id', array('value' => 3));
 		echo $this->Form->hidden('user_id', array('value' => $userId));
-		echo $this->Form->input('unit_id');
+		if (empty($units))
+			echo $this->Form->input('unit_id', array('empty' => __('No kits available', true)));
+		else
+			echo $this->Form->input('unit_id');
 		echo $this->Form->input('location_id', array('label' => __('Facility', true), 'empty' => '---Select---') );
 		echo $datePicker->picker('created', array(
 							        'label' => __('Date', true),

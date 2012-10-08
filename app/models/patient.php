@@ -13,7 +13,7 @@ class Patient extends AppModel {
 			),
 			'numeric' => array(
 				'rule' => '/\b[P|7][0-9]{5,6}\b/i',
-				'message' => 'Patient number must start with a P followed by 5 or 6 digits',
+				'message' => 'Patient number must start with a P or 7 and followed by 5 or 6 digits',
 			),
 			'unique' => array(
 				'rule' =>  'isUnique',

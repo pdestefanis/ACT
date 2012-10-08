@@ -2,6 +2,8 @@
 //<![CDATA[
     jQuery(document).ready(function($){
 	$('.flash_success').animate({opacity: 1.0}, 3000).fadeOut();
+	if (jQuery(".flash_success").length != 0 )
+		$('.ajaxForm').animate({opacity: 1.0}, 1000).fadeOut();
 });
 //]]>
 </script>
@@ -9,7 +11,7 @@
 	echo $this->Form->input('batch_id', array('options' => $batches, 
 												'id' => 'UnitBatchId', 
 												'name' => 'data[Unit][batch_id]',
-												//'empty' => true,
+												'empty' => true,
 											));
 	?>
 <div class="batches ajaxForm">

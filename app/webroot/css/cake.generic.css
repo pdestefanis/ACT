@@ -697,3 +697,9 @@ div .secondary-menu {
 	text-decoration: none;
 	font-weight: normal;
 }
+
+p.help {
+	font-size: small;
+    font-style: italic;
+    font-weight: 100;
+}

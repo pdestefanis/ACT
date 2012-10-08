@@ -217,8 +217,8 @@ class StatsController extends AppController {
 		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
 										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
 		$userId = $this->Session->read('Auth.User.id');
-		$locations = $this->Stat->Location->find('list');//, array('callbacks' => 'false'));
-		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		$locations = $this->Stat->Location->find('list', array('conditions' => array('deleted = 0')));//, array('callbacks' => 'false'));
+		$patients = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
 		//attach current location to unit
 		$unitsFacility = array();
 		foreach ($units as $unitId => $unit){
@@ -236,7 +236,24 @@ class StatsController extends AppController {
 		}
 		$units = $unitsFacility;
 		
-		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));
+		Configure::load('options');
+		$lev = array( 0=>Configure::read('Facility.level0'),
+				1=>Configure::read('Facility.level1'),
+				2=>Configure::read('Facility.level2'),
+				3=>Configure::read('Facility.level3'),
+				4=>Configure::read('Facility.level4'),
+		);
+		//add the level
+		$newLocations = array();
+		
+		foreach ($locations as $id=>$name) {
+			$level = 0;
+			$this->findLevel($id, $level);
+			$newLocations[$id] = $name . "(" . $lev[$level] . ")";
+		} 
+		$locations = $newLocations;
+		
+		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits', 'lev'));
 		
 	}
 	
@@ -345,8 +362,8 @@ class StatsController extends AppController {
 		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
 										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
 		$userId = $this->Session->read('Auth.User.id');
-		$locations = $this->Stat->Location->find('list');
-		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		$locations = $this->Stat->Location->find('list', array('conditions' => array('deleted = 0')));
+		$patients = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
 		//attach current location to unit
 		$unitsFacility = array();
 		foreach ($units as $unitId => $unit){
@@ -376,6 +393,10 @@ class StatsController extends AppController {
 			$lastUnits =  $this->Session->read("recentlyUsedUnits");
 		}
 		if (!empty($this->data)) {
+			if (empty($this->data['Stat']['unit_id']) ) {
+				$this->Stat->invalidate('Unit', __('Please select unit(s)' , true));
+				$this->Session->setFlash(__('Please select a unit.', true));
+			} else {
 				$locationId = $this->data['Stat']['location_id'];
 				//$patientId = $this->data['Stat']['patient_id'];
 				$userId = $this->data['Stat']['user_id'];
@@ -408,12 +429,13 @@ class StatsController extends AppController {
 											);	
 				}
 					
-			$this->Stat->create();
-			if ($this->Stat->save($this->data)) {
-				$this->Session->setFlash('The unit has been discarded', 'flash_success');
-				//$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The unit could not be discarded. Please, try again.', true));
+				$this->Stat->create();
+				if ($this->Stat->save($this->data)) {
+					$this->Session->setFlash('The unit has been discarded', 'flash_success');
+					//$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash(__('The unit could not be discarded. Please, try again.', true));
+				}
 			}
 		}
 		//discarded and opened
@@ -438,8 +460,41 @@ class StatsController extends AppController {
 		$allUnits = $this->Stat->Unit->find('list', array('conditions' => 
 										array(((is_null($discarded) || empty($discarded))?'':'Unit.id not in (' . implode(",",$discarded) . ")")) ));
 		$userId = $this->Session->read('Auth.User.id');
-		$locations = $this->Stat->Location->find('list');
-		$patients = $this->Stat->Patient->find('list');//, array('conditions' =>array('consent' => 1)));
+		$locations = $this->Stat->Location->find('list', array('conditions' => array('deleted = 0')));
+		$patients = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
+		$unitsFacility = array();
+		foreach ($units as $unitId => $unit){
+			$latestPatFac = $this->getUnitCurrentFacility($unitId, true);
+			if (!is_null($latestPatFac[0]) && $latestPatFac != -1) {
+				
+				if (isset($locations[$latestPatFac[0]] ))
+					$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
+				else
+					unset($unitsFacility[$unitId]); //remove units that are currently in unauth location
+			} else if (!is_null($latestPatFac[1]) && $latestPatFac != -1) {
+				$unitsFacility[$unitId] = $unit . "(" . $patients[$latestPatFac[1]] .")";
+			} else {
+				$unitsFacility[$unitId] = $unit;
+			}
+		
+		}
+		$units = $unitsFacility;
+		Configure::load('options');
+		$lev = array( 0=>Configure::read('Facility.level0'),
+				1=>Configure::read('Facility.level1'),
+				2=>Configure::read('Facility.level2'),
+				3=>Configure::read('Facility.level3'),
+				4=>Configure::read('Facility.level4'),
+		);
+		//add the level
+		$newLocations = array();
+		
+		foreach ($locations as $id=>$name) {
+			$level = 0;
+			$this->findLevel($id, $level);
+			$newLocations[$id] = $name . "(" . $lev[$level] . ")";
+		}
+		$locations = $newLocations;
 		
 		$this->set(compact('locations', 'userId', 'units', 'patients', 'assigned', 'lastUnits', 'allUnits'));
 	}
@@ -597,7 +652,23 @@ class StatsController extends AppController {
 	function update_facility_select() {
 
 			if (isset($this->data['Stat']['selection']) && $this->data['Stat']['selection'] == "1" ) {
-				$options = $this->Stat->Location->find('list');
+				$options = $this->Stat->Location->find('list', array('conditions' => array('deleted = 0')));
+				Configure::load('options');
+				$lev = array( 0=>Configure::read('Facility.level0'),
+						1=>Configure::read('Facility.level1'),
+						2=>Configure::read('Facility.level2'),
+						3=>Configure::read('Facility.level3'),
+						4=>Configure::read('Facility.level4'),
+				);
+				//add the level
+				$newLocations = array();
+				
+				foreach ($options as $id=>$name) {
+					$level = 0;
+					$this->findLevel($id, $level);
+					$newLocations[$id] = $name . "(" . $lev[$level] . ")";
+				}
+				$options = $newLocations;
 				$this->set('options', $options);
 				$this->set('select', true);
 			} else if (isset($this->data['Stat']['selection']) && $this->data['Stat']['selection'] != "1") { //receive
@@ -635,7 +706,8 @@ class StatsController extends AppController {
 		//print_r($this->Stat->Location->Alert->find('all'));
 		$locations = $this->Stat->Location->find('list',  
 						array('fields' => array('Location.parent_id', 'Location.name', 'Location.id'), 
-											array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations"))))
+											array('conditions' => array('id IN ' => implode(",", $this->Session->read("userLocations")),
+													'deleted = 0') )
 								)
 						);
 		
@@ -686,7 +758,7 @@ class StatsController extends AppController {
 	}
 	
 	function facilityInventory($strFilter = null) {
-		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
+		$allLocations =  $this->Stat->Location->find('list', array('callbacks' =>false,'conditions' => array('Location.deleted = 0')));
 		$this->set('allLocations', $allLocations);
 		$this->aggregatedInventory($this->data['Search']['search']);
 	}

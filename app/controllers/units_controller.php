@@ -95,7 +95,7 @@ class UnitsController extends AppController {
 					$this->Unit->UnitsItem->save(array('UnitsItem' => array ( 'unit_id' => $this->Unit->id, 
 											'item_id' => $this->data['Unit']['item_id'] ) ));
 					//$this->redirect(array('action' => 'index'));
-					
+					$this->data['Unit']['code'] = null;
 				} else {
 					$this->Session->setFlash(__('The unit could not be saved. Please, try again.', true));
 				}

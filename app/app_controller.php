@@ -127,6 +127,7 @@ class AppController extends Controller {
 	 }
 	 
 	protected function findLevel ($loc, &$level) {
+			$this->loadModel('Location');
 			$parent = $this->Location->find('list', array('callbacks' => 'false','fields' => array('Location.id', 'Location.parent_id'), 'conditions' => array( 'Location.id' => $loc))); //, 'Location.deleted = 0'
 			if ( $parent[$loc] == 0) { //exit top
 				return;
