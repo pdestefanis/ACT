@@ -37,9 +37,10 @@
 	<tr<?php echo $class;?>>
 		<td>
 			<?php
-
+				if (isset($patients[$sent['Stat']['patient_id']]))
 					echo $access->checkHtml('Patients/view', 'text', $patients[$sent['Stat']['patient_id']], '/patients/view/' . $sent['Stat']['patient_id']);
-
+				else 
+					echo __('Patient deleted', true);
 				?>
 		</td>
 		<td>
