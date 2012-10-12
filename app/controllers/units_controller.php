@@ -20,13 +20,14 @@ class UnitsController extends AppController {
 		if (!empty($search) ) {
 				$this->paginate['Unit'] = array('order' => 'Unit.code Asc',
 										'conditions'=>array( 
+											'AND' => array('deleted' => 0),
 											"OR" => array("Unit.code LIKE" => "%".$search."%", 
 														"Batch.batch_number LIKE" => "%".$search."%", 
 													)
 									));
 		} 
 		//populate the dates
-		$units = $this->Unit->find('list');//, array('callbacks' =>false));
+		$units = $this->Unit->find('list', array('conditions' => array('deleted' => 0)));//, array('callbacks' =>false));
 		$unitDates = array();
 		foreach ($units as $id => $unit){
 			$unitDates[$id]['created'] = $this->getUnitFirstDate($id);
@@ -34,7 +35,7 @@ class UnitsController extends AppController {
 			$unitDates[$id]['opened'] = $this->getUnitOpenDate($id, $unitDates[$id]['created'] );
 		}
 		$this->set(compact('unitDates'));
-		$this->set('units', $this->paginate());
+		$this->set('units', $this->paginate(array( 'Unit.deleted = 0')));
 		$this->set('batches', $this->Unit->Batch->find('list'));
 	}
 
@@ -54,6 +55,8 @@ class UnitsController extends AppController {
 
 	function add() {
 		$lastUnits =  $this->Session->read("recentlyUsedUnits");
+		$isUnit=$this->Unit->find('list', array('conditions' => array('Unit.code' => $this->data['Unit']['code']), 
+										'callbacks' => 'false'));
 		if (!empty($this->data)) {
 			if (empty($this->data['Unit']['location_id'])  ) {
 				$this->Unit->invalidate('location_id', __('Please select facility' , true));
@@ -61,6 +64,9 @@ class UnitsController extends AppController {
 			} else if ($this->dateArrayToString($this->data['Unit']['created']) > date("Y-m-d H:i:s")) {
 				$this->Unit->invalidate('created', __('Created date cannot be in the future.' , true));
 				$this->Session->setFlash(__('Please select date', true));
+			} else if (!empty($isUnit)) {
+					$this->Unit->invalidate('code', __('Code already exists.' , true));
+					$this->Session->setFlash(__('Please enter code', true));
 			} else {
 				$this->Unit->create();
 				if ($this->Unit->save($this->data)) {

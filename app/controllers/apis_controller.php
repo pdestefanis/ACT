@@ -469,7 +469,8 @@ class ApisController extends AppController {
 			
 			//first create the unit
 			$this->loadModel('Units');
-			$unit = $this->Units->findByCode($unitNumber);			
+			$unit = $this->Units->find('list', $this->Unit->find('list', array('conditions' => array('Units.code' => $unitNumber), 
+										'callbacks' => 'false')));		
 			if (!empty($unit)) { //reject units that already aexist
 				$this->Rest->error(__('This unit already exists: ' . $unitNumber, true));
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
