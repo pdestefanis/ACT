@@ -24,21 +24,25 @@ $ service httpd reload
 
 RewriteBase /act
 
-7. Edit [install_dir]/app/webroot/index.php
+7. Create and Edit [install_dir]/app/webroot/index.php
 
-Find this line:
+Copy [install_dir]/app/webroot/index.php-default to [install_dir]/app/webroot/index.php
+
+In [install_dir]/app/webroot/index.php, find this line:
 
 define('CAKE_CORE_INCLUDE_PATH', DS . 'var' . DS . 'www' . DS . 'html' . DS . 'act');
 
 And replace the name of the default installation directory, if needed.
 
-8. Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
+8. Copy [install_dir]/app/config/database.php-default to [install_dir]/app/config/database.php . Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
 
-9. Set permissions to files and directories, the easiest way is executing:
+9. Copy [install_dir]/app/config/options.php-default to [install_dir]/app/config/options.php
+
+10. Set permissions to files and directories, the easiest way is executing:
 
 $ .install/fix_permissions.sh
 
-10. Change passwords (see below for default passwords)
+11. Change passwords (see below for default passwords)
 
 ==Update an existing installation: ==
 

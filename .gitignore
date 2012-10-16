@@ -2,4 +2,5 @@ app/tmp/*
 app/config/database.php
 app/config/options.php
 app/webroot/index.php
+app/webroot/.htaccess
 !empty
