@@ -1,6 +1,5 @@
-tmp/*
-config/database.php
 app/tmp/*
 app/config/database.php
 app/config/options.php
+app/webroot/index.php
 !empty
