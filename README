@@ -5,16 +5,16 @@
 
 1. Run the sql file database.sql:
 
-$ mysql -p -u[user] < sql/database.sql
+$ mysql -p -u[user] < install/database.sql
 
 2. In Apache; enable rewrite_module (/etc/httpd/conf/httpd.conf) if it is not enabled yet:
 
 LoadModule rewrite_module modules/mod_rewrite.so
 
-3. Edit tracker_apache.conf, replacing 'tracker' with the actual installation directory in your web server's DocumentRoot
+3. Edit act_apache.conf, replacing 'act' with the actual installation directory in your web server's DocumentRoot
    Optionally, edit the listener configuration to enable a remote SMS gateway to direct messages to this server
 
-4. Copy the configuration file tracker_apache.conf to Apache's configuration dir (/etc/httpd/conf.d), with a name that identifies your instance (e.g. my_tracker.conf)
+4. Copy the configuration file act_apache.conf to Apache's configuration dir (/etc/httpd/conf.d), with a name that identifies your instance (e.g. my_act.conf)
 
 5. Get apache to reload its configuration:
 
@@ -22,23 +22,27 @@ $ service httpd reload
 
 6. Edit [install_dir]/app/webroot/.htaccess and adjust the path on the RewriteBase command:
 
-RewriteBase /tracker
+RewriteBase /act
 
-7. Edit [install_dir]/app/webroot/index.php
+7. Create and Edit [install_dir]/app/webroot/index.php
 
-Find this line:
+Copy [install_dir]/app/webroot/index.php-default to [install_dir]/app/webroot/index.php
 
-define('CAKE_CORE_INCLUDE_PATH', DS . 'var' . DS . 'www' . DS . 'html' . DS . 'tracker');
+In [install_dir]/app/webroot/index.php, find this line:
+
+define('CAKE_CORE_INCLUDE_PATH', DS . 'var' . DS . 'www' . DS . 'html' . DS . 'act');
 
 And replace the name of the default installation directory, if needed.
 
-8. Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
+8. Copy [install_dir]/app/config/database.php-default to [install_dir]/app/config/database.php . Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
 
-9. Set permissions to files and directories, the easiest way is executing:
+9. Copy [install_dir]/app/config/options.php-default to [install_dir]/app/config/options.php
 
-$ ./fix_permissions.sh
+10. Set permissions to files and directories, the easiest way is executing:
 
-10. Change passwords (see below for default passwords)
+$ .install/fix_permissions.sh
+
+11. Change passwords (see below for default passwords)
 
 ==Update an existing installation: ==
 
@@ -48,7 +52,7 @@ TO BE COMPLETED
 
 2. Run the sql update files from your current version to the latest version:
 
-$ mysql -p -u[user] < sql/dbupdate_v[current]_v[next].sql
+$ mysql -p -u[user] < install/dbupdate_v[current]_v[next].sql
 
 To be completed...
 

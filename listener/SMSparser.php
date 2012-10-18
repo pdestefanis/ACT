@@ -4,7 +4,8 @@ define('DIR', dirname(dirname(__FILE__)));
 require_once(DIR . '/app/webroot/processSMS.php');
 
 $szEOL = "\r\n";
-$logfile = "/var/www/html/track/smsemulator/parser.log";
+$logfile = DIR . '/listener/parser.log';
+echo $logfile;
 
 function stXMLtoArray($szXML)
         {
