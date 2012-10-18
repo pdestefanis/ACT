@@ -91,47 +91,6 @@ class PagesController extends AppController {
 		$this->render(implode('/', $path));
 	}
 	
-	//moved from stats contreoller so that file update is on the fly here
-	private function updateJSONFile() {
-		/* App::import('Controller', 'Stats');
-		var $Stats;
-		
-		// We need to load the class
-		$Stats = new StatsController;
-		// If we want the model associations, components, etc to be loaded
-		$Stats->constructClasses(); */
-		
-		if (!($this->data['Stat']['JSONFile'])) {	
-				$locations = $this->Stat->query('SELECT * FROM locations where id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') AND locations.deleted = 0');
-				//$locations = $this->Stat->query('SELECT * FROM locations where deleted = 0 and id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') ');
-	
-				$this->set('locations', $locations);
-				$this->set('allLocations', $this->Stat->query('SELECT * FROM locations'));
-				//$listitems = $this->getReports($locations);
-				//$listitems = $this->getKitReports($locations);
-				$listitems =  array();
-				$this->getKitReport($listitems);
-				
-				$this->set(compact('listitems', $listitems));
-				
-				App::import('Controller', 'Alerts');
-				$Alerts = new AlertsController;
-
-				$Alerts->constructClasses();
-				$alerts = $Alerts->triggeredAlerts();
-				$this->set('alerts', $alerts);
-				
-				
-				App::import('Controller', 'Stats');
-				$Stats = new StatsController;
-
-				$Stats->constructClasses();
-				$graphURL = $Stats->graphTimeline();
-				
-				$this->set('graphURL', $graphURL);
-		}
-	}
-	
 	private function &getReports($locations) {
 				$listitems = array();
 				$temp = array();

@@ -9,10 +9,11 @@
 //]]>
 </script>	
 <?php
-//echo $javascript->link(array( 'date',
-//            'jquery.datePicker',
-//            'cake.datePicker'
-//            )); 
+echo $javascript->link(array(//'jquery.js',
+		'date.js',
+		'jquery.datePicker.js',
+		'cake.datePicker.js'
+));
 ?>
 
 <div id="assign" >

@@ -11,6 +11,11 @@
 
 <div id="assign" >
 <?php
+echo $javascript->link(array(//'jquery.js',
+		'date.js',
+		'jquery.datePicker.js',
+		'cake.datePicker.js'
+));
 	echo $crumb->getHtml(__('Receive Unit', true), null, 'auto' ) ;
 	echo '<br /><br />' ;
 	

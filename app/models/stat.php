@@ -178,24 +178,6 @@ class Stat extends AppModel {
 		),
 	);
 	
-	var $hasAndBelongsToMany = array(
-			'Approval' => array(
-				'className' => 'Approval',
-				'joinTable' => 'approvals_stats',
-				'foreignKey' => 'stat_id',
-				'associationForeignKey' => 'approval_id',
-				'unique' => true,
-				'conditions' => '',
-				'fields' => '',
-				'order' => '',
-				'limit' => '',
-				'offset' => '',
-				'finderQuery' => '',
-				'deleteQuery' => '',
-				'insertQuery' => ''
-		)
-	);
-	
 	function beforeFind($queryData) {
 		if (get_class($this) === 'Stat' ) {
 			if (!empty($queryData))

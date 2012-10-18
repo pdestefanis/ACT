@@ -1,9 +1,9 @@
-<?php //echo $javascript->link('prototype', false);
-echo $javascript->link(array('jquery.min',
-            'date',
-            'jquery.datePicker',
-            'cake.datePicker'
-            )); 
+<?php echo $javascript->link('prototype', false);
+echo $javascript->link(array('jquery.min.js',
+		'date.js',
+		'jquery.datePicker.js',
+		'cake.datePicker.js'
+));
 ?>
 
 <?php
@@ -25,12 +25,28 @@ echo $javascript->link(array('jquery.min',
 		echo $this->Form->input('location_id', array('label' => __('Facility', true), 'empty' => '---Select---') );
 		echo $datePicker->picker('created', array(
 							        'label' => __('Date', true),
-							        'type' => 'date',
-							        'dateFormat' => 'DMY',
+							         'type' => 'date',
+							        'dateFormat' => 'YMD',
+									'timeFormat' => '24',
 							        'minYear' => date('Y') - 1,
-							        'maxYear' => date('Y') +1,
+							        'maxYear' => date('Y'),
+									'separator' => '',
 									));
+		echo $this->Form->label('Date', 'Date' ,array('id' => 'dateLabel'));
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
+
 </div>
+<script type="text/javascript">
+//<![CDATA[ 
+jQuery('#StatCreatedDay').change(function () {
+	jQuery('#dateLabel').text( jQuery('#StatCreatedYear').val() + "-" 
+			+ jQuery('#StatCreatedMonth').val() + "-" + jQuery('#StatCreatedDay').val() );
+	})  .change();
+jQuery('.current-month, .other-month').live('click', function () {
+	jQuery('#dateLabel').text( jQuery('#StatCreatedYear').val() + "-" 
+			+ jQuery('#StatCreatedMonth').val() + "-" + jQuery('#StatCreatedDay').val() );
+	});
+//]]>
+</script>

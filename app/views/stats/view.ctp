@@ -61,7 +61,7 @@ echo '<br /><br />' ;
 	<?php 
 	echo $access->checkHtml('Stats/edit', 'html', '<h3>Actions</h3>','' ); ?>
 	<ul>
-		<li><?php //echo $access->checkHtml('Stats/edit', 'link', 'Edit Update','edit/' . $stat['Stat']['id'] ); ?> </li>
+		<li><?php echo $access->checkHtml('Stats/edit', 'link', 'Edit Update','edit/' . $stat['Stat']['id'] ); ?> </li>
 		<li><?php echo $access->checkHtml('Stats/delete', 'delete', 'Delete','delete/' .  $stat['Stat']['id'], 'delete',  $stat['Stat']['quantity'] ); ?></li>	
 	</ul>
 

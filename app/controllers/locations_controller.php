@@ -2,7 +2,7 @@
 class LocationsController extends AppController {
 
 	var $name = 'Locations';
-	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax');
+	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax', 'GoogleMapv3', 'UpdateFile');
 	var $components = array('RequestHandler', 'Access');
 
 
@@ -93,7 +93,9 @@ class LocationsController extends AppController {
 		foreach ($par as $key => $lname)
 			$parents[$key] = $lname;
 		$this->set('parents', $parents);
+		$this->updateJSONFile();
 	}
+	
 
 	function edit($id = null) {
 		if (!$id && empty($this->data)) {

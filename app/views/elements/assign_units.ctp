@@ -58,15 +58,17 @@ jQuery(document).ready(function () {
 								));
 		//echo "</td>";
 		//echo "<td>";
-		echo $this->Form->input('created', array(
+		
+		echo $datePicker->picker('created', array(
 							        'label' => __('Date', true),
-							        'type' => 'date',
+							         'type' => 'date',
 							        'dateFormat' => 'YMD',
 									'timeFormat' => '24',
 							        'minYear' => date('Y') - 1,
-							        'maxYear' => date('Y') +1,
+							        'maxYear' => date('Y'),
 									'separator' => '',
 									));
+		echo $this->Form->label('Date', '' ,array('id' => 'dateLabel'));
 		echo "</td>";	
 		echo "<td>";
 		echo $this->Form->input('Unit', array('type' => 'select', 'multiple' => true, 'size' => 10 ));
@@ -94,4 +96,15 @@ jQuery(document).ready(function () {
 	</tr>
 	</table>	
 	
-	
+<script type="text/javascript">
+//<![CDATA[ 
+jQuery('#StatCreatedDay').change(function () {
+	jQuery('#dateLabel').text( jQuery('#StatCreatedYear').val() + "-" 
+			+ jQuery('#StatCreatedMonth').val() + "-" + jQuery('#StatCreatedDay').val() );
+	})  .change();
+jQuery('.current-month, .other-month').live('click', function () {
+	jQuery('#dateLabel').text( jQuery('#StatCreatedYear').val() + "-" 
+			+ jQuery('#StatCreatedMonth').val() + "-" + jQuery('#StatCreatedDay').val() );
+	});
+//]]>
+</script>

@@ -2,7 +2,7 @@
 class UnitsController extends AppController {
 
 	var $name = 'Units';
-	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax');
+	var $helpers = array('Html', 'Crumb', 'Javascript', 'Ajax', 'DatePicker');
 	var $components = array('RequestHandler', 'Access');
 	
 	function beforeFilter () {

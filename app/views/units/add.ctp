@@ -1,8 +1,12 @@
-<?php echo $javascript->link('jquery.min', false); ?>	
-<?php echo $javascript->link('prototype', false); ?>
-<?php
-echo $crumb->getHtml('Create Kit', null, 'auto' ) ;
-echo '<br /><br />' ;
+<?php echo $javascript->link('jquery.min', false); 
+	echo $javascript->link('prototype', false); 
+	echo $javascript->link(array('jquery.min.js',
+			'date.js',
+			'jquery.datePicker.js',
+			'cake.datePicker.js'
+	));
+	echo $crumb->getHtml('Create Kit', null, 'auto' ) ;
+	echo '<br /><br />' ;
 ?> 
 <div class="units form">
 <?php echo $this->Form->create('Unit');?>
@@ -19,15 +23,16 @@ echo '<br /><br />' ;
 		
 		</div> <?php 
 		echo $this->Form->input('location_id', array('empty' => '---Select---','label' => __('Facility', true), 'div' => array ('class' => 'required')));
-		echo $this->Form->input('created', array(
-				'label' => __('Date', true),
-				'type' => 'date',
-				'dateFormat' => 'YMD',
-				'timeFormat' => '24',
-				'minYear' => date('Y') - 1,
-				'maxYear' => date('Y') +1,
-				'separator' => '',
-		));
+		echo $datePicker->picker('created', array(
+							        'label' => __('Date', true),
+							         'type' => 'date',
+							        'dateFormat' => 'YMD',
+									'timeFormat' => '24',
+							        'minYear' => date('Y') - 1,
+							        'maxYear' => date('Y'),
+									'separator' => '',
+									));
+		echo $this->Form->label('Date', '' ,array('id' => 'dateLabel'));
 		echo $this->Form->input('item_id');
 		echo $this->Form->input('comment');
 		
@@ -53,3 +58,15 @@ echo '<br /><br />' ;
 		<?php // }?>
 	</table> -->
 </div>
+<script type="text/javascript">
+//<![CDATA[ 
+jQuery('#UnitCreatedDay').change(function () {
+	jQuery('#dateLabel').text( jQuery('#UnitCreatedYear').val() + "-" 
+			+ jQuery('#UnitCreatedMonth').val() + "-" + jQuery('#UnitCreatedDay').val() );
+	})  .change();
+jQuery('.current-month, .other-month').live('click', function () {
+	jQuery('#dateLabel').text( jQuery('#UnitCreatedYear').val() + "-" 
+			+ jQuery('#UnitCreatedMonth').val() + "-" + jQuery('#UnitCreatedDay').val() );
+	});
+//]]>
+</script>

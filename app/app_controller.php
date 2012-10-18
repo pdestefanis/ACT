@@ -1273,7 +1273,6 @@ class AppController extends Controller {
 			return -1;
 	}
 	
-	
 	//get the unit creation date
 	protected function getUnitFirstDate($unitId) {
 		$this->loadModel('Stats');
@@ -1392,9 +1391,137 @@ class AppController extends Controller {
 			$received += ($stat == 1?1:0);
 			$sent += ($stat == 2?1:0);;
 		}
-			
-		if ($sent > $received)
+		$isGeneric = $this->isGenereicPatient($patientId);	
+		if ($sent > $received && !$isGeneric)
 			return true;
 		return false;
+	}
+	
+	/*
+	 * Get date limits for the unit sumission before and after a date
+	 */
+	protected function getUnitDateRange($unitId, $date) {
+		$this->loadModel('Stats');
+		//last location
+		$query = 'SELECT created, patient_id, location_id, status_id from stats st ';
+		$query .= ' WHERE unit_id=' . $unitId;
+		$query .= ' and (created <=\'' . $date .'\'';
+		$query .= ' OR created >=\'' . $date .'\')';
+		$query .= ' AND status_id != 6';
+		$query .= ' ORDER BY created DESC';
+		$result = $this->Stats->query($query);
+		$maxCreated = NULL;
+		$maxFacilityId = NULL;
+		$maxStatusId = NULL;
+		$minCreated = NULL;
+		$minFacilityId = NULL;
+		$minStatusId = NULL;
+		$maxArray = NULL;
+		$minArray = NULL;
+		$prev = null;
+		$cur = null;
+		foreach ($result as $key => $value) {
+			$cur = $value['st'];
+			if (is_null($maxCreated)) { //initial, set them both
+				$maxCreated = $date;
+				$minCreated = $date;	
+			}
+			if ($maxCreated <= $value['st']['created'] && !is_null($value['st']['location_id']) && $cur['created'] == $date ) {
+				$maxCreated = $prev['created'];
+				$maxFacilityId = $prev['location_id'];
+				$maxStatusId = $prev['status_id'];
+			}
+			if ($minCreated >= $value['st']['created'] && !is_null($value['st']['location_id']) && $prev['created'] == $date ) {
+				$minCreated = $value['st']['created'];
+				$minFacilityId = $value['st']['location_id'];
+				$minStatusId = $value['st']['status_id'];
+			}
+			$prev = $cur;
+		}
+		if (!is_null($maxFacilityId))
+			$maxArray = array($maxFacilityId, $maxCreated, $maxStatusId);
+		if (!is_null($minFacilityId))
+			$minArray = array($minFacilityId, $minCreated, $minStatusId);
+		
+		return array('min' => $minArray, 'max' => $maxArray);
+	}
+	
+	protected function getUpdateUnitAutoRecord($unitId, $created, $newCreated) {
+		$this->loadModel('Stats');
+		$stats = $this->Stats->find('list', array('callbacks' => false, 'conditions' => array('unit_id = ' .  $unitId,
+																	'created =\'' . $created . '\'' ,
+																	'status_id = 6' ))); 
+		if (!empty($stats)){
+			$data = array();
+			$data['Stats'] = array();
+			$data['Stats']['id'] = key($stats);
+			$d = date_parse_from_format("Y-m-d H:i:s",$newCreated);
+			$newDate = array('year' => $d['year'] , 'month' => $d['month'], 'day' => $d['day'], 
+								'hour' => $d['hour'],'min' => $d['minute'], 'sec' => $d['second']);
+			$data['Stats']['created'] = $newDate;
+			$this->Stats->save($data);
+		}
+	}
+	
+	//moved from stats contreoller so that file update is on the fly here
+	protected function updateJSONFile() {
+		/* App::import('Controller', 'Stats');
+			var $Stats;
+	
+		// We need to load the class
+		$Stats = new StatsController;
+		// If we want the model associations, components, etc to be loaded
+		$Stats->constructClasses(); */
+		$this->loadModel('Stat');
+		
+		if (!($this->data['Stat']['JSONFile'])) {
+			$locations = $this->Stat->query('SELECT * FROM locations where id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') AND locations.deleted = 0');
+			//$locations = $this->Stat->query('SELECT * FROM locations where deleted = 0 and id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') ');
+	
+			$this->set('locations', $locations);
+			$this->set('allLocations', $this->Stat->query('SELECT * FROM locations'));
+			//$listitems = $this->getReports($locations);
+			//$listitems = $this->getKitReports($locations);
+			$listitems =  array();
+			$this->getKitReport($listitems);
+	
+			$this->set(compact('listitems', $listitems));
+	
+			App::import('Controller', 'Alerts');
+			$Alerts = new AlertsController;
+	
+			$Alerts->constructClasses();
+			$alerts = $Alerts->triggeredAlerts();
+			$this->set('alerts', $alerts);
+	
+	
+			App::import('Controller', 'Stats');
+			$Stats = new StatsController;
+	
+			$Stats->constructClasses();
+			$graphURL = $Stats->graphTimeline();
+	
+			$this->set('graphURL', $graphURL);
+		}
+	}
+	
+	protected function isGenereicPatient($patientId = null, $patientNumber = null) {
+			//TODO 
+			$genericPatient = array('\'P99999\'', '\'P999999\'');
+			
+			$this->loadModel('Patients');
+			$patient = $this->Patients->find('first', array('conditions' => 
+										array((!is_null($patientNumber)?"Patients.number = '" .$patientNumber ."'":''),
+												(!is_null($patientId)?"Patients.id = " .$patientId:''))
+										, 'callbacks' => false));
+			$generic = $this->Patients->find('list', array('conditions' =>
+					array('Patients.number in (' . implode(",",$genericPatient) . ")")
+					, 'callbacks' => false));
+			$genericIds = array_keys($generic);
+			if (isset($patient['Patients']['id']) && in_array($patient['Patients']['id'], $genericIds)) {
+				return TRUE;
+			} else {
+				return FALSE;
+			}
 	}
 }

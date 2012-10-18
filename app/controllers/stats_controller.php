@@ -17,7 +17,7 @@ class StatsController extends AppController {
 						$this->Session->setFlash('You are not allowed to access this record.' . $l, 'flash_failure'); 
 						$this->redirect( '/stats/index', null, false);
 					} 
-			}
+			} 
    }	
    
 
@@ -37,7 +37,7 @@ class StatsController extends AppController {
 									));
 		} 
 		//echo "<pre>" . print_r($this->paginate(), true) . "</pre>";
-		$this->set('stats', $this->paginate());
+		$this->set('stats', $this->paginate(array('Unit.deleted' => 0, 'status_id in (1,2,3)'))); //only display records where unit is not deleted
 		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
 		$locations = $this->Stat->Location->find('list', array('callbacks' =>false));
 		$patients = $this->Stat->Patient->find('list', array('callbacks' =>false));
@@ -504,24 +504,30 @@ class StatsController extends AppController {
 			$this->Session->setFlash(__('Invalid update', true));
 			$this->redirect(array('action' => 'index'));
 		}
+		
 		if (!empty($this->data)) {
-			if ($this->data['Stat']['patient_id'] != '' && $this->data['Stat']['sent_to'] != '') {
-				$this->Stat->invalidate('patient_id', __('You can select only patient or receiving facility', true));
-				$this->Stat->invalidate('sent_to', __('You can select receiving facility or patient', true));
-				$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
+			$this->data['Stat']['created']['hour'] = date('H');
+			$this->data['Stat']['created']['min'] = date('i');
+			$this->data['Stat']['created']['sec'] = date('s');
+			$old =  $this->Stat->findById($id);
+			$suppDate = $this->dateArrayToString($this->data['Stat']['created']);
+			$dateRange = $this->getUnitDateRange($old['Stat']['unit_id'], $old['Stat']['created']);
+			if ((isset($dateRange['max'][1]) && $suppDate > $dateRange['max'][1] )
+					|| (isset($dateRange['min'][1]) && $suppDate < $dateRange['min'][1] ))  {
+					$this->Stat->invalidate('created', __('Invalid date selected', true));
+					$this->Session->setFlash(__('Invalid date. Please, try again.', true));
 			} else { 
 				if ($this->Stat->save($this->data)) {
+					$this->getUpdateUnitAutoRecord($this->data['Stat']['unit_id'], $old['Stat']['created'], $suppDate);
 					$this->Session->setFlash('The update has been saved', 'flash_success');
 					$this->redirect(array('action' => 'index'));
 				} else {
-					$this->Session->setFlash(__('The update could not be saved. Please, try again.', true));
+					$this->Session->setFlash(__('The update could not be saved. Please, try again.' , true));
 				}
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->Stat->read(null, $id);
-		}
-
+		$this->data = $this->Stat->read(null, $id);
+		$dateRange = $this->getUnitDateRange($this->data['Stat']['unit_id'], $this->data['Stat']['created']);
 		$units = $this->Stat->Unit->find('list');
 		
 		$messagereceived = $this->Stat->Messagereceived->find('all', 
@@ -538,10 +544,11 @@ class StatsController extends AppController {
 						array('User.id ='. $this->Session->read('Auth.User.id') )) );
 		//$locationsp = $this->Stat->Location->find('list', array('callbacks' =>false, 'conditions' => array('Location.deleted = 0')));
 		$patients = $this->Stat->Patient->find('list', array('conditions' =>array('consent' => 1)));
-		$this->set('locations', $this->Stat->Location->find('list', array('conditions' => array('Location.id' => $this->data['Stat']['location_id'] ))));
+		$this->set('locations', $this->Stat->Location->find('list', array('conditions' => array('Location.id IN (' . implode(",", $this->Session->read("userLocations")) . ')',
+																	'Location.deleted' => 0 ))));
 		//$modifiers = $this->Stat->Modifier->find('list');
 		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
-		$this->set(compact('units', 'messagereceiveds', 'users',  'phones', 'locationsp', 'patients', 'statuses'));
+		$this->set(compact('units', 'messagereceiveds', 'users',  'phones', 'locationsp', 'patients', 'statuses','dateRange'));
 	}
 
 	function delete($id = null) {
