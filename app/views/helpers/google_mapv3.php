@@ -1511,5 +1511,34 @@ function Fluster2ProjectionOverlay(map) {google.maps.OverlayView.call(this);this
 		}
 		return implode(','.PHP_EOL, $pieces);
 	}
+	
 
+	function addMarkerOnClick($innerHtml = null)
+		{
+			
+		$marker = '
+			var newMarker = new google.maps.Marker();
+			google.maps.event.addListenerOnce('.$this->name().', \'click\', function(event) {
+  				placeMarker(event.latLng);
+			});
+			
+			function placeMarker(location) {
+					var mOptions = {position: location, 
+						      draggable: true,
+						      map: '.$this->name().'
+                            };
+					newMarker.setOptions(mOptions);
+			}
+		
+		google.maps.event.addListener(newMarker, \'position_changed\', function() {
+  			jQuery(\'#LocationLocationLatitude\').val(newMarker.getPosition().lat().toFixed(6));
+  			jQuery(\'#LocationLocationLongitude\').val(newMarker.getPosition().lng().toFixed(6));
+  			//alert(newMarker.getPosition()) ;
+			});
+		
+		';
+		
+			$this->map.= $marker;
+	
+		}
 }
