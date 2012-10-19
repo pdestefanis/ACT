@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="loopia-test" content="XsdXAIxha8q9Xjamck4H" />
+	<link href="http://static.loopia.se/external/css/parking.css" rel="stylesheet" type="text/css" />
+	<title>Parkerad hos Loopia Webbhotell</title>
+</head>
+<body>
+	<div style="position: absolute; top: 15px; left: 4px;">
+		<a class="img" href="https://www.loopia.se/?referer=www.ameibo.com&origin=PARKING"><img style="width: 111px; height: 28px;" src="http://static.loopia.se/external/images/to_loopia.png" alt="till loopia.se" /></a>
+	</div>
+	<div style="position: absolute; top: 15px; right: 4px;">
+		<a class="img" href="http://blogg.loopia.se/"><img style="width: 149px; height: 28px;" src="http://static.loopia.se/external/images/to_loopia_blog.png" alt="till Loopias blogg" /></a>
+	</div>
+	<div id="wrapper">
+		<div class="center"><img src="http://static.loopia.se/external/images/parking-skylt.png" alt="Parkerad hos Loopia Webbhotell" /></div>
+		<div id="tinted-top"></div>
+		<div id="tinted-middle">
+			<h1>Parkerad hos Loopia.</h1>
+
+			<p>
+				Det här domännamnet är köpt och parkerat av en kund till oss. Om du vill ta reda på
+				den publika ägar- och kontaktinformationen kan du använda tjänsten
+				<a class="blink" href="http://whois.loopia.se/">LoopiaWHOIS</a>.
+			</p>
+
+			<p>
+				Vid registrering av domännamn hos oss ingår nedanstående tjänster helt utan kostnad.
+				För ytterligare information om vår kostnadsfria domäntjänst LoopiaDNS, vänligen besök vår hemsida på adressen
+				<a class="blink" href="https://www.loopia.se/?referer=www.ameibo.com&origin=PARKING">www.loopia.se</a>.
+			</p>
+
+			<ul>
+				<li>Vidarebefordring av WWW.</li>
+				<li>Vidarebefordring av e-post.</li>
+				<li>Möjlighet till DNS-administrering.</li>
+			</ul>
+
+			<div class="hl">&nbsp;</div>
+
+			<h2>Domäner till alla.</h2>
+
+			<p>
+				Attraktiva priser på attraktiva domäntyper. Besök
+				<a class="blink" href="https://www.loopia.se/domannamn/?referer=www.ameibo.com&origin=PARKING">www.loopia.se/domannamn/</a> för information
+				om samtliga domäntyper. Alla nedanstående årsavgifter är naturligtvis inklusive moms.
+
+			</p>
+
+			<div class="center"><a href="https://www.loopia.se/bestall/?referer=www.ameibo.com&origin=PARKING"><img src="http://static.loopia.se/external/images/parking-domain_prices.png" alt="Domänpriser" /></a></div>
+
+			<div class="hl">&nbsp;</div>
+
+			<h2>Ingen hemsida?</h2>
+
+			<p>
+				Vad är väl en domän utan en hemsida? Varför inte komplettera din domän med
+				en stabil webbhotellslösning av rang? På <a class="blink" href="https://www.loopia.se/webbhotell/?referer=www.ameibo.com&origin=PARKING">
+				www.loopia.se/webbhotell/</a> får du all information om våra webbhotellspaket.
+			</p>
+
+			<div id="hosting">
+
+				<img src="http://static.loopia.se/external/images/parking-hosting_packages.png" alt="Loopia Privat- och Företagspaket" style="float: left;" />
+
+				<table>
+					<tr>
+						<td valign="top" width="33%"><strong>Privatpaket</strong></td>
+						<td valign="top" width="33%"><strong>Företagspaket</strong></td>
+                        <td valign="top" width="33%"><strong>Företagspaket Plus</strong></td>
+					</tr>
+					<tr>
+						<td>5 GB utrymme</td>
+						<td>10 GB utrymme</td>
+                        <td>10 GB utrymme</td>
+					</tr>
+					<tr>
+						<td>50 GB / månad</td>
+						<td>100 GB / månad</td>
+                        <td>100 GB / månad</td>
+					</tr>
+                    <tr>
+						<td></td>
+						<td></td>
+                        <td>MS Office 365</td>
+					</tr>
+				</table>
+
+				<p>
+					Starta hemsida, webbutik eller blogg med ett klick. Dessutom ingår
+					blogg, MySQL-databas, daglig backup, webbmail och mycket, mycket mer.
+				</p>
+
+				<form id="parking" action="https://www.loopia.se/external/referer/" method="get">
+				<div>
+					<input type="hidden" name="referer" value="www.ameibo.com"/>
+					<input type="hidden" name="origin" value="PARKING"/>
+					<input type="image" name="Submit" src="http://static.loopia.se/external/images/parking-order_button.png" alt="Beställ" style="margin: 0px 20px 0 0; float: right;"/>
+				</div>
+				</form>
+			</div>
+
+		</div>
+		<div id="tinted-bottom"></div>
+		<div id="info">
+			<a href="https://www.loopia.se/?referer=www.ameibo.com&origin=PARKING"><img src="http://static.loopia.se/external/images/loopia.png" alt="Loopia AB" /></a><br />
+			En del av <a class="blink" href="http://www.visma.se/">Vismakoncernen</a> &nbsp; &middot; &nbsp;
+			Tel: 021-12 82 22 &nbsp; &middot; &nbsp; Fax: 021-12 82 33 &nbsp; &middot; &nbsp; E-post: <a class="blink" href="mailto:info@loopia.se">info@loopia.se</a>
+		</div>
+	</div>
+</body>
+</html>
+
