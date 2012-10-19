@@ -1474,7 +1474,7 @@ class AppController extends Controller {
 		$Stats->constructClasses(); */
 		$this->loadModel('Stat');
 		
-		if (!($this->data['Stat']['JSONFile'])) {
+		if (!isset($this->data['Stat']['JSONFile'])) {
 			$locations = $this->Stat->query('SELECT * FROM locations where id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') AND locations.deleted = 0');
 			//$locations = $this->Stat->query('SELECT * FROM locations where deleted = 0 and id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') ');
 	
