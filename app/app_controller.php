@@ -1525,4 +1525,44 @@ class AppController extends Controller {
 				return FALSE;
 			}
 	}
+	
+	/*
+	 * Current kit of a patient
+	 */
+	protected function getPatientCurrentKit($patientId){
+		$this->loadModel('Stat');
+		$assigned = $this->Stat->query('select id, unit_id, patient_id, created
+				from stats s
+				where  patient_id is not null
+				and status_id = 2
+				and patient_id = ' . $patientId . '
+				order by created asc');
+		$open = $this->Stat->query('select unit_id, patient_id, created
+				from stats s
+				where (status_id = 1)
+				and patient_id = ' . $patientId . '
+				order by created asc');
+		$popped = false;
+		//loop through opened units and remove all patient ids which unit was open
+		//patients with more than one assigned will remain only one send will be removed
+		foreach ($open as $o) {
+			foreach ($assigned as $key=>$a) {
+				if ($o['s']['unit_id'] == $a['s']['unit_id'] && !$popped
+						&& $o['s']['created'] > $a['s']['created']){
+					unset($assigned[$key]);
+					$popped = true;
+				}
+			}
+			$popped = false;
+		}
+		$unitIds = array();
+		foreach ($assigned as $c) {
+			$unitIds[] = $c['s']['unit_id'];
+		}
+		if (empty($unitIds)){
+			return -1;
+		} else {
+			return $unitIds;
+		}
+	}
 }

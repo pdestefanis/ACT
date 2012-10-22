@@ -822,7 +822,6 @@ class StatsController extends AppController {
 					from stats s 
 					where (status_id = 1) 
 					order by created asc'); //and location_id in (' . implode(",", $this->Session->read("userLocations")) .') 
-		//TODO remove kits that are discarded but not reported returned
 		$popped = false;
 		//loop trhough opened units and remove all patient ids which unit was open
 		//patients with more than one assigned will remain only one send will be removed

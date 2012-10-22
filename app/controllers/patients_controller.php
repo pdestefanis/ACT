@@ -19,8 +19,11 @@ class PatientsController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		$this->set('patient', $this->Patient->read(null, $id));
+		$units = $this->getPatientCurrentKit($id);
 		$locations = $this->Patient->Location->find('list', array('conditions' => array('deleted' => 0)));
-		$this->set(compact('locations'));
+		$allUnits = $this->Patient->Stat->Unit->find('list', array('conditions' => array(	
+								 (($units != -1)?'id IN ('. implode(',', $units) . ')':'') )));
+		$this->set(compact('locations', 'units', 'allUnits'));
 	}
 
 	function add() {

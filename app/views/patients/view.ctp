@@ -4,7 +4,7 @@ echo $crumb->getHtml('View Patient', null, 'auto' ) ;
 echo '<br /><br />' ;
 ?> 
 <div class="patients view">
-<h2><?php  __('Patient');?></h2>
+<h2><?php __('Patient');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Number'); ?></dt>
@@ -22,6 +22,15 @@ echo '<br /><br />' ;
 			<?php 
 				if (isset($locations[$patient['Patient']['location_id']]))
 				echo $locations[$patient['Patient']['location_id']]; ?>
+			&nbsp;
+		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Current Kit'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php 
+				if ($units != -1)
+					foreach ($units as $unit)
+						echo $access->checkHtml('Units/view', 'link', $allUnits[$unit] ,'/units/view/' . $unit) . "</br>";
+				 ?>
 			&nbsp;
 		</dd>
 	</dl>
