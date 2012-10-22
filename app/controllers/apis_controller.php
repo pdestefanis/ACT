@@ -288,7 +288,7 @@ class ApisController extends AppController {
 			//adjust the quantity
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 
-			$this->log($lastFacilityWithKit . " " . $patientNumber . " " . $facility['Locations']['id'] );
+			//$this->log($lastFacilityWithKit . " " . $patientNumber . " " . $facility['Locations']['id'] );
 			//adjust the quantities
 			if ($lastFacilityWithKit != $facility['Locations']['id'] && $lastFacilityWithKit != -1) {
 				$this->adjustQuantities(
@@ -469,8 +469,8 @@ class ApisController extends AppController {
 			
 			//first create the unit
 			$this->loadModel('Units');
-			$unit = $this->Units->find('list', $this->Unit->find('list', array('conditions' => array('Units.code' => $unitNumber), 
-										'callbacks' => 'false')));		
+			$unit = $this->Units->find('list', array('conditions' => array('Units.code' => $unitNumber), 
+										'callbacks' => 'false'));		
 			if (!empty($unit)) { //reject units that already aexist
 				$this->Rest->error(__('This unit already exists: ' . $unitNumber, true));
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;

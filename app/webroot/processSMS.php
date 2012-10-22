@@ -39,6 +39,10 @@ class Action{
 	require_once('utils.php');
 	require 'Pest.php';
 	define('__ROOT__', dirname(dirname(__FILE__))); //this is a workaround for the require
+	//cater for commandline input as well
+	//all the message must be enclosed in quotes
+	if (isset($argv[1]))
+		echo init($argv[1], $argv[2]);
 	
 	function init($msg, $caller){
 		//TODO move this into config file
@@ -54,8 +58,8 @@ class Action{
 		//OTHERWISE PHP DATE AND MYSQL DATE FROM THE WEBAPP MAY BE DIFFERENT
 		//THIS MAY BE A WINDOWS BUG
 		//TODO move it to the config page on the app
-		date_default_timezone_set('Africa/Johannesburg');
-		//date_default_timezone_set('America/New_York'); //for EDT current v08 timezone
+		//date_default_timezone_set('Africa/Johannesburg');
+		date_default_timezone_set('America/New_York'); //for EDT current v08 timezone
 		$currDate = date("Y-m-d H:i:s");
 		
 		//replace all non alphanumerical characters with space

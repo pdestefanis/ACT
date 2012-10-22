@@ -49,7 +49,7 @@
 	$date70 = '12-9-10';
 	$date80 = '2012-09-15';
 	$date90 = '12-09-20';
-	/*
+	
 	echo "Empty message \n";
 	$msg = "";
 	echo "sms: " . $msg . "\t\t\t\t" . init($msg, $activePhoneFac0) . "\n"; //active phone
@@ -412,7 +412,6 @@
 	$msg = "$receiveAction $newUnit3 $facility1 $date20";
 	echo "sms: " . $msg . "\t\t\t" . init($msg, $activePhoneFac1) . "\n";
 
-	*/ 
 	echo "\n\n Out of order back entry A before R diff facility\n";
 	++$realUnit;
 	++$patientNoConsent1;
