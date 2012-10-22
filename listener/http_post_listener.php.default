@@ -1,0 +1,72 @@
+<?php
+  // HTTP POST listener
+  // Receives a POST, verifies parameters, calls SMS processor, and saves log information
+  
+  function writeLog($message, $file) {
+    $fh = fopen($file, 'a') or die();
+    fwrite($fh, $message);
+    fclose($fh);
+  }
+	
+  // Variables
+
+  $writePath = "./";
+  $clickatell_log_filename = $writePath . "clickatell.log";
+  $logFile = $writePath . 'http_post_listener' . '.log';
+  $messageFile = $writePath . 'received_sms_' . date('Y_m_d-H-i-s') . '.txt';
+  $processor = "/var/www/html/testing/listener/processSMS.php";
+  $PHP = "/usr/bin/php";
+
+  // Verifies parameters
+  // Basic security (httpd basic auth and IP restrictions) is managed by Apache
+  
+  if (!isset($_POST['text'])) {
+    $postContents = "No POST data received\n";
+  }
+
+  else {
+    
+    $postContents = "Nothing yet\n";
+
+    // Load POST parameters
+
+    // $apiId = $_POST['api_id'];
+    $from = $_POST['from'];
+    // $to = $_POST['to'];
+    $date = urldecode($_POST['timestamp']);
+    $message = urldecode($_POST['text']);
+    // $charset = $_POST['charset'];
+    // $messageId = $_POST['moMsgId'];
+    
+    $postContents =  "Message: $date - " . join(" ", $_POST) . "\n";
+
+    // Update log file
+    
+    writeLog("$date - Message received. Number: $from Timestamp: " . strtotime($date) . " Message: $message\n", $logFile);
+
+    // Call processor
+
+    writeLog("$date - Calling $processor with parameters from = $from and message = $message\n", $logFile);
+
+    //$escaped_message = str_replace("+", "%20", urlencode($message));
+	$escaped_message = addslashes($message);
+    exec("$PHP $processor \"$escaped_message\" $from", $output, $retval);
+    
+    for ( $outputLine = 0; $outputLine > count($output); $outputLine++ )
+      writeLog("$date - $output[$outputLine]\n", $logFile);
+
+    writeLog("$date - $processor returned $retval \n", $logFile);
+
+    // Reply with clickatell and save reply to log
+    $clickatell_reply = "To: $from Message:".$output[0] . "\n";
+    file_get_contents("http://api.clickatell.com/http/sendmsg?user=USER&password=PASSWORD&api_id=APIID&MO=1&from=FROMNUMBER&to=$from&text=".urlencode($output[0]));
+    $clickatell_log_file = fopen($clickatell_log_filename, 'a') or die();
+    fwrite($clickatell_log_file, $clickatell_reply);
+    fclose($clickatell_log_file);
+
+  }
+
+  // Create one file per message, regardless of POST data
+  writeLog($postContents, $messageFile);
+?>
+
