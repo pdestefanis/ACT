@@ -3,7 +3,7 @@
 	if($access->check('Stats/view') ) {
 		?> <h3><?php __('Related Updates');?></h3> 
 		<?php 
-		if (!empty($item['Stat']) || !empty($messagereceived['Stat']) || !empty($phone['Stat']) || !empty($user['Stat'])):?>
+		if (!empty($unit['Stat']) || !empty($messagereceived['Stat']) || !empty($phone['Stat']) || !empty($user['Stat'])):?>
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
 		<th><?php __('Quantity'); ?></th>
@@ -14,9 +14,11 @@
 	</tr>
 	<?php
 		$i = 0;
-	if (!empty($item['Stat'])) {
-		foreach ($item['Stat'] as $stat) {
+	if (!empty($unit['Stat'])) {
+		foreach ($unit['Stat'] as $stat) {
 			if (!in_array($stat['location_id'], $userLocations ))
+				continue;
+			if ($stat['status_id'] == 6)
 				continue;
 			$class = null;
 			if ($i++ % 2 == 0) {
@@ -51,6 +53,8 @@
 		foreach ($messagereceived['Stat'] as $stat) {
 			if (!in_array($stat['location_id'], $userLocations ))
 				continue;
+			if ($stat['status_id'] == 6)
+				continue;
 			$class = null;
 			if ($i++ % 2 == 0) {
 				$class = ' class="altrow"';
@@ -84,6 +88,8 @@
 	if (!empty($phone['Stat'])) {
 		foreach ($phone['Stat'] as $stat) {
 			if (!in_array($stat['location_id'], $userLocations ))
+				continue;
+			if ($stat['status_id'] == 6)
 				continue;
 			$class = null;
 			if ($i++ % 2 == 0) {
@@ -120,6 +126,8 @@
 		
 		foreach ($user['Stat'] as $stat) {
 			if (!in_array($stat['location_id'], $userLocations ))
+				continue;
+			if ($stat['status_id'] == 6)
 				continue;
 			$class = null;
 			if ($i++ % 2 == 0) {

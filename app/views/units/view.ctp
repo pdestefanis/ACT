@@ -44,3 +44,7 @@
 	</ul>
 </div>
 
+<div class="related">
+<?php echo $this->element('related_stats'); ?>
+
+</div>

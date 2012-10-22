@@ -102,7 +102,6 @@ class UsersController extends AppController {
 			$this->User->hasMany['Stat']['order'] = 'created desc';
 		}
 		$this->set('user', $this->User->read(null, $id));
-		
 		$this->set('locations', $this->User->Location->find('list', array ('conditions' => array('Location.deleted = 0'))));
 		//$this->set('messagesents', $this->User->Messagesent->find('list', array ('fields' => array('messagereceived_id', 'rawmessage'), 'callbacks' => false)));
 		$this->set('phones', $this->User->Phone->find('list', array ('conditions' => array('Phone.deleted = 0'), 'callbacks' => false)));
