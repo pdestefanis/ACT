@@ -77,9 +77,9 @@ jQuery(document).ready(function () {
 		//echo $this->Form->end(__('Submit', true));
 		if (empty($units)) {
 			echo __("No more kits left", true);
-			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' .$lastUnits, 'update' => 'assign', 'disabled' => 'true'));
+			echo $ajax->submit('Assign', array('url' => '/stats/assignUnits/' .$lastUnits, 'update' => 'assign', 'disabled' => 'true'));
 		} else
-			echo $ajax->submit('Add', array('url' => '/stats/assignUnits/' . $lastUnits, 'update' => 'assign'));
+			echo $ajax->submit('Assign', array('url' => '/stats/assignUnits/' . $lastUnits, 'update' => 'assign'));
 		echo "</td>";
 		//disable on select
 		/*$updatesel = 'update_patient_select' ;
