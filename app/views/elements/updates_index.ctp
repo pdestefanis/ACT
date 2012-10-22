@@ -42,7 +42,7 @@
 		</td>
 		<td>
 			<?php
-				if (empty($stat['Messagereceived']['id'])) //user
+				if (empty($messagereceived[$stat['Messagereceived']['id']])) //user
 					echo $access->checkHtml('Users/view', 'text', $stat['User']['name'], '/users/view/' . $stat['User']['id'] );
 				else {
 					if ($stat['Phone']['deleted'] == 0 )
@@ -56,8 +56,8 @@
 		
 		<td>
 			<?php 
-					if (isset ($stat['Messagereceived']['rawmessage']))
-					echo $access->checkHtml('Stats/view', 'text', $stat['Messagereceived']['rawmessage'], '/stats/view/' . $stat['Stat']['id'] ); 
+				if (isset($messagereceived[$stat['Messagereceived']['id']]))
+					echo $access->checkHtml('Stats/view', 'text', $messagereceived[$stat['Messagereceived']['id']], '/stats/view/' . $stat['Stat']['id'] ); 
 				else
 					echo $access->checkHtml('Stats/view', 'text', $statuses[$stat['Stat']['status_id']] 
 									//. " " . $stat['Stat']['quantity']
@@ -74,8 +74,8 @@
 		</td>
 		<td>
 			<?php
-				if (isset ($stat['Messagereceived']['Messagesent'][0]['rawmessage']))
-					echo $access->checkHtml('Messagesents/view', 'text', $stat['Messagereceived']['Messagesent'][0]['rawmessage'], '/messagesents/view/' . $stat['Messagereceived']['Messagesent'][0]['id'] ); 
+				if (isset($messagereceived[$stat['Messagereceived']['id']]))
+					echo $access->checkHtml('Messagesents/view', 'text', $messagesent[$stat['Messagereceived']['id']], '/messagesents/view/' . $messagesentRec[$stat['Messagereceived']['id']] ); 
 				else
 					echo __("Facility update", true);
 			?>

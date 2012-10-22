@@ -22,8 +22,8 @@ class StatsController extends AppController {
    
 
 	function index() {
-		$this->Stat->recursive = 2;
-		$this->paginate['Stat'] = array('order' => 'Stat.created DESC', 'conditions' => array ('status_id in (1,2,3)'));
+		$this->Stat->recursive = 0;
+		$this->paginate['Stat'] = array('order' => 'Stat.created DESC', 'conditions' => array ('status_id != 6'));
 		$search = (empty($this->data['Search']['search'])?(isset($this->passedArgs[0])?$this->passedArgs[0]:$this->data['Search']['search']):$this->data['Search']['search']);
 		if (!empty($search) ) {
 				$this->paginate['Stat'] = array('order' => 'Stat.created DESC',
@@ -37,12 +37,15 @@ class StatsController extends AppController {
 									));
 		} 
 		//echo "<pre>" . print_r($this->paginate(), true) . "</pre>";
-		$this->set('stats', $this->paginate(array('Unit.deleted' => 0, 'status_id in (1,2,3)'))); //only display records where unit is not deleted
+		$this->set('stats', $this->paginate(array('Unit.deleted' => 0, 'status_id != 6'))); //only display records where unit is not deleted
 		$statuses = $this->Stat->Status->find('list', array('conditions' => array('id in (1,2,3)')));
 		$locations = $this->Stat->Location->find('list', array('callbacks' =>false));
 		$patients = $this->Stat->Patient->find('list', array('callbacks' =>false));
 		$units = $this->Stat->Unit->find('list');
-		$this->set(compact( 'statuses', 'locations', 'patients', 'units'));
+		$messagereceived = $this->Stat->Messagereceived->find('list', array('fields' => array('id', 'rawmessage'),'callbacks' =>false));
+		$messagesent = $this->Stat->Messagereceived->Messagesent->find('list', array('fields' => array('messagereceived_id', 'rawmessage'),'callbacks' =>false));
+		$messagesentRec = $this->Stat->Messagereceived->Messagesent->find('list', array('fields' => array('messagereceived_id', 'id'),'callbacks' =>false));
+		$this->set(compact( 'statuses', 'locations', 'patients', 'units', 'messagereceived', 'messagesent', 'messagesentRec'));
 	}
 
 	function view($id = null) {
