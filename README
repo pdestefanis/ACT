@@ -38,11 +38,17 @@ And replace the name of the default installation directory, if needed.
 
 9. Copy [install_dir]/app/config/options.php-default to [install_dir]/app/config/options.php
 
-10. Set permissions to files and directories, the easiest way is executing:
+10. Copy [install_dir]/listner/http_post_listener.php-default to [install_dir]/listner/http_post_listener.php
+
+In [install_dir]/listner/http_post_listener.php
+
+modify $processor variable and HTTP parameters send through file_get_contents()
+
+11. Set permissions to files and directories, the easiest way is executing:
 
 $ .install/fix_permissions.sh
 
-11. Change passwords (see below for default passwords)
+12. Change passwords (see below for default passwords)
 
 ==Update an existing installation: ==
 
