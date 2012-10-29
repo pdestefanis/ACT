@@ -1340,7 +1340,7 @@ class AppController extends Controller {
 			return $minCreated;
 		}
 	
-		return __('Not opened yet', true);
+		return __('Closed', true);
 	}
 	
 	

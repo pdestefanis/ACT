@@ -32,7 +32,8 @@ class UnitsController extends AppController {
 		foreach ($units as $id => $unit){
 			$unitDates[$id]['created'] = $this->getUnitFirstDate($id);
 			$unitDates[$id]['assigned'] = $this->getUnitFirstAssignDate($id, $unitDates[$id]['created']);
-			$unitDates[$id]['opened'] = $this->getUnitOpenDate($id, $unitDates[$id]['created'] );
+			$unitDates[$id]['opened'] = $this->getUnitOpenDate($id );
+			$unitDates[$id]['discarded'] = $this->isDiscardedUnit($id);
 		}
 		$this->set(compact('unitDates'));
 		$this->set('units', $this->paginate(array( 'Unit.deleted = 0')));

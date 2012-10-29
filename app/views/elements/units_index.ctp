@@ -21,7 +21,7 @@
 			<th><?php echo __('Batch');?></th>
 			<th><?php echo __('Created');?></th>
 			<th><?php echo __('First Assigned');?></th>
-			<th><?php echo __('Opened');?></th>
+			<th><?php echo __('Status');?></th>
 			<th><?php echo __('Comment');?></th>
 		
 	</tr>
@@ -42,7 +42,14 @@
 				echo $batches[$unit['Unit']['batch_id']]; ?>&nbsp;</td>
 		<td><?php echo $unitDates[$unit['Unit']['id']]['created']; ?>&nbsp;</td>
 		<td><?php echo $unitDates[$unit['Unit']['id']]['assigned']; ?>&nbsp;</td>
-		<td><?php echo $unitDates[$unit['Unit']['id']]['opened']; ?>&nbsp;</td>
+		<td><?php 
+				if (!$unitDates[$unit['Unit']['id']]['discarded'])
+					echo __('Discarded' , true);
+				else if ($unitDates[$unit['Unit']['id']]['opened'] == 'Closed')
+					echo __('Closed', true);
+				else
+					echo __('Opened', true);; 
+			?>&nbsp;</td>
 		<td><?php echo $unit['Unit']['comment']; ?>&nbsp;</td>
 		
 	</tr>
