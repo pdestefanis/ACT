@@ -3,7 +3,10 @@
 	if($access->check('Stats/view') ) {
 		?> <h3><?php __('Related Updates');?></h3> 
 		<?php 
-		if (!empty($unit['Stat']) || !empty($messagereceived['Stat']) || !empty($phone['Stat']) || !empty($user['Stat'])):?>
+		if (!empty($unit['Stat']) || !empty($messagereceived['Stat']) || !empty($phone['Stat']) || !empty($user['Stat'])):
+		
+		if (!empty($messagereceived['Stat']) || !empty($phone['Stat']) || !empty($user['Stat'])) {
+		?>
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
 		<th><?php __('Quantity'); ?></th>
@@ -13,6 +16,17 @@
 
 	</tr>
 	<?php
+		} else if (!empty($unit['Stat'])) {
+			?>
+			<table cellpadding = "0" cellspacing = "0">
+				<tr>
+					<th><?php __('Date'); ?></th>
+					<th><?php __('Action'); ?></th>
+					<th><?php __('Facility'); ?></th>
+					<th><?php __('User'); ?></th>
+				</tr>
+		<?php
+		}
 		$i = 0;
 	if (!empty($unit['Stat'])) {
 		foreach ($unit['Stat'] as $stat) {
@@ -28,7 +42,10 @@
 		<tr<?php echo $class;?>>
 
 			<td><?php 
-				echo $access->checkHtml('Stats/view', 'text', $stat['quantity'] . " ", '/stats/view/' . $stat['id'] );
+				echo $access->checkHtml('Stats/view', 'text', $stat['created'] . " ", '/stats/view/' . $stat['id'] );
+				?></td>
+			<td><?php 
+				echo  $status[$stat['status_id']];
 				?></td>
 			<td><?php if (!empty($locations[$stat['location_id']])) 
 					echo $access->checkHtml('Locations/view', 'text', $locations[$stat['location_id']], '/locations/view/' . $stat['location_id'] );
@@ -43,9 +60,6 @@
 					echo 'Phone deleted.'; 
 			}	
 			?></td>
-			<td><?php 
-				echo $access->checkHtml('Messagereceiveds/view', 'text', $stat['messagereceived_id'], '/messagereceiveds/view/' . $stat['messagereceived_id'] );
-				?>
 		</tr>
 <?php }
 	}

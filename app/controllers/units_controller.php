@@ -51,6 +51,7 @@ class UnitsController extends AppController {
 		$unit['Stat']['opened'] = $this->getUnitOpenDate($unit['Unit']['id'], $unit['Stat']['created'] );
 		$this->set(compact('unit'));
 		$this->set('batches', $this->Unit->Batch->find('list'));
+		$this->set('status', $this->Unit->Stat->Status->find('list'));
 		$this->set('userLocations', $this->Session->read("userLocations"));
 		$this->set('locations', $this->Unit->Stat->Location->find('list', array ('conditions' => array('Location.deleted = 0'))));
 		$this->set('phones', $this->Unit->Stat->Phone->find('list', array ('conditions' => array('Phone.deleted = 0'), 'callbacks' => false)));
