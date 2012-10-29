@@ -87,7 +87,7 @@ class Action{
 				if (preg_match($what, $msg, $matched) ) {
 					$matchedAction[] = strtoupper($act);
 					$actString =$alias;
-					$msg = preg_replace("[" . $alias . "]", '', $msg); //remove action from message
+					$msg = preg_replace("[\b" . $alias . "\b]", '', $msg); //remove action from message
 				}
 			}
 		}
