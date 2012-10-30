@@ -17,7 +17,7 @@
 //]]>
 </script>
 <?php 
-	echo $this->Form->create('Stat');?>
+	echo $this->Form->create('Stat');	?>
 	<table>
  		<tr>
 	<?php
@@ -34,6 +34,7 @@
 		 ) );
 		
 		echo $this->Form->input('patient_id', array('empty' => __('---Select---', true), 
+								'after' => '<p class="help">' . __('You can select a different patient to re-assign the unit (i.e. from generic patient to real one)', true) . "</p>" ,
 								'div' => array ('id' => 'patient_div', 
 										'style' => 'display:none;', 
 										'class' => 'input select required')
@@ -62,6 +63,7 @@
 		echo "</td>";	
 		echo "<td>";
 		echo $this->Form->input('Unit', array('type' => 'select', 'multiple' => true, 'size' => 10 ));
+		echo $this->Form->hidden('Reassignment', array('value' => 0 ));
 		echo "</td>";	
 		echo "<td>";
 		//echo $this->Form->end(__('Submit', true));
@@ -90,6 +92,19 @@ jQuery('#StatCreatedDay').change(function () {
 jQuery('.current-month, .other-month').live('click', function () {
 	jQuery('#dateLabel').text( jQuery('#StatCreatedYear').val() + "-" 
 			+ jQuery('#StatCreatedMonth').val() + "-" + jQuery('#StatCreatedDay').val() );
+	});
+jQuery('#StatUnit, #StatPatientId').live('change', function () {
+	var pat = '/\b[P|7][0-9]{5,6}\b/i';
+	var patNum = jQuery('#StatPatientId option[value=\'' + jQuery('#StatPatientId').val() +'\']').text();
+	var unitSelection = jQuery('#StatUnit').val();
+	var patUnit = jQuery('#StatUnit option[value=\'' + unitSelection +'\']').text();
+	var patUnitMatch = patUnit.match(/\b[P|7][0-9]{5,6}\b/i);
+	if (jQuery('#StatSelection').val() == '0' && jQuery('#StatPatientId').val() != '' && patNum && patUnitMatch != null) {
+			if (patUnitMatch != patNum) {
+				jQuery('#StatReassignment').val('1');
+				alert(<?php echo __('"You are correcting the kit assignment. Please make sure that this is correct"', true)?>);
+			} else jQuery('#StatReassignment').val('0');
+		} else jQuery('#StatReassignment').val('0');
 	});
 //]]>
 </script>

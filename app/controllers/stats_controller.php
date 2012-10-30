@@ -271,6 +271,9 @@ class StatsController extends AppController {
 			} else if (count($this->data['Stat']['Unit'])>1 &&  !empty($this->data['Stat']['patient_id'])) {
 				$this->Stat->invalidate('Unit', __('Please select only one unit' , true));
 				$this->Session->setFlash(__('You can only select one unit when assigning to patient', true));
+			} else if (empty($this->data['Stat']['patient_id']) && empty($this->data['Stat']['location_id'])) { 
+				$this->Stat->invalidate('Selection', __('Please select facility or unit' , true));
+				$this->Session->setFlash(__('Please select facility or unit', true));
 			} else {
 				$locationId = $this->data['Stat']['location_id'];
 				$patientId = $this->data['Stat']['patient_id'];
@@ -280,7 +283,11 @@ class StatsController extends AppController {
 				$this->data = array();
 				$i = 0;
 				foreach ($old['Stat']['Unit'] as $key => $unit_id) {
+					
 					$this->data['Stat'][$i] = $old['Stat'];
+					if ($this->data['Stat'][$i]['Reassignment'] == 1) {
+						$this->reassignPatient($unit_id, $patientId);
+					}
 					$this->data['Stat'][$i]['unit_id'] = $unit_id;
 					$this->data['Stat'][$i]['patient_id'] = $patientId;
 					
@@ -323,6 +330,17 @@ class StatsController extends AppController {
 				$this->Stat->create();
 				if ($this->Stat->saveAll($this->data['Stat'])) {
 					$this->Session->setFlash('The assignment has been saved', 'flash_success');
+					if ($this->data['Stat'][$i-1]['Reassignment'] == 1) {
+						$this->reassignPatient($unit_id, $patientId);
+						/* $kitsAssigned = $this->getPatientCurrentKit($this->data['Stat'][$i-1]['patient_id']);
+						if (count($kitsAssigned) >1) {
+							$key = array_search($this->data['Stat'][$i-1]['unit_id'], $kitsAssigned);
+							unset($key);
+							$this->Session->setFlash('The assignment has been saved but but please check kit: ' . 
+								 implode(', ', $kitsAssigned). 
+								" it is also assigned to this patient.", 'flash_failure');
+						} */
+					}
 					$lastUnits .= (((is_null($lastUnits) || empty($lastUnits))? "":",") .  implode(",", $old['Stat']['Unit']));
 					//$this->data = $old;
 					$this->Session->write("recentlyUsedUnits", $lastUnits);
@@ -371,12 +389,12 @@ class StatsController extends AppController {
 		$unitsFacility = array();
 		foreach ($units as $unitId => $unit){
 			$latestPatFac = $this->getUnitCurrentFacility($unitId, true);
-			if (!is_null($latestPatFac[0]) && $latestPatFac != -1) {
+			if (!is_null($latestPatFac[0]) && empty($latestPatFac[1]) && $latestPatFac != -1) {
 				if (isset($locations[$latestPatFac[0]] ))
 					$unitsFacility[$unitId] = $unit . "(" . $locations[$latestPatFac[0]] .")";
 				else 
 					unset($unitsFacility[$unitId]); //remove units that are currently in unauth location
-			} else if (!is_null($latestPatFac[1]) && $latestPatFac != -1) {
+			} else if (!is_null($latestPatFac[1]) && !empty($latestPatFac[0]) && $latestPatFac != -1) {
 				$unitsFacility[$unitId] = $unit . "(" . $patients[$latestPatFac[1]] .")";
 			} else {
 				$unitsFacility[$unitId] = $unit;

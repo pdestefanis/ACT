@@ -1565,4 +1565,15 @@ class AppController extends Controller {
 			return $unitIds;
 		}
 	}
+	
+	/**
+	 * Re-assigning patients during receive. For correcting assignment to generic patient
+	 */
+	protected function reassignPatient ($unitId, $patientId) {
+		$this->loadModel('Stat');
+		$assigned = $this->Stat->query('UPDATE stats set 
+									 patient_id = ' . $patientId . '
+				where unit_id = ' . $unitId . 
+				' AND patient_id is not null');
+	}
 }
