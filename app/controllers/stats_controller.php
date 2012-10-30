@@ -296,6 +296,7 @@ class StatsController extends AppController {
 					$this->data['Stat'][$i]['created']['hour'] = date('H');
 					$this->data['Stat'][$i]['created']['min'] = date('i');
 					$this->data['Stat'][$i]['created']['sec'] = date('s');
+					$currentFacilityPatient = $this->getUnitCurrentFacility($unit_id,true, $this->dateArrayToString($this->data['Stat'][$i]['created']));
 					$lastFacilityWithKit = $this->findLastUnitFacility($unit_id, $this->dateArrayToString($this->data['Stat'][$i]['created']));
 					
 					$wasWithPatient = $this->Stat->find('list',  array ('conditions' => array('patient_id is not null',
@@ -303,21 +304,29 @@ class StatsController extends AppController {
 																			'created <\'' . $this->dateArrayToString($this->data['Stat'][$i]['created']) . '\''
 													), 
 										'fields' => array('unit_id'), 'callbacks' => false) );
+					
+					if (empty($this->data['Stat'][$i]['patient_id'])) {
+						if (empty($wasWithPatient)){
+							$this->data['Stat'][$i]['patient_id'] = null;
+						} else if (isset($currentFacilityPatient[1])) { //patient id suppplied
+							$this->data['Stat'][$i]['patient_id'] = $currentFacilityPatient[1];
+						}
+					}
 					if (empty($this->data['Stat'][$i]['location_id']))
 						$this->data['Stat'][$i]['location_id'] = $lastFacilityWithKit;
 					//if receiving the same unit from the same facility don't increment quantity
 					
 					$this->data['Stat'][$i]['quantity'] = 
-							(($lastFacilityWithKit === $this->data['Stat'][$i]['location_id'] )?0:1); //|| !empty($wasWithPatient)
+							((!empty($wasWithPatient) || $lastFacilityWithKit === $this->data['Stat'][$i]['location_id'] )?0:1); //|| !empty($wasWithPatient)
 					//echo $this->data['Stat'][$i]['quantity'] ."LAST:" .$lastFacilityWithKit . " CURR: "  . $locationId ;
 					//adjust the quantities only one quantity at a time
 					if ($lastFacilityWithKit != $this->data['Stat'][$i]['location_id'] 
-							&& $lastFacilityWithKit != -1)
+							&& $lastFacilityWithKit != -1 && empty($wasWithPatient))
 						$this->adjustQuantities(
 											$this->data['Stat'][$i]['created'],
 											$unit_id,
 											'R', 
-											(isset($patientId)?0:1), //no need for qty when receiving from patient
+											((empty($wasWithPatient))?0:1), //no need for qty when receiving from patient
 											$lastFacilityWithKit, // put the last facility for $locationId, 
 											$patientId,
 											(isset($this->data['Stat'][$i]['phone_id'])?$this->data['Stat'][$i]['phone_id']:NULL),
