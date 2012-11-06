@@ -5,50 +5,64 @@
 
 1. Run the sql file database.sql:
 
-$ mysql -p -u[user] < install/database.sql
+$ mysql -p -u[user] -e "create database database_name"
+$ mysql -p -u[user] database_name < install/database.sql
 
 2. In Apache; enable rewrite_module (/etc/httpd/conf/httpd.conf) if it is not enabled yet:
 
 LoadModule rewrite_module modules/mod_rewrite.so
 
-3. Edit act_apache.conf, replacing 'act' with the actual installation directory in your web server's DocumentRoot
+3. Edit install/act_apache.conf, replacing 'act' with the actual installation directory in your web server's DocumentRoot
    Optionally, edit the listener configuration to enable a remote SMS gateway to direct messages to this server
 
-4. Copy the configuration file act_apache.conf to Apache's configuration dir (/etc/httpd/conf.d), with a name that identifies your instance (e.g. my_act.conf)
+4. Copy the configuration file install act_apache.conf to Apache's configuration dir (/etc/httpd/conf.d), with a name that identifies your instance (e.g. my_act.conf)
+
+$ sudo cp install/act_apache.conf /etc/httpd/conf.d/my_act_install.conf
 
 5. Get apache to reload its configuration:
 
-$ service httpd reload
+$ sudo service httpd reload
 
-6. Edit [install_dir]/app/webroot/.htaccess and adjust the path on the RewriteBase command:
+6. Edit app/webroot/.htaccess-default and adjust the path on the RewriteBase command
 
-RewriteBase /act
+$ cp app/webroot/.htaccess-default app/webroot/.htaccess
+$ vi app/webroot/.htaccess
 
-7. Create and Edit [install_dir]/app/webroot/index.php
+7. Create and Edit app/webroot/index.php
 
-Copy [install_dir]/app/webroot/index.php-default to [install_dir]/app/webroot/index.php
+$ cp app/webroot/index.php-default app/webroot/index.php
+$ vi app/webroot/index.php
 
-In [install_dir]/app/webroot/index.php, find this line:
-
-define('CAKE_CORE_INCLUDE_PATH', DS . 'var' . DS . 'www' . DS . 'html' . DS . 'act');
+Find this line:
+define('CAKE_CORE_INCLUDE_PATH', DS . 'var' . DS . 'www' . DS . 'html' . DS . 'my_act_install_dir');
 
 And replace the name of the default installation directory, if needed.
 
-8. Copy [install_dir]/app/config/database.php-default to [install_dir]/app/config/database.php . Edit [install_dir]/app/config/database.php, and enter the correct database, username, and password.
+8. Configure the database options
 
-9. Copy [install_dir]/app/config/options.php-default to [install_dir]/app/config/options.php
+$ cp app/config/database.php-default app/config/database.php 
+$ vi app/config/database.php
 
-10. Copy [install_dir]/listener/http_post_listener.php-default to [install_dir]/listener/http_post_listener.php
+9. Configure the program options (even if you keep the defaults, you need to copy options.php-default to options.php)
 
-In [install_dir]/listener/http_post_listener.php
+$ cp app/config/options.php-default app/config/options.php
+$ vi app/config/options.php
 
-modify $processor variable to point to the correct SMS message processor (parser)
-modify the gateway parameters for Clickatell (if using a different gateway, see how file_get_contents() is being invoked)
-- look for "Clickatell gateway parameters" and "Select gateway/API parameters to use".
+10. Select a listener script to process incoming messages. 
+This files assumes a particular format for posting MT messages using the SMS gateway provider's API,
+and to parse MO messages coming from the API which LIKELY WILL HAVE TO BE CHANGED DEPENDING ON YOUR PROVIDER.
+The default setup assumes Clickatell as the provider.
+
+$ cp listener/http_post_listener.php-default listener/http_post_listener.php
+$ vi listener/http_post_listener.php
+
+In http_post_listener.php: 
+
+modify $processor variable to point to the correct SMS message processor (parser). The default should work.
 
 11. Set permissions to files and directories, the easiest way is executing:
 
-$ .install/fix_permissions.sh
+$ ./install/fix_permissions.sh
 
 12. Change passwords (see below for default passwords)
 
