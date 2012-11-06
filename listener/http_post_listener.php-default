@@ -7,26 +7,26 @@
     fwrite($fh, date("Y-m-d\TH:i:sP") . " - " . $message . "\n");
     fclose($fh);
   }
-	
+
   // App variables
   $writePath = "./";
   $logFile = $writePath . 'http_post_listener' . '.log';
   $processor = "./processSMS.php";
   $PHP = "/usr/bin/php";
 
-  // Clickatell gateway parameters
-  $clickatell_twoway_number_ES = ***CONFIGURE***;
-  $clickatell_twoway_number_IN = ***CONFIGURE***;
-  $clickatell_twoway_number_US = ***CONFIGURE***;
+  // SMS Gateway gateway parameters
+  $SMSGateway_twoway_number_ES = ***CONFIGURE***;
+  $SMSGateway_twoway_number_IN = ***CONFIGURE***;
+  $SMSGateway_twoway_number_US = ***CONFIGURE***;
   $mobile_US = ***CONFIGURE***;
   $HTTP_API_ID_ES = ***CONFIGURE***;
   $HTTP_API_ID_IN = ***CONFIGURE***;
   $HTTP_API_ID_US = ***CONFIGURE***;
 
   // Select gateway/API parameters to use
-  $clickatell_user = "***CONFIGURE***";
-  $clickatell_password = "***CONFIGURE***";
-  $clickatell_twoway_number = $clickatell_twoway_number_ES;
+  $SMSGateway_user = "***CONFIGURE***";
+  $SMSGateway_password = "***CONFIGURE***";
+  $SMSGateway_twoway_number = $SMSGateway_twoway_number_ES;
   $HTTP_API_ID = $HTTP_API_ID_ES;
 
   // Log start
@@ -51,7 +51,7 @@
     // $charset = $_POST['charset'];
     // $messageId = $_POST['moMsgId'];
     
-    $postContents =  "Message: $message_date - " . join(" ", $_POST);
+    $postContents = "Message: $message_date - " . join(" ", $_POST);
 
     // Log received message
     writeLog("Message received. Number: $mobile_number Timestamp: " . strtotime($message_date) . " Message: $MO_message", $logFile);
@@ -60,7 +60,7 @@
     writeLog("Calling $processor with parameters from = $mobile_number and message = $MO_message", $logFile);
 
     //$escaped_message = str_replace("+", "%20", urlencode($message));
-	$escaped_message = addslashes($MO_message);
+$escaped_message = addslashes($MO_message);
     exec("$PHP $processor \"$escaped_message\" $mobile_number", $output, $retval);
     
     for ( $outputLine = 0; $outputLine > count($output); $outputLine++ )
@@ -71,7 +71,7 @@
     writeLog("$processor returned $retval", $logFile);
 
     // Reply with Clickatell's HTTP API
-    $HTTP_API_send_query = "http://api.clickatell.com/http/sendmsg?user=$clickatell_user&password=$clickatell_password&api_id=$HTTP_API_ID&MO=1&from=$clickatell_twoway_number&to=$mobile_number&text=".urlencode($output[0]);    
+    $HTTP_API_send_query = "http://api.clickatell.com/http/sendmsg?user=$SMSGateway_user&password=$SMSGateway_password&api_id=$HTTP_API_ID&MO=1&from=$SMSGateway_twoway_number&to=$mobile_number&text=".urlencode($output[0]);
     file_get_contents($HTTP_API_send_query);
 
     // Log outgoing message
@@ -81,16 +81,16 @@
     // Send a duplicate text message using the US API
     $mobile_number = $mobile_US;
     $HTTP_API_ID = $HTTP_API_ID_US;
-    $clickatell_twoway_number = $clickatell_twoway_number_US;
+    $SMSGateway_twoway_number = $SMSGateway_twoway_number_US;
 
-    $HTTP_API_send_query = "http://api.clickatell.com/http/sendmsg?user=$clickatell_user&password=$clickatell_password&api_id=$HTTP_API_ID&MO=1&from=$clickatell_twoway_number&to=$mobile_number&text=".urlencode($output[0]);    
+    $HTTP_API_send_query = "http://api.clickatell.com/http/sendmsg?user=$SMSGateway_user&password=$SMSGateway_password&api_id=$HTTP_API_ID&MO=1&from=$SMSGateway_twoway_number&to=$mobile_number&text=".urlencode($output[0]);
     file_get_contents($HTTP_API_send_query);
     writeLog("Sending to: $mobile_number; Message:".$output[0], $logFile);
     writeLog($HTTP_API_send_query, $logFile);
   }
+  
 
   // Create one file per message, regardless of POST data
   writeLog("HTTP listener exiting... Message contents processed: $postContents", $logFile);
 
 ?>
-
