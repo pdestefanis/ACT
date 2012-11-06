@@ -1,15 +1,3 @@
-/*!40101 SET NAMES utf8 */;
-/*!40101 SET SQL_MODE=''*/;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-/*!40100 DEFAULT CHARACTER SET utf8 */;
-
-CREATE DATABASE IF NOT EXISTS `tracker` 
-
-USE `tracker`;
-
 /*Table structure for table `acos` */
 
 DROP TABLE IF EXISTS `acos`;
@@ -529,9 +517,3 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`name`,`username`,`password`,`role_id`,`created`,`modified`,`reach`,`phone_id`,`location_id`,`active`) values (1,'Administrator','admin','396237c7b47454dbcdc540c07fe0a971769c2bdc',1,'2010-08-29 23:11:29','2012-10-03 17:32:53',0,NULL,11,1),(2,'Moderator','moderator','86800f0a0025a5d0180d2b92f54e11ac6b40f0f4',2,'2010-08-29 23:11:44','2012-10-03 17:34:42',0,NULL,14,1),(7,'User name ','user','772b66cbcc03b734ed372c3e41f539e991571670',3,'2011-07-04 08:45:10','2012-10-03 17:35:34',0,NULL,10,1);
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
