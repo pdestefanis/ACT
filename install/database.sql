@@ -516,4 +516,4 @@ CREATE TABLE `users` (
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`name`,`username`,`password`,`role_id`,`created`,`modified`,`reach`,`phone_id`,`location_id`,`active`) values (1,'Administrator','admin','396237c7b47454dbcdc540c07fe0a971769c2bdc',1,'2010-08-29 23:11:29','2012-10-03 17:32:53',0,NULL,11,1),(2,'Moderator','moderator','86800f0a0025a5d0180d2b92f54e11ac6b40f0f4',2,'2010-08-29 23:11:44','2012-10-03 17:34:42',0,NULL,14,1),(7,'User name ','user','772b66cbcc03b734ed372c3e41f539e991571670',3,'2011-07-04 08:45:10','2012-10-03 17:35:34',0,NULL,10,1);
+insert  into `users`(`id`,`name`,`username`,`password`,`role_id`,`created`,`modified`,`reach`,`phone_id`,`location_id`,`active`) values (1,'Administrator','admin','8db57f058f3daac554698a07b8eaf8df1e1d319b',1,'2010-08-29 23:11:29','2012-10-03 17:32:53',0,NULL,11,1),(2,'Moderator','moderator','86800f0a0025a5d0180d2b92f54e11ac6b40f0f4',2,'2010-08-29 23:11:44','2012-10-03 17:34:42',0,NULL,14,1),(7,'User name ','user','772b66cbcc03b734ed372c3e41f539e991571670',3,'2011-07-04 08:45:10','2012-10-03 17:35:34',0,NULL,10,1);
