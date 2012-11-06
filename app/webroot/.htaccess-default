@@ -1,6 +1,6 @@
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    # Change next line to point to your installation directory inside the web server's documentRoot
     RewriteBase /act
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
