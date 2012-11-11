@@ -124,6 +124,7 @@ class LocationsController extends AppController {
 			foreach ($par as $key => $lname)
 				$parents[$key] = $lname;
 			$this->set('parents', $parents);
+			$this->updateJSONFile($id);
 		}
 	}
 

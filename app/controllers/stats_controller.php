@@ -442,7 +442,7 @@ class StatsController extends AppController {
 					$this->data['Stat']['quantity'] = -1;
 				} else {
 					$this->data['Stat']['location_id'] = $userId = $this->Session->read('Auth.User.location_id');
-					$this->data['Stat']['quantity'] = -1;
+					$this->data['Stat']['quantity'] = 0;
 				}
 
 				if ( $lastFacilityWithKit != -1 && $this->isUnusedUnit($unit_id)) {

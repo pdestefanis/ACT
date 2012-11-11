@@ -1465,7 +1465,7 @@ class AppController extends Controller {
 	}
 	
 	//moved from stats contreoller so that file update is on the fly here
-	protected function updateJSONFile() {
+	protected function updateJSONFile($facilityId = null) {
 		/* App::import('Controller', 'Stats');
 			var $Stats;
 	
@@ -1474,9 +1474,11 @@ class AppController extends Controller {
 		// If we want the model associations, components, etc to be loaded
 		$Stats->constructClasses(); */
 		$this->loadModel('Stat');
-		
 		if (!isset($this->data['Stat']['JSONFile'])) {
-			$locations = $this->Stat->query('SELECT * FROM locations where id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') AND locations.deleted = 0');
+			if (is_null($facilityId))
+				$locations = $this->Stat->query('SELECT * FROM locations where id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') AND locations.deleted = 0');
+			else 
+				$locations = $this->Stat->query('SELECT * FROM locations where id IN (' .  $facilityId  . ') ');
 			//$locations = $this->Stat->query('SELECT * FROM locations where deleted = 0 and id IN (' .  implode(",", $this->Session->read("userLocations"))  . ') ');
 	
 			$this->set('locations', $locations);

@@ -475,7 +475,10 @@ class GoogleMapv3Helper extends Helper {
 		if (isset($options['zIndex'])) {
 			$params['zIndex'] = $options['zIndex'];
 		}
-
+		if (isset($options['draggable'])) {
+			$params['draggable'] = $options['draggable'];
+		}
+				
 		$marker = "
 			var x".self::$MARKER_COUNT." = new google.maps.Marker({
 				position: new google.maps.LatLng(".$options['lat'].",".$options['lng']."),
@@ -485,6 +488,12 @@ class GoogleMapv3Helper extends Helper {
 				x".self::$MARKER_COUNT."
 			);
 		";
+		if (isset($options['draggable'])) {
+			$marker .= 'google.maps.event.addListener(' . "x".self::$MAP_COUNT. ', \'position_changed\', function() {
+						jQuery(\'#LocationLocationLatitude\').val(' . "x".self::$MAP_COUNT. '.getPosition().lat().toFixed(6));
+						jQuery(\'#LocationLocationLongitude\').val(' . "x".self::$MAP_COUNT. '.getPosition().lng().toFixed(6));
+						});';
+		}
 		$this->map.= $marker;
 
 		if (!empty($options['directions'])) {
@@ -1541,4 +1550,29 @@ function Fluster2ProjectionOverlay(map) {google.maps.OverlayView.call(this);this
 			$this->map.= $marker;
 	
 		}
+		
+		function makeMarkerDragable($id = null)
+		{
+				
+			$marker = '
+			var newMarker = new google.maps.Marker();
+			
+			var mOptions = {
+			draggable: true,
+			map: '.$this->name().'
+			};
+		newMarker.setOptions(mOptions);
+		}
+		
+		google.maps.event.addListener(newMarker, \'position_changed\', function() {
+			jQuery(\'#LocationLocationLatitude\').val(newMarker.getPosition().lat().toFixed(6));
+			jQuery(\'#LocationLocationLongitude\').val(newMarker.getPosition().lng().toFixed(6));
+		});
+		
+		';
+		
+			$this->map.= $marker;
+		
+		}
+		
 }
