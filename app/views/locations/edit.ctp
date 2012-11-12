@@ -47,7 +47,7 @@ echo '<br /><br />' ;
 				 $this->GoogleMapv3->addMarker($options);
 				 //$this->GoogleMapv3->addInfoWindow($options);
 		}
-		 $this->GoogleMapv3->addMarkerOnClick('New facility');
+		// $this->GoogleMapv3->addMarkerOnClick('New facility');
 		echo  $this->GoogleMapv3->script();
 		
     
