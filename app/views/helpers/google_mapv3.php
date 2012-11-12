@@ -475,7 +475,7 @@ class GoogleMapv3Helper extends Helper {
 		if (isset($options['zIndex'])) {
 			$params['zIndex'] = $options['zIndex'];
 		}
-		if (isset($options['draggable'])) {
+		if (isset($options['draggable']) && $options['draggable'] == 'true') {
 			$params['draggable'] = $options['draggable'];
 		}
 				
