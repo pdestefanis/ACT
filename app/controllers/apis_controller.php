@@ -57,13 +57,13 @@ class ApisController extends AppController {
 			
 			$isUnused = $this->isUnusedUnit($unit['Units']['id']);
 			if (!$isUnused) {
-				$this->Rest->error(__('This kit is already open.', true));
+				$this->Rest->error(__('This kit is already marked as open', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 					
 			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isDiscarded) {
-				$this->Rest->error(__('This kit is already discarded', true));
+				$this->Rest->error(__('This kit is already marked as discarded', true));
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
@@ -107,7 +107,7 @@ class ApisController extends AppController {
 				$this->Rest->error(__('Record could not be saved: 10101', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
-			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$stat = $this->Stats->findById($this->Stats->id);
@@ -158,7 +158,7 @@ class ApisController extends AppController {
 			
 			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isDiscarded) {
-				$this->Rest->error(__('This kit is already discarded', true));
+				$this->Rest->error(__('This kit was already marked as discarded', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$this->loadModel('Stats');
@@ -215,7 +215,7 @@ class ApisController extends AppController {
 			//$stat = $this->Stats->findById($this->Stats->id);
 			//$this->set(compact('stat'));
 				
-			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 		}
@@ -268,13 +268,13 @@ class ApisController extends AppController {
 			
 			$isUnused = $this->isUnusedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isUnused) {
-				$this->Rest->error(__('This kit is open cannot be assigned to patient', true));
+				$this->Rest->error(__('This kit is marked as open, and cannot be assigned to a patient', true));
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id']);
 			if (!$isDiscarded) {
-				$this->Rest->error(__('This kit is already discarded', true));
+				$this->Rest->error(__('This kit is already marked as discarded', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//compare the user facility and children thereof to the kit current facility
@@ -282,7 +282,7 @@ class ApisController extends AppController {
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//datetime is needed for patient check
 			if ($this->isPatientWithKit($patient['Patients']['id'], $this->dateArrayToString($data['Stats']['created']))) {
-				$this->Rest->error(__('Patient already with kit. Not processed: 10115', true));
+				$this->Rest->error(__('Patient already has one kit assigned. Request not processed: 10115', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			//adjust the quantity
@@ -342,7 +342,7 @@ class ApisController extends AppController {
 						NULL,
 						NULL
 				); */
-			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 
@@ -395,14 +395,14 @@ class ApisController extends AppController {
 			
 			$isUnused = $this->isUnusedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isUnused) {
-				$this->Rest->error(__('This kit is open and cannot be assigned to facility', true));
+				$this->Rest->error(__('This kit is marked as open and cannot be assigned to facility', true));
 				//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			
 			$isDiscarded = $this->isDiscardedUnit($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
 			if (!$isDiscarded) {
-				$this->Rest->error(__('This kit is already discarded', true));
+				$this->Rest->error(__('This kit is already marked as discarded', true));
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			$lastFacilityWithKit = $this->findLastUnitFacility($unit['Units']['id'], $this->dateArrayToString($data['Stats']['created']));
@@ -438,7 +438,7 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 				
-			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			//$stat = $this->Stats->findById($this->Stats->id);
@@ -534,7 +534,7 @@ class ApisController extends AppController {
 				$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			}
 			
-			$this->Rest->info(__('Thank you. Your report was successfully submitted.', true));
+			$this->Rest->info(__('Thank you. Your report was successfully submitted', true));
 			//$messagereceivedId = $this->setReceived($argsList, $phone['Phones']['id'])	;
 			$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 			$stat = $this->Stats->findById($this->Stats->id);
@@ -565,7 +565,7 @@ class ApisController extends AppController {
 			$this->Rest->postData = $this->data;
 			//validate phone numbers optional + and max 11 digits after it
 			if (!preg_match("/\+?[0-9]{4,11}/", $phonenumber)){
-				$this->Rest->error(__('Invalid phonenumber', true));
+				$this->Rest->error(__('Invalid phone number', true));
 				$this->Rest->abort();
 			}
 	
@@ -593,19 +593,19 @@ class ApisController extends AppController {
 					$this->checkFeedback($argsList, $phone['Phones']['id'], $messagereceivedId);
 				}
 				$phone = $this->Phones->findById($this->Phones->id);
-				$this->Rest->error(__('Phone number not found. It will be added but you will not be able to report until it is activated.', true));
+				$this->Rest->error(__('Phone number not found. It will be added but you will not be able to report until it is activated', true));
 			} else 
 			//don't allow inactive phones to report
 			if (isset($phone['Phones']['active']) && $phone['Phones']['active'] == 0) {
-				$this->Rest->error(__('This phone has not been activated. Please request activation.', true));
+				$this->Rest->error(__('This phone has not been activated. Please request activation', true));
 			} else
 			//don't allow deleted phones to report
 			if (isset($phone['Phones']['deleted']) && $phone['Phones']['deleted'] == 1) {
-				$this->Rest->error(__('This phone has been removed from the system and cannot report.', true));
+				$this->Rest->error(__('This phone has been removed from the system and cannot send reports at this time', true));
 			} else
 			//check that phone is assigned to a facility
 			if (!isset($phone['Phones']['location_id']) ) {
-				$this->Rest->error(__('This phone has not been assigned to a facility. Please request assignment.', true));
+				$this->Rest->error(__('This phone has not been assigned to a facility. Please request assignment', true));
 				//$this->Rest->abort();
 			}
 			//$this->set(compact('phone'));
@@ -666,7 +666,7 @@ class ApisController extends AppController {
 		if ($this->Rest->isActive()) {
 			$feedback = $this->Rest->getFeedBack();
 			if (isset($feedback['info']) || isset($feedback['error']) ) {
-				//$messagereceivedId = $this->setReceived($argsList, $phoneId);
+					//$messagereceivedId = $this->setReceived($argsList, $phoneId);
 				$messagesent = 	$this->setSent(isset($feedback['info'])?$feedback['info'][0]:$feedback['error'][0], $phoneId, $messagereceivedId);
 				if (isset($feedback['error']) )
 					$this->Rest->abort();
@@ -819,7 +819,7 @@ class ApisController extends AppController {
 		} else if ($what == 'lessParams') {
 			$this->Rest->error(__('Missing parameter. Message not processed: 10109', true));
 		} else if ($what == 'msgUnrecognized') {
-			$this->Rest->error(__('We couldn not interprete your message. Plese check and resend: 10112', true));
+			$this->Rest->error(__('We could not interpret your message. Please check and resend: 10112', true));
 		} else if ($what == 'lessMissParams') {
 			$this->Rest->error(__('Missing or incorrect parameter. Message not processed: 10111', true));
 		} else if ($what == 'noUnit') {
@@ -846,7 +846,7 @@ class ApisController extends AppController {
 			$isValidDate = checkdate( $currDate['month'], $currDate['day'], $currDate['year'] );
 			$currDate = date('Y-m-d H:i:s',strtotime($this->dateArrayToString($currDate)));
 			if (!$isValidDate) {
-				$this->Rest->error(__('Invalid date please use yyyy-mm-dd ' , true) );
+				$this->Rest->error(__('Invalid date. Please use YYYY-MM-DD format' , true) );
 			/* } else if ($this->dateArrayToString($currDate) > date("Y-m-d H:i:s") ) {
 				$this->Rest->error(__('Date cannot be in the future.' , true) ); */
 			} 
@@ -858,7 +858,7 @@ class ApisController extends AppController {
 					$isEarlyCreated = TRUE;
 				}
 				if ($isEarlyCreated)
-					$this->Rest->error(__('Date is prior to kit creation.' , true));
+					$this->Rest->error(__('The date reported is prior to the creation date for that kit' , true));
 			}
 		}
 	}
