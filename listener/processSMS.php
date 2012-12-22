@@ -47,10 +47,12 @@ class Action{
 	function init($msg, $caller){
 		//TODO move this into config file
 		//app api URL
-		$pest = new Pest('http://localhost:10080/testing');
+		//configure the URL, username and password below
+		//Leave the apikey as it is as we are not using this currently
+		$pest = new Pest('http://DOMAIN/FOLDER');
 		$headers = array(
 				//Username and password to use for API login
-				'Authorization: TRUEREST username=admin&password=admin12&apikey=247b5a2f72df375279573f2746686daa',
+				'Authorization: TRUEREST username=USERNAME&password=PASSWORD&apikey=247b5a2f72df375279573f2746686daa',
 				'Content-Type: text/xml'
 		);
 		error_reporting(-1);

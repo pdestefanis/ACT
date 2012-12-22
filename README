@@ -66,6 +66,8 @@ $ ./install/fix_permissions.sh
 
 12. Change passwords (see below for default passwords)
 
+13. In ProcessSMS.php change the URL for the API and the username/passward necessary to connect ot the API
+
 ==Update an existing installation: ==
 
 1. Find the schema version of your installation
